@@ -6,37 +6,34 @@
       {
         "id": "1",
         "name": "About BES EXPO",
-        "path": ""
+        "path": "/event_conference/bes_expo/exibition/history"
       },
       {
         "id": "2",
         "name": "Dates & Venue",
-        "path": ""
+        "path": "/event_conference/bes_expo/exibition/venue"
       },
       {
-        "id": "3",
+        "id": "brochure",
         "name": "Download Brochure",
-        "path": ""
+        "path": "",
+        "target": "_blank"
       },
       {
         "id": "4",
         "name": "Book a Space",
-        "path": ""
+        "path": "/event_conference/bes_expo/exibition/participation_fee"
       },
-      {
-        "id": "5",
-        "name": "Register to visit",
-        "path": ""
-      },
+
       {
         "id": "6",
-        "name": "Approvals &amp; Supports",
-        "path": ""
+        "name": "Approvals & Supports",
+        "path": "/about_bes/contact_us"
       },
       {
         "id": "7",
         "name": "Floor Plan",
-        "path": ""
+        "path": "/event_conference/bes_expo/exibition/floor_plan"
       }
     ]
   },
@@ -47,52 +44,30 @@
       {
         "name": "Conference Theme",
         "id": 1,
-        "path": ""
+        "path": "/event_conference/bes_expo/conference/conference_theme"
       },
       {
         "name": "Conference Sessions",
         "id": 2,
-        "path": ""
+        "path": "/event_conference/bes_expo/conference/conference_schedule"
       },
-      {
-        "name": "Conference Theme",
-        "id": 3,
-        "path": ""
-      },
-      {
-        "name": "Conference Speakers",
-        "id": 4,
-        "path": ""
-      },
+
       {
         "name": "Conference Speakers",
         "id": 5,
-        "path": ""
+        "path": "/event_conference/bes_expo/conference/list_of_speakers"
       },
-      {
-        "name": "Key Notes Speakers",
-        "id": 6,
-        "path": ""
-      },
+
       {
         "name": "Request for Speakers",
         "id": 7,
-        "path": ""
+        "path": "/about_bes/contact_us"
       },
-      {
-        "name": "Sponsor Conference",
-        "id": 8,
-        "path": ""
-      },
+
       {
         "name": "Register as Delegate",
         "id": 9,
-        "path": ""
-      },
-      {
-        "name": "Awards",
-        "id": 10,
-        "path": ""
+        "path": "/registrationform/delegateregistration"
       }
     ]
   }

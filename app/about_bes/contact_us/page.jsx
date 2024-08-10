@@ -32,7 +32,7 @@ export default function page() {
               Enquiry Form
             </h2>
           </div>
-          <Form db={db} />
+          <Form db={db} isBypassEmailValidation={true} />
         </Box>
       </div>
     </div>
