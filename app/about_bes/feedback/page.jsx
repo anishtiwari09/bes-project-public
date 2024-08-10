@@ -22,7 +22,7 @@ export default function page() {
               Feedback
             </h2>
           </div>
-          <Form db={db} />
+          <Form db={db} isBypassEmailValidation={true} />
         </Box>
       </div>
     </div>

@@ -19,7 +19,13 @@ import axios from "axios";
 import SuccessModal from "@/app/UIComponent/Modals/SuccessModal";
 import EmailOtpLoader from "./EmailOtpLoader";
 import OTP from "./otpinput";
-export default function Form({ db, onClick, apiLink, currentPath }) {
+export default function Form({
+  db,
+  onClick,
+  apiLink,
+  currentPath,
+  isBypassEmailValidation,
+}) {
   const [visitorDb, setVisitorDb] = useState(db);
   const [showSuccessModal, setSuccessModal] = useState(false);
   const [submit, setSubmit] = useState(false);
@@ -51,7 +57,7 @@ export default function Form({ db, onClick, apiLink, currentPath }) {
   };
   const handleValidate = async () => {
     setErrorMsg("");
-    if (!isEmailVerified) {
+    if (!isEmailVerified && !isBypassEmailValidation) {
       setErrorMsg("Please Verify the email");
       return;
     }
@@ -257,7 +263,7 @@ export default function Form({ db, onClick, apiLink, currentPath }) {
                             setIsOtpSend={setIsDisabledOtpSendBtn}
                           />
                         </Stack>
-                      ) : (
+                      ) : isBypassEmailValidation ? null : (
                         <Button onClick={handleSendEmailOtp}>
                           {isOtpSend ? "Resend " : "Send "}Otp
                         </Button>

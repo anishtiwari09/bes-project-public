@@ -38,17 +38,32 @@ export default function MenuCompoenent({ data, index, open, setOpen }) {
             zIndex: 1301,
           }}
         >
-          <a
-            className={`header2_menu_list ${
-              open
-                ? "header2_menu_list_open"
-                : pathName.startsWith(data.path) && data.path
-                ? "header2_menu_list_open"
-                : ""
-            }`}
-          >
-            {data?.name}
-          </a>
+          {data?.isLink ? (
+            <Link
+              className={`header2_menu_list ${
+                open
+                  ? "header2_menu_list_open"
+                  : pathName.startsWith(data.path) && data.path
+                  ? "header2_menu_list_open"
+                  : ""
+              }`}
+              href={data?.path}
+            >
+              {data?.name}
+            </Link>
+          ) : (
+            <a
+              className={`header2_menu_list ${
+                open
+                  ? "header2_menu_list_open"
+                  : pathName.startsWith(data.path) && data.path
+                  ? "header2_menu_list_open"
+                  : ""
+              }`}
+            >
+              {data?.name}
+            </a>
+          )}
         </Button>
         {data?.isExpandable && data?.subChildren.length ? (
           <Menu

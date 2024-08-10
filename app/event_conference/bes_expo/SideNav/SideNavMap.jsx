@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import styles from "../../../about_bes/SideNav/side.module.css";
+import { handleGetDynamicLink } from "@/app/Utility/helper/helper";
 
 export default function SideNavMap({ db, parentPath }) {
   const pathname = usePathname();
@@ -11,6 +12,7 @@ export default function SideNavMap({ db, parentPath }) {
   return (
     <ul className="pl-2">
       {db.map((item, key) => {
+        item.path = handleGetDynamicLink(item.id) ?? item?.path;
         let temp = item?.isSeprateParentPath ? item.parentPath : parentPath;
         return (
           <li key={item.id}>

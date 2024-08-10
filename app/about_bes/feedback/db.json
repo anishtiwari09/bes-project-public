@@ -10,6 +10,16 @@
     "errorMsg": "This Field is Required"
   },
   {
+    "key": "email",
+    "name": "Your Email (required)",
+    "fieldType": "email",
+    "required": true,
+    "type": "text",
+    "options": [],
+    "showError": false,
+    "errorMsg": "This Field is Required"
+  },
+  {
     "key": "designation",
     "name": "Designation",
     "required": true,

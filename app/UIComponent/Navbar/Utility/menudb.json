@@ -79,7 +79,7 @@
         "isExpandable": false,
         "subChildren": []
       },
-            {
+      {
         "id": 10,
         "name": "Feedback",
         "path": "/feedback",
@@ -185,10 +185,13 @@
   },
   {
     "id": 4,
-    "name": "View Point",
-    "path": "",
-    "haveChildren": "yes",
-    "isExpandable": true,
+    "name": "Contact us",
+    "path": "/about_bes/contact_us",
+    "parentPath": "/about_bes",
+    "isSeprateParentPath": true,
+    "haveChildren": "no",
+    "isExpandable": false,
+    "isLink": true,
     "subChildren": []
   },
   {
@@ -202,17 +205,6 @@
         "id": 1,
         "name": "Userful Links",
         "path": "/userful_links",
-        "haveChildren": "no",
-        "isExpandable": false,
-        "subChildren": []
-      },
-
-      {
-        "id": 2,
-        "name": "Contact us",
-        "path": "/contact_us",
-        "parentPath": "/about_bes",
-        "isSeprateParentPath": true,
         "haveChildren": "no",
         "isExpandable": false,
         "subChildren": []

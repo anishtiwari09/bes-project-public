@@ -1,5 +1,7 @@
+import Link from "next/link";
 import footerData from "./Utility/footerdb.json";
 import React from "react";
+import { handleGetDynamicLink } from "@/app/Utility/helper/helper";
 export default function Footer() {
   return (
     <div className="bg-black opacity-80 py-4">
@@ -11,12 +13,25 @@ export default function Footer() {
                 {item.name}:{" "}
               </h3>
               <div className="flex gap-2 flex-wrap">
-                {item.subTopic.map((sub_item, sub_key) => (
-                  <div key={sub_item.id} className="text-white">
-                    {sub_item.name}{" "}
-                    {sub_key + 1 < item.subTopic.length ? " | " : ""}
-                  </div>
-                ))}
+                {item.subTopic.map((sub_item, sub_key) => {
+                  let newPath = handleGetDynamicLink(sub_item.id);
+                  sub_item.path = newPath ? `/${newPath}` : sub_item.path;
+                  return (
+                    <div key={sub_item.id} className="text-white">
+                      {sub_item?.path ? (
+                        <Link
+                          target={sub_item.target ?? "_self"}
+                          href={sub_item?.path}
+                        >
+                          {sub_item.name}
+                        </Link>
+                      ) : (
+                        sub_item.name
+                      )}
+                      {sub_key + 1 < item.subTopic.length ? " | " : ""}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </React.Fragment>
