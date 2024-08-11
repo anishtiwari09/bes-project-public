@@ -3,7 +3,6 @@ import Image from "next/image";
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 export default function HomePageCarousel({ data, url, path1 }) {
-  console.log({ path1 });
   return (
     <div>
       <Carousel
