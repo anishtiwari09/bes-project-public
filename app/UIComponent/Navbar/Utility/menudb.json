@@ -183,17 +183,7 @@
     "isExpandable": false,
     "subChildren": []
   },
-  {
-    "id": 4,
-    "name": "Contact us",
-    "path": "/about_bes/contact_us",
-    "parentPath": "/about_bes",
-    "isSeprateParentPath": true,
-    "haveChildren": "no",
-    "isExpandable": false,
-    "isLink": true,
-    "subChildren": []
-  },
+
   {
     "id": 5,
     "name": "Other",
@@ -245,5 +235,16 @@
         "subChildren": []
       }
     ]
+  },
+  {
+    "id": 4,
+    "name": "Contact us",
+    "path": "/about_bes/contact_us",
+    "parentPath": "/about_bes",
+    "isSeprateParentPath": true,
+    "haveChildren": "no",
+    "isExpandable": false,
+    "isLink": true,
+    "subChildren": []
   }
 ]
