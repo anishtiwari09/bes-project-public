@@ -7,7 +7,7 @@ export default function Footer({ initialCount = 0 }) {
     <div className="bg-black opacity-80 py-4">
       <div className="w-[96%] m-auto">
         <h3 className="text-[#adff2f] text-lg min-w-[150px] text-center">
-          Total Page Visitor: {initialCount}
+          Total Visitors: {initialCount}
         </h3>
         {footerData.map((item, key) => (
           <React.Fragment key={item.id}>
