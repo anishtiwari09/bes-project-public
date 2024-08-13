@@ -9,6 +9,7 @@ import {
   updateVisitorCounter,
 } from "./backend/helper/visitor_helper/visitor_counter_helper";
 import { cookies } from "next/headers";
+import { ENVIROMENT } from "./backend/constant";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -32,8 +33,8 @@ export default async function RootLayout({ children }) {
           <div className="body_page">{children}</div>
           <Footer initialCount={intitalCounter} />
         </div>
-        <Analytics />
-        <SpeedInsights />
+        {ENVIROMENT === "production" && <Analytics />}
+        {ENVIROMENT === "production" && <SpeedInsights />}
       </body>
     </html>
   );
