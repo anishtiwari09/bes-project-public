@@ -8,9 +8,9 @@ export default function Navbar() {
     <div className="flex flex-row gap-1 items-end bg-[#101130] ">
       <Header1 />
       <Header2 />
-      {/* <div className="absolute right-1 top-1 text-white">
+      <div className="absolute right-1 top-1 text-white">
         <LoginButton />
-      </div> */}
+      </div>
     </div>
   );
 }
