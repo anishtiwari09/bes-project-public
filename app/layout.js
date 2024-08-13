@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "./UIComponent/Navbar/Navbar";
 import Footer from "./UIComponent/Footer/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 import {
   getVisitorCounter,
   updateVisitorCounter,
@@ -27,11 +28,12 @@ export default async function RootLayout({ children }) {
     <html lang="en" className="h-full">
       <body className="h-full overflow-hidden">
         <Navbar />
-        <SpeedInsights />
         <div className="overflow-auto inner_page scroll-smooth">
           <div className="body_page">{children}</div>
           <Footer initialCount={intitalCounter} />
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
