@@ -11,7 +11,6 @@ import NotificationText from "./UIComponent/Carousel/HomePage/NotificationText";
 export default function Home() {
   let data =
     getSliderImages(HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear) || [];
-  // just checking
   return (
     <div className="relative">
       <div className="relative">
