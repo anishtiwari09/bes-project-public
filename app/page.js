@@ -7,7 +7,6 @@ import YoutubeThumbnail from "./UIComponent/Carousel/HomePage/YoutubeThumbnail";
 import { HOMEPAGE, NOTIFICATION_TEXT } from "./Utility/Constant";
 import { getSliderImages } from "./Utility/lib/file";
 import NotificationText from "./UIComponent/Carousel/HomePage/NotificationText";
-
 export default function Home() {
   let data =
     getSliderImages(HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear) || [];

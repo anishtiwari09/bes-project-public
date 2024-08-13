@@ -6,6 +6,8 @@ import UserMember from "../models/user_member.model";
 import { generateUniqueLink } from "../helper/helper";
 import { sendMail } from "../api/sendMail/mail";
 import { generateSignupTemplate } from "../helper/mailHelper/template/signup_template";
+import { jwtGenerateToken } from "@/app/helper/helper";
+import { LOCAL_URL, PRODUCTION_URL } from "../constant";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -77,10 +79,14 @@ export const signUpAction = async (prevState, formData) => {
       },
       options
     );
+    let jwtToken = jwtGenerateToken({ email: obj?.email });
+    let url =
+      process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
+    url += "/account_setup/" + uniqueId + "/" + jwtToken;
     sendMail({
       email: obj.email,
       subject: "Action Required For New Account Creation",
-      html: generateSignupTemplate(uniqueId),
+      html: generateSignupTemplate(url),
     });
     return {
       ...prevState,

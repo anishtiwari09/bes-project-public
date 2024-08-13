@@ -62,7 +62,9 @@ const initialFormState = [
 export default function SignupBox() {
   const [state, formAction] = useFormState(signUpAction, initialState);
   console.log(state);
-  const [formState, setFormState] = useState(initialFormState);
+  const [formState, setFormState] = useState(
+    JSON.parse(JSON.stringify(initialFormState))
+  );
   const handleChange = (e, index) => {
     const { value, name } = e.target;
     if (name === "mobile") {
@@ -98,7 +100,7 @@ export default function SignupBox() {
       setFormState(newForm);
       e.preventDefault();
     } else {
-      setFormState(initialFormState);
+      setFormState(JSON.parse(JSON.stringify(initialFormState)));
     }
   };
 

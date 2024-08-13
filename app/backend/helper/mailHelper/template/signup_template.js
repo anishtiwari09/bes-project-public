@@ -27,7 +27,10 @@ export const generateSignupTemplate = (link) => {
                       <div style="color: rgb(0, 0, 0); text-align: left;">
                         <h1 style="margin: 1rem 0">Verification code</h1>
                         <p style="padding-bottom: 16px">Please use the verification link below to sign in.</p>
-                        <a href="${link}">Create New Account</a>
+                      <a href="${link}" style=" text-decoration:none;padding:10px;background:green;color:white;border-radius:5px;">Confirm Account</a>
+                        <br>
+                        <br>
+
                         <a href="${link}">${link}</a>
                         <p style="padding-bottom: 16px">If you didn’t request this, you can ignore this email.</p>
                         <p style="padding-bottom: 16px">Thanks,<br>The Bes team</p>

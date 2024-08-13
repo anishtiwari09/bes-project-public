@@ -4,3 +4,6 @@ export const SMTP_HOST = process.env.SMTP_HOST;
 export const EMAIL_SERVICE = process.env.EMAIL_SERVICE;
 export const SMTP_PORT = process.env.SMTP_PORT;
 export const ADMIN_RECEIVER_MAIL = process.env.ADMIN_RECEIVER_MAIL;
+export const ENVIROMENT = process.env.enviroment;
+export const PRODUCTION_URL = process.env.production_url;
+export const LOCAL_URL = process.env.local_url;
