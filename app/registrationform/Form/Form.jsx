@@ -80,24 +80,26 @@ export default function Form({
     }
     if (isValidate) {
       setSubmit(isValidate);
-      try {
-        let finalObj = {};
-        for (let item of visitorDb) finalObj[item?.key] = item?.value;
-        let res = await axios({
-          method: "POST",
-          url: apiLink,
-          data: { ...finalObj, otp: otpInput },
-        });
-        setErrorMsg(res?.message || "Something went wrong");
-        if (!res.status) {
+      if (apiLink) {
+        try {
+          let finalObj = {};
+          for (let item of visitorDb) finalObj[item?.key] = item?.value;
+          let res = await axios({
+            method: "POST",
+            url: apiLink,
+            data: { ...finalObj, otp: otpInput },
+          });
+          setErrorMsg(res?.message || "Something went wrong");
+          if (!res.status) {
+            setSubmit(false);
+          } else {
+            setSuccessModal(true);
+          }
+        } catch (e) {
+          console.log(e);
+          setErrorMsg(e?.response?.data?.message || "Something went wrong");
           setSubmit(false);
-        } else {
-          setSuccessModal(true);
         }
-      } catch (e) {
-        console.log(e);
-        setErrorMsg(e?.response?.data?.message || "Something went wrong");
-        setSubmit(false);
       }
       typeof onClick === "function" && onClick(visitorDb);
     } else {
@@ -190,6 +192,7 @@ export default function Form({
                       disabled={submit}
                       value={item?.value || " "}
                       onChange={(e) => handleChange(e, key)}
+                      name={item.key}
                     >
                       {item?.options?.map((sub_item, key) => (
                         <MenuItem key={key} value={sub_item.value}>
@@ -209,6 +212,7 @@ export default function Form({
                     index={key}
                     state={visitorDb}
                     dispatcher={setVisitorDb}
+                    name={item.key}
                   />
                 ) : (
                   <Box>
@@ -220,6 +224,7 @@ export default function Form({
                         value={item?.value || ""}
                         onChange={(e) => handleChange(e, key)}
                         helperText={item?.showError ? item?.errorMsg : ""}
+                        name={item.key}
                       />
                     ) : (
                       <TextField
@@ -229,6 +234,7 @@ export default function Form({
                         value={item?.value || ""}
                         onChange={(e) => handleChange(e, key)}
                         helperText={item?.showError ? item?.errorMsg : ""}
+                        name={item.key}
                       />
                     )}
                     {item.key === "email" &&
@@ -318,7 +324,7 @@ const useStyles = {
     outline: "none",
   },
 };
-const AutoSizeTextarea = ({ index, value, dispatcher, state }) => {
+const AutoSizeTextarea = ({ index, value, dispatcher, state, name }) => {
   const textareaRef = useRef(null);
   const handleTextareaChange = (event) => {
     state[index].value = event.target.value;
@@ -336,6 +342,7 @@ const AutoSizeTextarea = ({ index, value, dispatcher, state }) => {
         value={value}
         onChange={handleTextareaChange}
         fullWidth
+        name={name}
         // Minimum number of rows
       />
     </React.Fragment>

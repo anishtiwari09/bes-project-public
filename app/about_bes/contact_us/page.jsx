@@ -1,7 +1,8 @@
 import db from "./db.json";
-import Form from "../../registrationform/Form/Form";
 import styles from "../../registrationform/Form/form.module.css";
 import { Box } from "@mui/material";
+import ContactForm from "./ContactForm";
+
 export default function page() {
   return (
     <div className="flex flex-col p-4 w-full">
@@ -32,7 +33,7 @@ export default function page() {
               Enquiry Form
             </h2>
           </div>
-          <Form db={db} isBypassEmailValidation={true} />
+          <ContactForm db={db} />
         </Box>
       </div>
     </div>
