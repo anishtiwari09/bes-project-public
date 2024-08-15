@@ -22,8 +22,8 @@
 
   {
     "key": "mobile",
-    "name": "Mobile",
-    "required": false,
+    "name": "Mobile (required)",
+    "required": true,
     "fieldType": "number",
     "type": "text",
     "options": [],

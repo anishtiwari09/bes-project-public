@@ -1,3 +1,5 @@
+import { LOGO_URL } from "@/app/backend/constant";
+
 export const generateOtpTemplate = (otpCode) => {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -20,7 +22,7 @@ export const generateOtpTemplate = (otpCode) => {
               <tr>
                 <td style="padding: 40px 0px 0px;">
                   <div style="text-align: left;">
-                    <div style="padding-bottom: 20px;"><img src="https://www.besindia.co.in/images/logo.png" alt="Company" style="width: 56px;">
+                    <div style="padding-bottom: 20px;"><img src="${LOGO_URL}" alt="Company" style="width: 56px;">
                     </div>
                   </div>
                   <div style="padding: 20px; background-color: rgb(255, 255, 255);">

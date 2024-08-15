@@ -5,3 +5,4 @@ export const EMAIL_SERVICE = process.env.EMAIL_SERVICE;
 export const SMTP_PORT = process.env.SMTP_PORT;
 export const ADMIN_RECEIVER_MAIL = process.env.ADMIN_RECEIVER_MAIL;
 export const ENVIROMENT = process.env.enviroment;
+export const LOGO_URL = "https://www.besindia.com/Images/Logo/logo.png";
