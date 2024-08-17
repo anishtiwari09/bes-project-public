@@ -1,7 +1,8 @@
 import db from "./db.json";
 import styles from "../../registrationform/Form/form.module.css";
 import { Box } from "@mui/material";
-import ContactForm from "./ContactForm";
+import FormWithAction from "@/app/registrationform/Form/FormWithAction";
+import { contactUsAction } from "@/app/backend/action/action";
 
 export default function page() {
   return (
@@ -33,7 +34,7 @@ export default function page() {
               Enquiry Form
             </h2>
           </div>
-          <ContactForm db={db} />
+          <FormWithAction db={db} formActionHandler={contactUsAction} />
         </Box>
       </div>
     </div>

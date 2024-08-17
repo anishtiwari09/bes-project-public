@@ -55,7 +55,7 @@ export default function Form({
     item.prevErrorMsg = item?.errorMsg;
     item.errorMsg = "Please Enter Valid email";
   };
-  const handleValidate = async () => {
+  const handleValidate = async (e) => {
     setErrorMsg("");
     if (!isEmailVerified && !isBypassEmailValidation) {
       setErrorMsg("Please Verify the email");
@@ -101,7 +101,7 @@ export default function Form({
           setSubmit(false);
         }
       }
-      typeof onClick === "function" && onClick(visitorDb);
+      typeof onClick === "function" && onClick(visitorDb, e);
     } else {
       setVisitorDb([...visitorDb]);
     }
