@@ -3,23 +3,26 @@ import { useFormState, useFormStatus } from "react-dom";
 
 import Form from "@/app/registrationform/Form/Form";
 import { Alert, Box } from "@mui/material";
-import { contactUsAction } from "@/app/backend/action/action";
 import { useRef } from "react";
 const initialState = {
   message: "",
   status: false,
 };
-export default function ContactForm({ db }) {
-  const [state, formAction] = useFormState(contactUsAction, initialState);
+export default function FormWithAction({ formActionHandler, db }) {
+  const [state, formAction] = useFormState(formActionHandler, initialState);
   const formRef = useRef();
-  const handleFormSubmit = () => {
+  const handleFormSubmit = (vistorDb, submitButtonRef) => {
+    console.log("1");
+    // event.stopPropagation
     formRef.current.submit();
   };
-  console.log(state);
   return (
     <>
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={(e) => {
+          console.log("2");
+          e.preventDefault();
+        }}
         ref={formRef}
         action={formAction}
       >

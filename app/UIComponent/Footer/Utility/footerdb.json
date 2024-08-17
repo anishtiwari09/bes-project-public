@@ -28,7 +28,8 @@
       {
         "id": "6",
         "name": "Approvals & Supports",
-        "path": "/about_bes/contact_us"
+        "path": "/about_bes/contact_us",
+        "normalLink": true
       },
       {
         "id": "7",
@@ -61,7 +62,8 @@
       {
         "name": "Request for Speakers",
         "id": 7,
-        "path": "/about_bes/contact_us"
+        "path": "/about_bes/contact_us",
+        "normalLink": true
       },
 
       {

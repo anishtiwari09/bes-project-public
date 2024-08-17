@@ -39,18 +39,33 @@ export default function MenuCompoenent({ data, index, open, setOpen }) {
           }}
         >
           {data?.isLink ? (
-            <Link
-              className={`header2_menu_list ${
-                open
-                  ? "header2_menu_list_open"
-                  : pathName.startsWith(data.path) && data.path
-                  ? "header2_menu_list_open"
-                  : ""
-              }`}
-              href={data?.path}
-            >
-              {data?.name}
-            </Link>
+            data?.normalLink ? (
+              <a
+                className={`header2_menu_list ${
+                  open
+                    ? "header2_menu_list_open"
+                    : pathName.startsWith(data.path) && data.path
+                    ? "header2_menu_list_open"
+                    : ""
+                }`}
+                href={data?.path}
+              >
+                {data?.name}
+              </a>
+            ) : (
+              <Link
+                className={`header2_menu_list ${
+                  open
+                    ? "header2_menu_list_open"
+                    : pathName.startsWith(data.path) && data.path
+                    ? "header2_menu_list_open"
+                    : ""
+                }`}
+                href={data?.path}
+              >
+                {data?.name}
+              </Link>
+            )
           ) : (
             <a
               className={`header2_menu_list ${

@@ -3,6 +3,8 @@ import db from "./db.json";
 import Form from "../../registrationform/Form/Form";
 import styles from "../../registrationform/Form/form.module.css";
 import { Box } from "@mui/material";
+import FormWithAction from "@/app/registrationform/Form/FormWithAction";
+import { feedbackFormAction } from "@/app/backend/action/action";
 export default function page() {
   return (
     <div className="flex flex-col p-4 w-full">
@@ -22,7 +24,7 @@ export default function page() {
               Feedback
             </h2>
           </div>
-          <Form db={db} isBypassEmailValidation={true} />
+          <FormWithAction db={db} formActionHandler={feedbackFormAction} />
         </Box>
       </div>
     </div>

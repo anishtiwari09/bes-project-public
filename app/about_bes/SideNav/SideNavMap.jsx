@@ -11,14 +11,25 @@ export default function SideNavMap({ db, parentPath }) {
     <ul className="pl-2">
       {db.map((item, key) => (
         <li key={item.id}>
-          <Link
-            href={parentPath + item.path}
-            className={`${
-              pathname == parentPath + item.path ? styles.selected : ""
-            }`}
-          >
-            {item.name}
-          </Link>
+          {item?.normalLink ? (
+            <a
+              href={parentPath + item.path}
+              className={`${
+                pathname == parentPath + item.path ? styles.selected : ""
+              }`}
+            >
+              {item.name}
+            </a>
+          ) : (
+            <Link
+              href={parentPath + item.path}
+              className={`${
+                pathname == parentPath + item.path ? styles.selected : ""
+              }`}
+            >
+              {item.name}
+            </Link>
+          )}
         </li>
       ))}
     </ul>
