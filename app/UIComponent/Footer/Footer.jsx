@@ -22,12 +22,21 @@ export default function Footer({ initialCount = 0 }) {
                   return (
                     <div key={sub_item.id} className="text-white">
                       {sub_item?.path ? (
-                        <Link
-                          target={sub_item.target ?? "_self"}
-                          href={sub_item?.path}
-                        >
-                          {sub_item.name}
-                        </Link>
+                        sub_item?.normalLink ? (
+                          <a
+                            target={sub_item.target ?? "_self"}
+                            href={sub_item?.path}
+                          >
+                            {sub_item.name}
+                          </a>
+                        ) : (
+                          <Link
+                            target={sub_item.target ?? "_self"}
+                            href={sub_item?.path}
+                          >
+                            {sub_item.name}
+                          </Link>
+                        )
                       ) : (
                         sub_item.name
                       )}

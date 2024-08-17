@@ -240,6 +240,7 @@
     "id": 4,
     "name": "Contact us",
     "path": "/about_bes/contact_us",
+    "normalLink": true,
     "parentPath": "/about_bes",
     "isSeprateParentPath": true,
     "haveChildren": "no",

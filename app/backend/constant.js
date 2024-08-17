@@ -7,3 +7,4 @@ export const ADMIN_RECEIVER_MAIL = process.env.ADMIN_RECEIVER_MAIL;
 export const ENVIROMENT = process.env.enviroment;
 export const PRODUCTION_URL = process.env.production_url;
 export const LOCAL_URL = process.env.local_url;
+export const LOGO_URL = "https://www.besindia.com/Images/Logo/logo.png";
