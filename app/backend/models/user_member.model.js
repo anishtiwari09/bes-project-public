@@ -10,6 +10,9 @@ const userMember = new mongoose.Schema(
       type: String,
       required: false,
     },
+    password: {
+      type: String,
+    },
     designation: {
       type: String,
       required: false,
@@ -58,10 +61,9 @@ const userMember = new mongoose.Schema(
       default: false,
     },
     tracking_id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
-      default: Date.now(),
     },
     role: {
       type: String,

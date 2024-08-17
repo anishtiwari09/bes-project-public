@@ -14,11 +14,11 @@ export default function page() {
           <br />{" "}
           <a href="mib.nic.in" target="_blank">
             mib.nic.in
-          </a>{" "}
+          </a>
           <br />
           <strong>Prasar Bharati</strong>
           <br />
-          <a href="prasarbharati.gov.in" target="_blank">
+          <a href="//prasarbharati.gov.in" target="_blank">
             prasarbharati.gov.in
           </a>
           <br />

@@ -72,9 +72,11 @@ export const signUpAction = async (prevState, formData) => {
     };
 
     await UserMember.findOneAndUpdate(
+      { email: obj?.email },
       {
         ...obj,
         token: uniqueId,
+        tracking_id: uniqueId,
         tokenGeneratedTime: Date.now(),
       },
       options
@@ -102,4 +104,103 @@ export const signUpAction = async (prevState, formData) => {
       message: "Something went worng",
     };
   }
+};
+
+export const createNewPasswordAction = async (
+  prevState,
+  formData,
+  slug1,
+  slug2
+) => {
+  let password = formData.get("password");
+  if (!slug1) {
+    return {
+      ...prevState,
+      status: false,
+      message: "Invalid url please try again with valid url",
+    };
+  }
+  if (!password.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "please add valid password",
+    };
+  }
+  try {
+    const user = await UserMember.findOne({ token: slug1 });
+    if (!user) {
+      return {
+        ...prevState,
+        status: false,
+        message: "Invalid url please try again with valid url",
+      };
+    }
+    let data = await UserMember.findOneAndUpdate(
+      { token: slug1 },
+      {
+        isEmailVerified: true,
+        password: password,
+        isLinkExpired: true,
+      }
+    );
+    console.log(data);
+    return {
+      ...prevState,
+      status: true,
+      message: "Password has been successfully reset, please login",
+    };
+  } catch (e) {}
+};
+
+export const checkWheatherUserExist = async (obj) => {
+  let isValid = false;
+  try {
+    let data = await UserMember.findOne(obj);
+    isValid = !!data;
+    if (isValid) {
+      isValid = !data?.isLinkExpired;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  return isValid;
+};
+export const forgotPasswordAction = async (prevState, formData) => {
+  let email = formData.get("email");
+  let isValidEmail = emailValidator(email);
+  let uniqueId = generateUniqueLink();
+  console.log({ forgot: "forgot password" });
+  if (!isValidEmail) {
+    return {
+      ...prevState,
+      message: "Please enter valid email address",
+      stauts: true,
+    };
+  }
+  try {
+    let data = await UserMember.findOneAndUpdate(
+      { email },
+      { token: uniqueId, isLinkExpired: false }
+    );
+    if (data) {
+      let jwtToken = jwtGenerateToken({ email: obj?.email });
+      let url =
+        process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
+      url += "/account_setup/" + uniqueId + "/" + jwtToken;
+      sendMail({
+        email: obj.email,
+        subject: "(Action Required) Reset Password",
+        html: generateSignupTemplate(url),
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  return {
+    ...prevState,
+    status: true,
+    message:
+      "Reset link has been sent to your email address, if it is registered with us",
+  };
 };

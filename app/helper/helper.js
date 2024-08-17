@@ -5,4 +5,18 @@ export const jwtGenerateToken = (user) => {
   });
 };
 
-export const verifyJsonToken = () => {};
+export const verifyJsonToken = (token) => {
+  let isValid = false;
+  try {
+    let temp = jwt.verify(token, process.env.SECRET_KEY);
+    isValid = temp;
+  } catch (e) {
+    console.log(e);
+  }
+  return isValid;
+};
+
+export const isValidPassword = (str) => {
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{8,}$/;
+  return regex.test(str);
+};
