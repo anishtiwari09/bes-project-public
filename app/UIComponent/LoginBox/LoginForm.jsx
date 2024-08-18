@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { useFormState, useFormStatus } from "react-dom";
 import { userLoginAction } from "@/app/backend/action/action";
+import toast from "react-hot-toast";
 const initialState = {
   message: "",
   status: false,
@@ -25,6 +26,29 @@ export default function LoginForm({ onClose }) {
   const [state, formAction] = useFormState(userLoginAction, initialState);
   useEffect(() => {
     if (state.status && state.token) {
+      toast(
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          {state.message}
+        </Alert>,
+        {
+          duration: 4000,
+          position: "top-center",
+
+          // Styling
+          style: {},
+          className: "",
+
+          // Custom Icon
+
+          // Change colors of success/error/loading icon
+
+          // Aria
+          ariaProps: {
+            role: "success",
+            "aria-live": "polite",
+          },
+        }
+      );
       router.push("/user/profile");
       onClose();
     }
