@@ -48,7 +48,7 @@ const userMember = new mongoose.Schema(
     isActive: {
       type: Boolean,
       required: true,
-      default: false,
+      default: true,
     },
     isVerified: {
       type: Boolean,
@@ -74,6 +74,9 @@ const userMember = new mongoose.Schema(
       type: Number,
       required: true,
       default: Date.now(),
+    },
+    verifiedToken: {
+      type: String,
     },
   },
   { timestamps: true }

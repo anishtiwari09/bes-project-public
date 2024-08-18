@@ -6,10 +6,20 @@ import UserMember from "../models/user_member.model";
 import { generateUniqueLink } from "../helper/helper";
 import { sendMail } from "../api/sendMail/mail";
 import { generateSignupTemplate } from "../helper/mailHelper/template/signup_template";
-import { jwtGenerateToken } from "@/app/helper/helper";
-import { LOCAL_URL, PRODUCTION_URL, ADMIN_RECEIVER_MAIL } from "../constant";
+import {
+  compareHashPassword,
+  generateBcryptPassword,
+  jwtGenerateToken,
+} from "@/app/helper/helper";
+import {
+  LOCAL_URL,
+  PRODUCTION_URL,
+  ADMIN_RECEIVER_MAIL,
+  JSESSIONID,
+} from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
+import { cookies } from "next/headers";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -129,6 +139,17 @@ export const createNewPasswordAction = async (
       message: "please add valid password",
     };
   }
+  let hashPassword = "";
+  try {
+    hashPassword = await generateBcryptPassword(password, 4);
+  } catch (e) {
+    console.log(e);
+    return {
+      ...prevState,
+      status: false,
+      message: "Something went wrong please try agian later",
+    };
+  }
   try {
     const user = await UserMember.findOne({ token: slug1 });
     if (!user) {
@@ -142,17 +163,19 @@ export const createNewPasswordAction = async (
       { token: slug1 },
       {
         isEmailVerified: true,
-        password: password,
+        password: hashPassword,
         isLinkExpired: true,
+        verifiedToken: slug1,
       }
     );
-    console.log(data);
     return {
       ...prevState,
       status: true,
       message: "Password has been successfully reset, please login",
     };
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const checkWheatherUserExist = async (obj) => {
@@ -325,6 +348,65 @@ export const feedbackFormAction = async (prevState, formData) => {
       ...prevState,
       status: false,
       message: "Something went wrong",
+    };
+  }
+};
+
+export const userLoginAction = async (prevState, formData) => {
+  const email = formData.get("email");
+  const password = formData.get("password");
+  if (!email?.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "Please enter valid email address.",
+    };
+  }
+  if (!password?.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "Passowrd field can not be empty.",
+    };
+  }
+  try {
+    const data = await UserMember.findOne({ email });
+
+    if (!data) {
+      return {
+        ...prevState,
+        status: false,
+        message: "Email or Password is invalid.",
+      };
+    }
+
+    let isValidPassword = await compareHashPassword(password, data.password);
+    if (!isValidPassword) {
+      return {
+        ...prevState,
+        status: false,
+        message: "Email or Password is invalid.",
+      };
+    }
+    if (!data.isActive) {
+      return {
+        ...prevState,
+        status: false,
+        message: "Your account is not active.",
+      };
+    }
+    let token = jwtGenerateToken({
+      email: data.email,
+      verifiedToken: data.verifiedToken,
+    });
+    cookies().set(JSESSIONID, token, { secure: true });
+    return { ...prevState, status: true, message: "Successfully Login", token };
+  } catch (e) {
+    console.log(e);
+    return {
+      ...prevState,
+      status: false,
+      message: "Something went wrong please try again later.",
     };
   }
 };

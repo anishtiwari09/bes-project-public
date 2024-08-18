@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 export const jwtGenerateToken = (user) => {
-  return jwt.sign({ email: user.email }, process.env.SECRET_KEY, {
+  return jwt.sign({ user }, process.env.SECRET_KEY, {
     expiresIn: "24h",
   });
 };
@@ -19,4 +20,12 @@ export const verifyJsonToken = (token) => {
 export const isValidPassword = (str) => {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{8,}$/;
   return regex.test(str);
+};
+
+export const generateBcryptPassword = async (original, salt = 4) => {
+  return bcrypt.hash(original, salt);
+};
+
+export const compareHashPassword = async (password, hashPassword) => {
+  return bcrypt.compare(password, hashPassword);
 };

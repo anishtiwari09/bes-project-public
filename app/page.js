@@ -1,13 +1,11 @@
-import Countdown from "./UIComponent/Carousel/HomePage/Countdown";
 import EventDetails from "./UIComponent/Carousel/HomePage/EventDetails";
 import HomePageCarousel from "./UIComponent/Carousel/HomePage/HomePageCarousel";
 import Notification from "./UIComponent/Carousel/HomePage/Notification";
 import Partener from "./UIComponent/Carousel/HomePage/Partener";
-import YoutubeThumbnail from "./UIComponent/Carousel/HomePage/YoutubeThumbnail";
 import { HOMEPAGE, NOTIFICATION_TEXT } from "./Utility/Constant";
 import { getSliderImages } from "./Utility/lib/file";
 import NotificationText from "./UIComponent/Carousel/HomePage/NotificationText";
-export default function Home() {
+export default async function Home() {
   let data =
     getSliderImages(HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear) || [];
   return (
