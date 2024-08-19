@@ -1,6 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import BaseInput from "@mui/material/Input";
+import { Input as BaseInput } from "@mui/base/Input";
 import { Box, styled } from "@mui/system";
 
 export default function OTP({
