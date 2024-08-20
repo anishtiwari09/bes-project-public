@@ -155,7 +155,6 @@ export default function Form({
           otp: otpInput,
         },
       });
-      console.log(result);
       if (result.status) {
         setIsEmailVerified(true);
         return;

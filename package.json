@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "cross-env NODE_OPTION=--inspect next dev",
     "postinstall": "npx update-browserslist-db@latest -y",
-    "predev": "npx update-browserslist-db@latest -y",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

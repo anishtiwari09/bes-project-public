@@ -8,6 +8,7 @@ import { sendMail } from "../api/sendMail/mail";
 import { generateSignupTemplate } from "../helper/mailHelper/template/signup_template";
 import {
   compareHashPassword,
+  decodeJsonToken,
   generateBcryptPassword,
   jwtGenerateToken,
 } from "@/app/helper/helper";
@@ -396,7 +397,7 @@ export const userLoginAction = async (prevState, formData) => {
       };
     }
     let token = jwtGenerateToken({
-      email: data.email,
+      date: Date.now(),
       verifiedToken: data.verifiedToken,
     });
     cookies().set(JSESSIONID, token, { secure: true });
@@ -409,4 +410,28 @@ export const userLoginAction = async (prevState, formData) => {
       message: "Something went wrong please try again later.",
     };
   }
+};
+
+export const getUserName = async (token) => {
+  let verifiedToken = "";
+  try {
+    let obj = decodeJsonToken(token);
+    verifiedToken = obj?.user?.verifiedToken || "";
+  } catch (e) {
+    console.log("invalid token");
+  }
+  if (!verifiedToken) {
+    return null;
+  }
+  try {
+    let data = await UserMember.findOne({ verifiedToken });
+    if (!data) return null;
+
+    return data?.name;
+  } catch (e) {
+    console.log(e);
+  }
+};
+export const deleteCookiesAction = (key) => {
+  cookies().delete(key);
 };

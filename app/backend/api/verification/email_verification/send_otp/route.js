@@ -28,7 +28,6 @@ export async function POST(req) {
       },
       options
     );
-    console.log(data);
     await sendMail({
       email,
       subject: `Otp for Bes ${from ? from : ""} registration`,

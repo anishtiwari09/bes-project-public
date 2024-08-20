@@ -61,7 +61,6 @@ const initialFormState = [
 ];
 export default function SignupBox() {
   const [state, formAction] = useFormState(signUpAction, initialState);
-  console.log(state);
   const [formState, setFormState] = useState(
     JSON.parse(JSON.stringify(initialFormState))
   );

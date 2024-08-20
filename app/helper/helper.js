@@ -16,6 +16,9 @@ export const verifyJsonToken = (token) => {
   }
   return isValid;
 };
+export const decodeJsonToken = (token) => {
+  return jwt.decode(token);
+};
 
 export const isValidPassword = (str) => {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{8,}$/;

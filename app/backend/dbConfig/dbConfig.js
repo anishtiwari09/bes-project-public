@@ -4,11 +4,8 @@ export async function connect() {
   try {
     await mongoose.connect(MONGODB_URI);
     const connection = mongoose.connection;
-    connection.on("connected", () => {
-      console.log("Mongo db has connected");
-    });
+    connection.on("connected", () => {});
     connection.on("error", (e) => {
-      console.log("Mongo db connection failed");
       console.log(e);
       process.exit(500);
     });
