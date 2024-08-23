@@ -10,7 +10,6 @@ export async function connect() {
   try {
     await mongoose.connect(MONGODB_URI);
     const connection = mongoose.connection;
-    console.log(connection.readyState);
     connection.isConnected = connection.readyState;
     connection.on("connected", () => {});
     connection.on("error", (e) => {

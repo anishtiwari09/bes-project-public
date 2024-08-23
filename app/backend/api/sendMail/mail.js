@@ -17,7 +17,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 export function sendMail({ email, subject, text = "", html = "" }) {
-  console.log({ SENDER_EMAIL, SENDER_EMAIL_PASSWORD });
   return transporter.sendMail({
     from: `"besadmin 👻"<${SENDER_EMAIL}>`, // sender address
     to: email, // list of receivers

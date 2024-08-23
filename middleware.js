@@ -12,7 +12,7 @@ export async function middleware(request) {
     // updateVisitorCounter();
     // cookieStore.set("besSessionCookies", Date.now());
   }
-  // console.log({ request });
+
   if (request.nextUrl.pathname.startsWith("/user")) {
     return userMiddleware(request);
   }
