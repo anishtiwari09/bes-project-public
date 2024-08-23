@@ -16,8 +16,6 @@ export async function middleware(request) {
   if (request.nextUrl.pathname.startsWith("/user")) {
     return userMiddleware(request);
   }
-  console.log({ pathanme: request.nextUrl.pathname });
-
   return response;
 }
 export const config = {
@@ -29,17 +27,16 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|Images/).*)",
+    "/((?!backend/api/|_next/static|_next/image|favicon.ico|Images/).*)",
   ],
 };
 
 function userMiddleware(request) {
-  console.log({ pathanme: request.nextUrl.pathname });
   let pathName = request.nextUrl.pathname;
+  let response = NextResponse.next();
   if (pathName.includes("/signout")) {
-    let response = NextResponse.redirect(new URL("/", request.url));
+    response = NextResponse.redirect(new URL("/", request.url));
     response.cookies.delete(JSESSIONID);
-    return response;
   }
-  return request;
+  return response;
 }

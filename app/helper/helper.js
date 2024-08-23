@@ -16,8 +16,19 @@ export const verifyJsonToken = (token) => {
   }
   return isValid;
 };
+
 export const decodeJsonToken = (token) => {
-  return jwt.decode(token);
+  let verifiedToken = "";
+  try {
+    let obj = jwt.decode(token);
+    verifiedToken = obj?.user?.verifiedToken || "";
+  } catch (e) {
+    console.log("invalid token");
+  }
+  if (!verifiedToken) {
+    return null;
+  }
+  return verifiedToken;
 };
 
 export const isValidPassword = (str) => {

@@ -355,6 +355,7 @@ export const feedbackFormAction = async (prevState, formData) => {
 
 export const userLoginAction = async (prevState, formData) => {
   const email = formData.get("email");
+  console.log({ email });
   const password = formData.get("password");
   if (!email?.trim()) {
     return {
@@ -413,16 +414,8 @@ export const userLoginAction = async (prevState, formData) => {
 };
 
 export const getUserName = async (token) => {
-  let verifiedToken = "";
-  try {
-    let obj = decodeJsonToken(token);
-    verifiedToken = obj?.user?.verifiedToken || "";
-  } catch (e) {
-    console.log("invalid token");
-  }
-  if (!verifiedToken) {
-    return null;
-  }
+  const verifiedToken = decodeJsonToken(token);
+  if (!verifiedToken) return null;
   try {
     let data = await UserMember.findOne({ verifiedToken });
     if (!data) return null;
@@ -434,4 +427,21 @@ export const getUserName = async (token) => {
 };
 export const deleteCookiesAction = (key) => {
   cookies().delete(key);
+};
+
+export const getUserDetails = async (token) => {
+  const verifiedToken = decodeJsonToken(token);
+  if (!verifiedToken) return null;
+  try {
+    let data = await UserMember.findOne({ verifiedToken }, null, {
+      lean: true,
+    });
+
+    if (!data) return null;
+
+    return JSON.parse(JSON.stringify(data));
+  } catch (e) {
+    console.log(e);
+  }
+  return null;
 };
