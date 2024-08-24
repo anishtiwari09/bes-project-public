@@ -21,6 +21,9 @@ import {
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
 import { cookies } from "next/headers";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { accountSchema } from "@/app/helper/accountSchema";
+import { z } from "zod";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -355,7 +358,6 @@ export const feedbackFormAction = async (prevState, formData) => {
 
 export const userLoginAction = async (prevState, formData) => {
   const email = formData.get("email");
-  console.log({ email });
   const password = formData.get("password");
   if (!email?.trim()) {
     return {
@@ -444,4 +446,49 @@ export const getUserDetails = async (token) => {
     console.log(e);
   }
   return null;
+};
+
+export const updateMyAccountDetails = async (prevState, formData) => {
+  let user = {};
+  let arr = [
+    "name",
+    "mobile",
+    "organisation",
+    "designation",
+    "city",
+    "country",
+  ];
+  for (let key of arr) {
+    user[key] = formData.get(key) || "";
+  }
+  let validate = accountSchema;
+  try {
+    validate.parse(user);
+  } catch (e) {
+    console.log(e);
+    return { ...prevState, status: false, message: "All Field is required..." };
+  }
+  let token = cookies().get(JSESSIONID);
+  token = token.value || "";
+
+  let verifiedToken = decodeJsonToken(token);
+  if (verifiedToken) {
+    try {
+      await UserMember.findOneAndUpdate({ verifiedToken }, user);
+      return {
+        ...prevState,
+        status: true,
+        message: "Account has been Successfully updated",
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        ...prevState,
+        status: false,
+        message: "Something went wrong...",
+      };
+    }
+  }
+
+  return { ...prevState, status: false, message: "Something went wrong..." };
 };

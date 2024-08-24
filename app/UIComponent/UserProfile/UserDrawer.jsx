@@ -8,10 +8,18 @@ export default function UserDrawer({ open, onClose, userName, data }) {
       open={open}
       onClose={onClose}
       anchor={"right"}
-      sx={{ zIndex: 99999999999 }}
+      sx={{ zIndex: 99999999999, maxWidth: "100%" }}
     >
-      <Box sx={{ width: 450 }} role="presentation">
-        <Typography variant="h4" p={2} textTransform={"capitalize"}>
+      <Box
+        sx={{ width: { sm: 450, xs: "100%" }, maxWidth: "100%" }}
+        role="presentation"
+      >
+        <Typography
+          variant={"h4"}
+          sx={{ fontSize: { xs: 16, md: 32 } }}
+          p={2}
+          textTransform={"capitalize"}
+        >
           welcome, {userName.toLowerCase()}
         </Typography>
         <Divider />
