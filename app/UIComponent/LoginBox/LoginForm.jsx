@@ -1,27 +1,159 @@
-import { Box, Button, Card, Stack, TextField, Typography } from "@mui/material";
-import React from "react";
-import SignupBox from "../SignupBox/SignupBox";
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Modal,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import ForgotPasswordForm from "./ForgotPasswordForm";
+import { useFormState, useFormStatus } from "react-dom";
+import { userLoginAction } from "@/app/backend/action/action";
+import toast from "react-hot-toast";
+const initialState = {
+  message: "",
+  status: false,
+  token: "",
+};
+export default function LoginForm({ onClose }) {
+  const router = useRouter();
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [state, formAction] = useFormState(userLoginAction, initialState);
+  useEffect(() => {
+    if (state.status && state.token) {
+      toast(
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          {state.message}
+        </Alert>,
+        {
+          duration: 4000,
+          position: "top-center",
 
-export default function LoginForm() {
+          // Styling
+          style: {},
+          className: "",
+
+          // Custom Icon
+
+          // Change colors of success/error/loading icon
+
+          // Aria
+          ariaProps: {
+            role: "success",
+            "aria-live": "polite",
+          },
+        }
+      );
+      router.push("/user/profile");
+      onClose();
+    }
+  }, [state]);
   return (
-    // <Card sx={{ minHeight: 200, minWidth: 200, padding: 2 }}>
-    //   <Stack gap={1} justifyContent={"center"} margin={"auto"}>
-    //     <Box>
-    //       <Typography variant="h5">Member Login</Typography>
-    //     </Box>
-    //     <TextField placeholder="Registered Email Id" />
+    <>
+      {state.status && (
+        <Snackbar
+          open={true}
+          autoHideDuration={6000}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+            {state.message}
+          </Alert>
+        </Snackbar>
+      )}
 
-    //     <TextField placeholder="Password" />
-    //     <Button
-    //       variant="contained"
-    //       style={{ background: "blue", width: "fit-content", margin: "auto" }}
-    //     >
-    //       Login
-    //     </Button>
-    //     <Button sx={{ border: "1px solid blue" }}>Create New Account</Button>
-    //     <Button sx={{ border: "1px solid blue" }}>Forgot Password</Button>
-    //   </Stack>
-    // </Card>
-    <SignupBox />
+      <Modal open={true} onClose={onClose} sx={{ display: "flex" }}>
+        <Card
+          sx={{
+            minHeight: 200,
+            minWidth: 400,
+            padding: 2,
+            width: "fit-content",
+            maxWidth: 400,
+            margin: "auto",
+          }}
+        >
+          {isForgotPassword ? (
+            <ForgotPasswordForm onClose={onClose} />
+          ) : (
+            <form action={formAction}>
+              <Stack gap={1} justifyContent={"center"} margin={"auto"}>
+                <Box>
+                  <Typography variant="h5">Member Login</Typography>
+                </Box>
+                {state?.message && !state.status && (
+                  <Alert
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                  >
+                    {state.message}
+                  </Alert>
+                )}
+                <TextField
+                  placeholder="Registered Email Id"
+                  required={true}
+                  type={"email"}
+                  name="email"
+                />
+
+                <TextField
+                  placeholder="Password"
+                  name="password"
+                  type="password"
+                  required={true}
+                />
+                <SubmitButton />
+                <Button
+                  sx={{ border: "1px solid blue" }}
+                  onClick={() => setIsForgotPassword(true)}
+                >
+                  Forgot Password
+                </Button>
+                <Button
+                  sx={{ border: "1px solid blue" }}
+                  onClick={() => {
+                    router.push("/member_signup");
+                    onClose();
+                  }}
+                >
+                  Create New Account
+                </Button>
+              </Stack>
+            </form>
+          )}
+        </Card>
+      </Modal>
+    </>
   );
 }
+
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <>
+      <Button
+        variant="contained"
+        style={
+          pending
+            ? { color: "white" }
+            : {
+                background: "blue",
+                width: "fit-content",
+                margin: "auto",
+              }
+        }
+        type="Forgot"
+        disabled={pending}
+      >
+        {pending ? "Please wait..." : "Login"}
+      </Button>
+    </>
+  );
+};

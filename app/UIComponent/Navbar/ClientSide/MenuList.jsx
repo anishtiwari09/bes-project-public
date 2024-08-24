@@ -19,7 +19,7 @@ export default function MenuList({ data }) {
   ) : isMobileTest ? (
     <MobileMenuList data={data} />
   ) : (
-    <div className="flex justify-center">
+    <div className="flex justify-end">
       {data?.map((item, key) => (
         <MenuCompoenent
           key={item.id}

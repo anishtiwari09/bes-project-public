@@ -7,7 +7,7 @@ export default function LoginButton() {
 
   return (
     <div className="text-center">
-      {openLoginBox && <LoginForm />}
+      {openLoginBox && <LoginForm onClose={() => setOpenLoginBox(false)} />}
       <Button
         style={{ background: "orange" }}
         variant="contained"

@@ -26,7 +26,6 @@ export async function GET({ email, subject, text = "", html = "" }) {
       text: text, // plain text body
       html: html, // html body
     });
-    console.log({ info });
   } catch (e) {
     console.log(e);
   }
