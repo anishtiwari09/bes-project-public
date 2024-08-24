@@ -27,7 +27,7 @@ const userMember = new mongoose.Schema(
     },
     mobile: {
       type: String,
-      required: true,
+
       unique: [true, "This mobile number is already exist"],
     },
     email: {
