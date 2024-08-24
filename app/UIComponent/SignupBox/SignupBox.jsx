@@ -101,8 +101,8 @@ export default function SignupBox() {
         <Card
           sx={{
             minHeight: 200,
-            minWidth: 500,
-            maxWidth: 500,
+            minWidth: { sm: 500, xs: "100%" },
+            maxWidth: { sm: 500, xs: "100%" },
             padding: 2,
             width: "fit-content",
             margin: "auto",
