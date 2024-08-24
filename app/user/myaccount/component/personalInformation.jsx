@@ -1,30 +1,20 @@
 "use client";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import {
+  Alert,
+  Box,
+  Button,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { userLoginAction } from "@/app/backend/action/action";
+import { updateMyAccountDetails } from "@/app/backend/action/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState, useFormStatus } from "react-dom";
-import { z } from "zod";
-const isPureString = (string) => {
-  let regex = /^[a-zA-Z\s]+$/;
+import { accountSchema } from "@/app/helper/accountSchema";
 
-  return regex.test(string);
-};
-const schema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "This field is required" })
-    .refine(isPureString, { message: "Only alphabets are allowed" }),
-  mobile: z
-    .string()
-    .transform((val) => (isNaN(Number(val)) ? 0 : val.length))
-    .pipe(z.number().min(10, "This is not valid")),
-  organisation: z.string().min(3, { message: "This field is required" }),
-  designation: z.string().min(3, { message: "This field is required" }),
-  city: z.string().min(3, { message: "This field is required" }),
-  country: z.string().min(1, { message: "This field is required" }),
-});
 export default function PersonalInformation({
   name,
   mobile,
@@ -33,6 +23,7 @@ export default function PersonalInformation({
   designation,
   city,
   country,
+  isVerified,
 }) {
   const {
     register,
@@ -47,7 +38,7 @@ export default function PersonalInformation({
       city,
       country,
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(accountSchema),
   });
 
   const onSubmit = (data, e, y) => {
@@ -58,9 +49,38 @@ export default function PersonalInformation({
     status: false,
     token: "",
   };
-  const [state, formAction] = useFormState(userLoginAction, initialState);
+  const [state, formAction] = useFormState(
+    updateMyAccountDetails,
+    initialState
+  );
+  const [snackbarStatus, setSnackbarStatus] = useState(state.status);
+  useEffect(() => {
+    setSnackbarStatus(state.status);
+  }, [state]);
   return (
     <Stack sx={{ width: "95%", margin: "16px auto", maxWidth: 1200 }} gap={2}>
+      <Snackbar
+        open={snackbarStatus}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        onClose={() => setSnackbarStatus(false)}
+      >
+        {
+          <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+            {state.message}
+          </Alert>
+        }
+      </Snackbar>
+      {!isVerified && (
+        <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
+          {"Your account is not verified please contact to admin."}
+        </Alert>
+      )}
+      {!state.status && state.message && (
+        <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+          {state.message}
+        </Alert>
+      )}
       <Box>
         <Typography variant="h5">Personal Information</Typography>
       </Box>

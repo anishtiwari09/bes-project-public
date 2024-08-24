@@ -43,3 +43,9 @@ export const generateBcryptPassword = async (original, salt = 4) => {
 export const compareHashPassword = async (password, hashPassword) => {
   return bcrypt.compare(password, hashPassword);
 };
+
+export const isPureString = (string) => {
+  let regex = /^[a-zA-Z\s]+$/;
+
+  return regex.test(string);
+};
