@@ -101,11 +101,15 @@ export const signUpAction = async (prevState, formData) => {
     let url =
       process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
     url += "/account_setup/" + uniqueId + "/" + jwtToken;
-    sendMail({
-      email: obj.email,
-      subject: "Action Required For New Account Creation",
-      html: generateSignupTemplate(url),
-    });
+    try {
+      await sendMail({
+        email: obj.email,
+        subject: "Action Required For New Account Creation",
+        html: generateSignupTemplate(url),
+      });
+    } catch (e) {
+      console.log(e);
+    }
     return {
       ...prevState,
       status: true,
