@@ -27,14 +27,6 @@ const initialFormState = [
     errorMsg: "This Field is required",
   },
   {
-    type: "text",
-    fieldName: "Mobile",
-    id: "mobile",
-    value: "",
-    isError: false,
-    errorMsg: "This Field is required",
-  },
-  {
     type: "email",
     fieldName: "Email",
     id: "email",
