@@ -485,7 +485,7 @@ export const updateMyAccountDetails = async (prevState, formData) => {
       return {
         ...prevState,
         status: false,
-        message: "Something went wrong...",
+        message: e?.message || "Something went wrong...",
       };
     }
   }
