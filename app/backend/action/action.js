@@ -17,6 +17,7 @@ import {
   PRODUCTION_URL,
   ADMIN_RECEIVER_MAIL,
   JSESSIONID,
+  ENVIROMENT,
 } from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
@@ -98,8 +99,8 @@ export const signUpAction = async (prevState, formData) => {
       options
     );
     let jwtToken = jwtGenerateToken({ email: obj?.email });
-    let url =
-      process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
+    let url = ENVIROMENT === "production" ? PRODUCTION_URL : LOCAL_URL;
+    console.log({ url });
     url += "/account_setup/" + uniqueId + "/" + jwtToken;
     try {
       await sendMail({
