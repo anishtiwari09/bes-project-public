@@ -12,9 +12,18 @@ export async function middleware(request) {
     // updateVisitorCounter();
     // cookieStore.set("besSessionCookies", Date.now());
   }
-
-  if (request.nextUrl.pathname.startsWith("/user")) {
-    return userMiddleware(request);
+  let pathname = request.nextUrl.pathname;
+  if (request.nextUrl.pathname.startsWith("/user/signout")) {
+    return handleSignOut(request);
+  }
+  if (isProtectedRoute(pathname)) {
+    if (!isLogin(cookieStore)) return handleHomePageRedirect(request);
+  }
+  if (
+    isLogin(cookieStore) &&
+    pathname.startsWith("/error_page/invalid_token")
+  ) {
+    return handleHomePageRedirect(request);
   }
   return response;
 }
@@ -31,12 +40,25 @@ export const config = {
   ],
 };
 
-function userMiddleware(request) {
-  let pathName = request.nextUrl.pathname;
-  let response = NextResponse.next();
-  if (pathName.includes("/signout")) {
-    response = NextResponse.redirect(new URL("/", request.url));
-    response.cookies.delete(JSESSIONID);
-  }
+function handleSignOut(request) {
+  let response = handleHomePageRedirect(request);
+  response.cookies.delete(JSESSIONID);
   return response;
 }
+function isLogin(cookies) {
+  let token = cookies.get(JSESSIONID)?.value;
+
+  return !!token;
+}
+function isProtectedRoute(pathname) {
+  pathname = pathname || "";
+  for (let item of protectedRoute) {
+    if (pathname.startsWith(item)) return true;
+  }
+  return false;
+}
+
+function handleHomePageRedirect(request) {
+  return NextResponse.redirect(new URL("/", request.url));
+}
+const protectedRoute = ["/user/"];
