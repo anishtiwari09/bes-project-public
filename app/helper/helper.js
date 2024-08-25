@@ -41,7 +41,13 @@ export const generateBcryptPassword = async (original, salt = 4) => {
 };
 
 export const compareHashPassword = async (password, hashPassword) => {
-  return bcrypt.compare(password, hashPassword);
+  let isValid = false;
+  try {
+    isValid = await bcrypt.compare(password, hashPassword);
+  } catch (e) {
+    console.log(e);
+  }
+  return isValid;
 };
 
 export const isPureString = (string) => {
