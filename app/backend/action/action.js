@@ -100,7 +100,6 @@ export const signUpAction = async (prevState, formData) => {
     );
     let jwtToken = jwtGenerateToken({ email: obj?.email });
     let url = ENVIROMENT === "production" ? PRODUCTION_URL : LOCAL_URL;
-    console.log({ url, ENVIROMENT, env2: process.env.enviroment });
     url += "/account_setup/" + uniqueId + "/" + jwtToken;
     try {
       await sendMail({
