@@ -8,6 +8,7 @@ export default function DataItemLIst({ data, parentPath }) {
 
   return data?.map((item, levelId) => {
     let path = item?.isSeprateParentPath ? item?.parentPath : parentPath;
+    if (!item.isActive) return null;
     return (
       <React.Fragment key={item.id}>
         {item?.haveChildren === "yes" ? (

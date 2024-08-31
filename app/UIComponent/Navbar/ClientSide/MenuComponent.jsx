@@ -96,7 +96,7 @@ export default function MenuCompoenent({ data, index, open, setOpen }) {
               let parentPath = item?.isSeprateParentPath
                 ? item?.parentPath
                 : data.path;
-
+              if (!item?.isActive) return false;
               return item?.isExpandable && item?.subChildren.length ? (
                 <div key={key}>
                   <h3 className="font-bold" style={{ padding: "6px 16px" }}>
@@ -107,6 +107,7 @@ export default function MenuCompoenent({ data, index, open, setOpen }) {
                       let newPath = sub_item?.isSeprateParentPath
                         ? sub_item?.parentPath
                         : parentPath + item.path;
+                      if (!sub_item?.isActive) return null;
                       return (
                         <li key={sub_item.id}>
                           <MenuItem
@@ -129,9 +130,7 @@ export default function MenuCompoenent({ data, index, open, setOpen }) {
               );
             })}
           </Menu>
-        ) : (
-          ""
-        )}
+        ) : null}
       </div>
     </>
   );

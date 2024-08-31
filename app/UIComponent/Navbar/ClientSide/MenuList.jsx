@@ -20,15 +20,17 @@ export default function MenuList({ data }) {
     <MobileMenuList data={data} />
   ) : (
     <div className="flex justify-end">
-      {data?.map((item, key) => (
-        <MenuCompoenent
-          key={item.id}
-          data={item}
-          open={key === open}
-          setOpen={setOpen}
-          index={key}
-        />
-      ))}
+      {data?.map((item, key) =>
+        item?.isActive ? (
+          <MenuCompoenent
+            key={item.id}
+            data={item}
+            open={key === open}
+            setOpen={setOpen}
+            index={key}
+          />
+        ) : null
+      )}
     </div>
   );
 }

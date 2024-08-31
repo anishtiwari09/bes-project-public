@@ -5,6 +5,7 @@
     "path": "/about_bes",
     "haveChildren": "yes",
     "isExpandable": true,
+    "isActive": true,
     "subChildren": [
       {
         "id": 1,
@@ -12,6 +13,7 @@
         "path": "/at_glance",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -20,6 +22,7 @@
         "path": "/background",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -28,6 +31,7 @@
         "path": "/aim_and_objective",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -36,6 +40,7 @@
         "path": "/executive_council",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -44,6 +49,7 @@
         "path": "/committees",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -52,15 +58,16 @@
         "path": "/Local_Chapter",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
-
       {
         "id": 7,
         "name": "Membership",
         "path": "/membership",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -69,6 +76,7 @@
         "path": "/previous_council",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -77,6 +85,7 @@
         "path": "/contact_us",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -85,6 +94,7 @@
         "path": "/feedback",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       }
     ]
@@ -95,6 +105,7 @@
     "path": "/event_conference",
     "haveChildren": "yes",
     "isExpandable": true,
+    "isActive": true,
     "subChildren": [
       {
         "id": 1,
@@ -102,6 +113,7 @@
         "path": "",
         "haveChildren": "yes",
         "isExpandable": true,
+        "isActive": true,
         "subChildren": [
           {
             "id": 1,
@@ -109,6 +121,7 @@
             "path": "/bes_expo/exibition/history",
             "haveChildren": "no",
             "isExpandable": false,
+            "isActive": true,
             "subChildren": []
           },
           {
@@ -117,6 +130,7 @@
             "path": "/other_events",
             "haveChildren": "no",
             "isExpandable": false,
+            "isActive": true,
             "subChildren": [
               {
                 "id": 2,
@@ -124,6 +138,7 @@
                 "path": "",
                 "haveChildren": "no",
                 "isExpandable": false,
+                "isActive": true,
                 "subChildren": []
               }
             ]
@@ -136,6 +151,7 @@
         "path": "",
         "haveChildren": "yes",
         "isExpandable": true,
+        "isActive": true,
         "subChildren": [
           {
             "id": 1,
@@ -143,6 +159,7 @@
             "path": "",
             "haveChildren": "no",
             "isExpandable": false,
+            "isActive": false,
             "subChildren": []
           },
           {
@@ -153,14 +170,16 @@
             "isSeprateParentPath": true,
             "haveChildren": "no",
             "isExpandable": false,
+            "isActive": true,
             "subChildren": []
           },
           {
             "id": 3,
-            "name": "Public Service B' Day ",
+            "name": "Public Service B' Day",
             "path": "",
             "haveChildren": "no",
             "isExpandable": false,
+            "isActive": false,
             "subChildren": []
           },
           {
@@ -169,6 +188,7 @@
             "path": "",
             "haveChildren": "no",
             "isExpandable": false,
+            "isActive": false,
             "subChildren": []
           }
         ]
@@ -181,15 +201,16 @@
     "path": "",
     "haveChildren": "false",
     "isExpandable": false,
+    "isActive": false,
     "subChildren": []
   },
-
   {
     "id": 5,
     "name": "Other",
     "path": "/other",
     "haveChildren": "yes",
     "isExpandable": true,
+    "isActive": true,
     "subChildren": [
       {
         "id": 1,
@@ -197,6 +218,7 @@
         "path": "/userful_links",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -207,6 +229,7 @@
         "isSeprateParentPath": true,
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       }
     ]
@@ -217,6 +240,7 @@
     "path": "/galleries",
     "haveChildren": "yes",
     "isExpandable": true,
+    "isActive": true,
     "subChildren": [
       {
         "id": 1,
@@ -224,6 +248,7 @@
         "path": "/pictures",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": true,
         "subChildren": []
       },
       {
@@ -232,6 +257,7 @@
         "path": "/videos",
         "haveChildren": "no",
         "isExpandable": false,
+        "isActive": false,
         "subChildren": []
       }
     ]
@@ -241,11 +267,12 @@
     "name": "Contact us",
     "path": "/about_bes/contact_us",
     "normalLink": true,
-    "parentPath": "/about_bes",
+    "parentPath": "",
     "isSeprateParentPath": true,
     "haveChildren": "no",
     "isExpandable": false,
     "isLink": true,
+    "isActive": true,
     "subChildren": []
   }
 ]
