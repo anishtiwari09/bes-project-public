@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React from "react";
 import Carousel from "react-material-ui-carousel";
+import { ReactSVG } from "react-svg";
 export default function HomePageCarousel({ data, url, path1 }) {
   return (
     <div>
@@ -15,10 +16,14 @@ export default function HomePageCarousel({ data, url, path1 }) {
       >
         {data?.map((item, key) => (
           <div className="w-full h-fit cursor-pointer" key={item?.key}>
-            <img
-              src={`${url}/${item}`}
-              className="w-full min-w-full object-contain"
-            />
+            {item?.includes(".svg") ? (
+              <ReactSVG src={`${url}/${item}`} />
+            ) : (
+              <img
+                src={`${url}/${item}`}
+                className="w-full min-w-full object-contain"
+              />
+            )}
           </div>
         ))}
       </Carousel>
