@@ -2,16 +2,18 @@ export const HOMEPAGE = {
   sliderImageDir: "/Images/Slider/",
   currentYear: "2024",
   expoStartDate: {
-    date: "20",
+    date: "5",
     month: "Feb",
     year: 2025,
     fullMonth: "February",
+    postFix: "th",
   },
   eventCount: "29th",
   expoEndDate: {
-    date: "22",
+    date: "9",
     fullMonth: "February",
     year: 2025,
+    postFix: "th",
   },
 };
 

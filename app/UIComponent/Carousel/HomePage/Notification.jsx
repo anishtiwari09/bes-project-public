@@ -14,8 +14,10 @@ export default function Notification() {
           Broadcast & Media Technology
         </h4>
         <h3 className="font-bold text-3xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
-          {HOMEPAGE.expoStartDate.date}th to {HOMEPAGE.expoEndDate.date}nd{" "}
-          {HOMEPAGE.expoEndDate.fullMonth} {HOMEPAGE.expoEndDate.year}
+          {HOMEPAGE.expoStartDate.date}
+          {HOMEPAGE.expoStartDate.postFix} to {HOMEPAGE.expoEndDate.date}
+          {HOMEPAGE.expoEndDate.postFix} {HOMEPAGE.expoEndDate.fullMonth}{" "}
+          {HOMEPAGE.expoEndDate.year}
         </h3>
       </React.Fragment>
 
