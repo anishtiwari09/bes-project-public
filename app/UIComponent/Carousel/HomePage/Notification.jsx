@@ -25,7 +25,7 @@ export default function Notification() {
       </React.Fragment>
 
       <h3 className="font-bold text-xl text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
-        Hall No. 12A at Pragati Maidan, New Delhi
+        Bharat Mandapam, Pragati Maidan, New Delhi
       </h3>
       {/* <div className="text-xl text-white w-fit m-auto text-center mt-4">
         Evolving Media Ecosystem: Innovative, Immersive & Sustainable
