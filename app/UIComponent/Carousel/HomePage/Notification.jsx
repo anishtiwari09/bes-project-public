@@ -10,6 +10,9 @@ export default function Notification() {
     <div className="flex gap-4 items-center flex-col w-full">
       <React.Fragment>
         <h4 className="font-bold text-4 text-white text-center ubuntu_font .conference_text conference_text emoisis_text">
+          WAVES <br />
+          &
+          <br />
           {HOMEPAGE.eventCount} International Conference & Exhibition on
           Broadcast & Media Technology
         </h4>
