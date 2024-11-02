@@ -10,12 +10,13 @@ export default function EventDetails() {
           "linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%)",
       }}
     >
-      <div className="w-full flex  flex-col">
-        <table className="w-fit m-auto">
+      <div className="w-full flex flex-col">
+        <table className="w-full m-auto">
           <tbody>
             <tr>
-              <td className="p-2" colSpan={"2"}>
+              <td colSpan={"2"}>
                 <Image
+                  className="w-full"
                   width={962}
                   height={377}
                   src={"/Images/EventDetails/event-2025.jpg"}
@@ -25,7 +26,7 @@ export default function EventDetails() {
             <tr className="border-b-2">
               <td
                 colSpan={2}
-                className="py-[10px] bg-[#6f9a37] font-bold text-white p-2"
+                className="py-[10px] bg-[#6f9a37] font-bold text-white text-center"
               >
                 Enquiry: For details regarding BES EXPO, please contact
               </td>

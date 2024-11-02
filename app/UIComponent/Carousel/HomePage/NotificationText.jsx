@@ -10,12 +10,12 @@ export default function NotificationText({ contents }) {
                   <a
                     target={target ?? "_blank"}
                     href={href}
-                    className="cursor-pointer block text-center"
+                    className="cursor-pointer inline-block text-center"
                   >
                     <span>{text}</span>
                   </a>
                 ) : (
-                  <span className="block text-center">{text}</span>
+                  <span className="inline-block text-center">{text}</span>
                 )
               )}
             </div>
