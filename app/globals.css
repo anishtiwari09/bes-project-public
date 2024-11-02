@@ -211,9 +211,10 @@ a.header2_menu_list_open::before {
 }
 
 .marqueeInner {
-  display: inline-block;
+  display: inline-flex;
   padding-left: 100%;
   animation: marquee 30s linear infinite, blink 1s step-start infinite;
+  gap: 16px;
 }
 
 @keyframes marquee {
