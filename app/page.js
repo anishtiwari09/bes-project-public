@@ -23,11 +23,8 @@ export default async function Home() {
             />
           </div>
         </div>
-        {NOTIFICATION_TEXT.isShow && NOTIFICATION_TEXT.text && (
-          <NotificationText
-            text={NOTIFICATION_TEXT.text}
-            href={NOTIFICATION_TEXT.href}
-          />
+        {NOTIFICATION_TEXT.isShow && (
+          <NotificationText contents={NOTIFICATION_TEXT.contents} />
         )}
       </div>
 

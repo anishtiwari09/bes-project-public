@@ -14,18 +14,11 @@ export default function EventDetails() {
         <table className="w-fit m-auto">
           <tbody>
             <tr>
-              <td className="p-2">
+              <td className="p-2" colSpan={"2"}>
                 <Image
-                  width={609}
-                  height={395}
-                  src={"/Images/EventDetails/imagebesexpo2025.png"}
-                />
-              </td>
-              <td className="p-2">
-                <Image
-                  width={310}
-                  height={395}
-                  src={"/Images/EventDetails/bes5.jpg"}
+                  width={962}
+                  height={377}
+                  src={"/Images/EventDetails/event-2025.jpg"}
                 />
               </td>
             </tr>
@@ -39,7 +32,8 @@ export default function EventDetails() {
             </tr>
             <tr>
               <td className="p-2 font-bold text-[#1e1f36] event_details_text">
-                For Conference: <br/>The Chairman Conference Committee
+                For Conference: <br />
+                The Chairman Conference Committee
                 <br />
                 BES EXPO, 912 Surya Kiran Building
                 <br />
@@ -50,7 +44,8 @@ export default function EventDetails() {
                 E-mail: conference@besindia.com, bes@besindia.com
               </td>
               <td className="p-2 font-bold text-[#1e1f36] event_details_text">
-                For Exhibition: <br/>The Coordinator BES EXPO
+                For Exhibition: <br />
+                The Coordinator BES EXPO
                 <br />
                 E-mail: exhibition@besindia.com
               </td>

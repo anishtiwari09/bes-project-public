@@ -22,7 +22,22 @@ export const OTHERPAGE = {
 };
 
 export const NOTIFICATION_TEXT = {
-  text: "IETE elects Sunil, Ex Additional DG – Prasar Bharati, as President",
-  href: "https://www.indianbroadcastingworld.com/iete-elects-sunil-prasar-bharati/",
+  contents: [
+    {
+      text: "WORLD AUDIO VISUAL & ENTERTAINMENT SUMMIT -WAVES-2025 ",
+      href: "https://www.wavesindia.org/",
+      target: "_blank",
+    },
+    {
+      text: "&",
+      href: "",
+      target: "",
+    },
+    {
+      text: "BROADCAST ENGINEERING SOCIETY (INDIA)-BES EXPO-2025 ",
+      href: "/",
+      target: "_self",
+    },
+  ],
   isShow: true,
 };
