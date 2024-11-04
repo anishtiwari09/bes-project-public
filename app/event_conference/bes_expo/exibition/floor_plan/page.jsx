@@ -9,7 +9,7 @@ export default function page() {
 
       <div>
         <p>
-          <strong>BES EXPO 2024 </strong>is being organized at Pragati Maidan,
+          <strong>BES EXPO 2025  </strong>is being organized at Pragati Maidan,
           New Delhi.
         </p>
       </div>
