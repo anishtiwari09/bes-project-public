@@ -199,10 +199,33 @@
     "id": 3,
     "name": "Publications",
     "path": "",
-    "haveChildren": "false",
-    "isExpandable": false,
-    "isActive": false,
-    "subChildren": []
+    "haveChildren": "yes",
+    "isExpandable": true,
+    "isActive": true,
+    "subChildren": [
+      {
+        "id": 0,
+        "name": "POST BES EXPO 2024 REPORT",
+        "isSeprateParentPath": true,
+        "parentPath": "/",
+        "path": "pdf/others/bes_report_2024.pdf",
+        "haveChildren": "false",
+        "isExpandable": false,
+        "isActive": true,
+        "subChildren": []
+      },
+      {
+        "id": 1,
+        "name": " BES Expo 2024 Presentation",
+        "isSeprateParentPath": true,
+        "parentPath": "/",
+        "path": "pdf/others/bes_event_presentation_20241.pdf",
+        "haveChildren": "false",
+        "isExpandable": false,
+        "isActive": true,
+        "subChildren": []
+      }
+    ]
   },
   {
     "id": 5,

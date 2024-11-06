@@ -31,22 +31,7 @@ export default function Notification() {
         Evolving Media Ecosystem: Innovative, Immersive & Sustainable
         Broadcasting
       </div> */}
-      <div className="flex gap-2 justify-center">
-        <a
-          className="w-fit flex items-center font-bold p-2 bg-[#ffcc00] border-box  hover:bg-[#ec008c] delay-[300ms] transition-all text-black text-[12px] cursor-pointer hover:text-white"
-          target="_blank"
-          href="/pdf/others/bes_report_2024.pdf"
-        >
-          POST BES EXPO 2024 REPORT
-        </a>
-        <a
-          className="w-fit flex items-center font-bold p-2 bg-[#ffcc00] border-box  hover:bg-[#ec008c] delay-[300ms] transition-all text-black text-[12px] cursor-pointer hover:text-white"
-          target="_blank"
-          href="/pdf/others/bes_event_presentation_20241.pdf"
-        >
-          BES Expo 2024 Presentation
-        </a>
-      </div>
+
       {/* 
       <a className="flex w-fit" href="/pdf/others/INVITATIONWTD.pdf">
         <Button

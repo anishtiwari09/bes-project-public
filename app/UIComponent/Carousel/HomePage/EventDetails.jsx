@@ -4,7 +4,7 @@ import React from "react";
 export default function EventDetails() {
   return (
     <div
-      className="py-8"
+      className="pb-8"
       style={{
         background:
           "linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%)",
