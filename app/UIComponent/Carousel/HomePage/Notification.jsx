@@ -44,7 +44,7 @@ export default function Notification() {
 */}
       <a
         className="flex"
-        href="/event_conference/bes_expo/exibition/participation_fee"
+        href="https://app.wavesindia.org/register/exhibitor?ref=BES"
       >
         <Button
           variant="contained"
