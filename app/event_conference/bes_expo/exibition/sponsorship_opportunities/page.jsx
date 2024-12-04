@@ -5,7 +5,7 @@ export default function page() {
     <div
       className={"flex flex-col max-w-[800px] p-4 " + styles.content_container}
     >
-      <h2 className="text-[26px] font-bold">History</h2>
+      <h2 className="text-[26px] font-bold">Sponsorship opportunities</h2>
 
       <div>
         <p>
