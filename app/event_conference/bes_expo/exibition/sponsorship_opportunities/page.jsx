@@ -1,5 +1,5 @@
 import React from "react";
-
+import styles from "@/app/about_bes/content.module.css";
 export default function page() {
   return (
     <div
