@@ -10,12 +10,6 @@ export default function page() {
 
       <div>
         <p>
-        <strong> WAVES</strong>
-          <br />{" "}
-          <a href="wavesindia.org" target="_blank">
-          wavesindia.org
-          </a>
-          <br />
           <strong> Ministry of Information & Broadcasting</strong>
           <br />{" "}
           <a href="mib.nic.in" target="_blank">
