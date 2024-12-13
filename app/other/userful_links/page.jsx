@@ -6,10 +6,16 @@ export default function page() {
       className={"flex flex-col max-w-[800px] p-4 " + styles.content_container}
       style={{ margin: "0 auto" }}
     >
-      <h2 className="text-[26px] font-bold">UseFul Links</h2>
+      <h2 className="text-[26px] font-bold">Use Ful Links</h2>
 
       <div>
         <p>
+        <strong>WAVES</strong>
+          <br />{" "}
+          <a href="wavesindia.org" target="_blank">
+          wavesindia.org
+          </a>
+          <br />
           <strong> Ministry of Information & Broadcasting</strong>
           <br />{" "}
           <a href="mib.nic.in" target="_blank">

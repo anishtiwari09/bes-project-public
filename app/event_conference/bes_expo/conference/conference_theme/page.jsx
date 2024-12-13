@@ -9,7 +9,7 @@ export default function page() {
 
       <div>
         <p>
-          The theme for the conference is{" "}
+          The theme for the conference is <strong> Transforming the Media Landscape through AI:Create, Collaborate, Monetize</strong> {" "}
           <strong>BES EXPO attended</strong>{" "}
           by more than 1,000 delegates, speakers and panelists from India and
           abroad, the conference is rated as the biggest in Asia. It is an ideal

@@ -18,5 +18,15 @@
     "name": "2018",
     "value": "2018",
     "folderPath": "/Images/ImageGallery/2018"
+  },
+  {
+    "name": "2017",
+    "value": "2017",
+    "folderPath": "/Images/ImageGallery/2017"
+  },
+  {
+    "name": "2016",
+    "value": "2016",
+    "folderPath": "/Images/ImageGallery/2016"
   }
 ]
