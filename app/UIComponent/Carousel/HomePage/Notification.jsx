@@ -13,7 +13,7 @@ export default function Notification() {
           WAVES <br />
           &
           <br />
-          BES India: {HOMEPAGE.eventCount} International Conference & Exhibition
+          BES EXPO-2025: {HOMEPAGE.eventCount} International Conference & Exhibition
           on Broadcast & Media Technology
         </h4>
         <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
