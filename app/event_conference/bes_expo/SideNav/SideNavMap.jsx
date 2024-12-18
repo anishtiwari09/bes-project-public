@@ -19,7 +19,10 @@ export default function SideNavMap({ db, parentPath }) {
             {item?.isSeprateParentPath ? (
               <a
                 href={temp + item.path}
-                target={`${item?.path.endsWith(".pdf") ? "_blank" : "_self"}`}
+                target={
+                  item?.target ??
+                  `${item?.path.endsWith(".pdf") ? "_blank" : "_self"}`
+                }
                 className={`${
                   pathname.endsWith(temp + item.path) ? styles.selected : ""
                 }`}
@@ -30,7 +33,10 @@ export default function SideNavMap({ db, parentPath }) {
             ) : (
               <Link
                 href={temp + item.path}
-                target={`${item?.path.endsWith(".pdf") ? "_blank" : "_self"}`}
+                target={
+                  item?.target ??
+                  `${item?.path.endsWith(".pdf") ? "_blank" : "_self"}`
+                }
                 className={`${
                   pathname.endsWith(temp + item.path) ? styles.selected : ""
                 }`}

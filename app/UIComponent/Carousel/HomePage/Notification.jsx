@@ -13,8 +13,8 @@ export default function Notification() {
           WAVES <br />
           &
           <br />
-          BES EXPO-2025: {HOMEPAGE.eventCount} International Conference & Exhibition
-          on Broadcast & Media Technology
+          BES EXPO-2025: {HOMEPAGE.eventCount} International Conference &
+          Exhibition on Broadcast & Media Technology
         </h4>
         <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
           {HOMEPAGE.expoStartDate.date}
@@ -55,7 +55,10 @@ export default function Notification() {
       </a>
 
       <div className="flex gap-2 justify-center mt-4 registration_btn_container">
-        <Link href={"/registrationform/visitor"}>
+        <Link
+          href={"https://app.wavesindia.org/register/businessvisitor"}
+          target="_blank"
+        >
           <Button
             className="bg-orange-400 registration_btn"
             variant="contained"
@@ -63,11 +66,14 @@ export default function Notification() {
               "&:hover": { background: "orange" },
             }}
           >
-            Visitor Registration
+            Business Visitor Registration
           </Button>
         </Link>
 
-        <Link href={"/registrationform/delegateregistration"}>
+        <Link
+          href={"https://app.wavesindia.org/register/publicvisitor"}
+          target="_blank"
+        >
           <Button
             variant="contained"
             className="bg-orange-400 registration_btn"
@@ -75,7 +81,7 @@ export default function Notification() {
               "&:hover": { background: "orange" },
             }}
           >
-            Delegate Registration
+            Publice Visitors Registration
           </Button>
         </Link>
       </div>
