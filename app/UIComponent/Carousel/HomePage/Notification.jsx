@@ -55,7 +55,7 @@ export default function Notification() {
       </a>
       <a
         className="flex"
-        href="/pdf/others/bes_report_2024.pdf"
+        href="/pdf/others/sponsorship_opportunity.pdf"
         target="_blank"
       >
         <Button
