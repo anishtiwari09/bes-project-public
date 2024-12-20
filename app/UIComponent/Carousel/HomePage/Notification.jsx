@@ -53,6 +53,18 @@ export default function Notification() {
           Book Your Space
         </Button>
       </a>
+      <a
+        className="flex"
+        href="/pdf/others/bes_report_2024.pdf"
+        target="_blank"
+      >
+        <Button
+          variant="contained"
+          className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+        >
+          Sponsorship Opportunities
+        </Button>
+      </a>
 
       <div className="flex gap-2 justify-center mt-4 registration_btn_container">
         <Link

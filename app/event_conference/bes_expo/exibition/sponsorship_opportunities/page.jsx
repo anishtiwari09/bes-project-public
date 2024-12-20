@@ -15,7 +15,9 @@ export default function page() {
           Society (India) immediately on bes@besindia.com.
         
         </p>
+
       </div>
+      <a href="/pdf/others/bes_report_2024.pdf" target="_blank" className='underline mt-2'>Download Sponsorship opportunities for BES Expo 2025</a>
     </div>
   );
 }
