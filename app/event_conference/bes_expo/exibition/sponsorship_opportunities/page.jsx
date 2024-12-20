@@ -17,7 +17,7 @@ export default function page() {
         </p>
 
       </div>
-      <a href="/pdf/others/sponsorship_opportunity.pdf" target="_blank" className='text-blue-900 border-b-0 hover:underline'>Download Sponsorship opportunities for BES Expo 2025</a>
+      <a href="/pdf/others/sponsorship_opportunity.pdf" target="_blank" className='text-blue-900 hover:underline hover:border-b-0'>Download Sponsorship opportunities for BES Expo 2025</a>
     </div>
   );
 }
