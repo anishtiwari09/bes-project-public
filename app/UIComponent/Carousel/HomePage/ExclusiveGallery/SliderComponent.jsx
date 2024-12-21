@@ -2,6 +2,7 @@
 import Marquee from "react-fast-marquee";
 import OpenImage from "@/app/galleries/pictures/OpenImage";
 import Image from "next/image";
+import { useState } from "react";
 export default function SliderComponent({ allImagePath, path }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState("");
   const [open, setOpen] = useState(false);
