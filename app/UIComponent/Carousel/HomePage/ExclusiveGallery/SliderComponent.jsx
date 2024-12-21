@@ -1,7 +1,4 @@
 "use client";
-import React, { useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import Marquee from "react-fast-marquee";
 import OpenImage from "@/app/galleries/pictures/OpenImage";
 import Image from "next/image";
