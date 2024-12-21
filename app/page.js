@@ -5,6 +5,8 @@ import Partener from "./UIComponent/Carousel/HomePage/Partener";
 import { HOMEPAGE, NOTIFICATION_TEXT } from "./Utility/Constant";
 import { getSliderImages } from "./Utility/lib/file";
 import NotificationText from "./UIComponent/Carousel/HomePage/NotificationText";
+import ExclusiveGallery from "./UIComponent/Carousel/HomePage/ExclusiveGallery";
+import MarginTopSpace from "./UIComponent/Carousel/HomePage/MarginTopSpace";
 export default async function Home() {
   let data =
     getSliderImages(HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear) || [];
@@ -27,7 +29,10 @@ export default async function Home() {
           <NotificationText contents={NOTIFICATION_TEXT.contents} />
         )}
       </div>
-
+      <MarginTopSpace />
+      <div className="relative flex-1 min-w-[350px]">
+        <ExclusiveGallery />
+      </div>
       <Partener />
       <EventDetails />
     </div>

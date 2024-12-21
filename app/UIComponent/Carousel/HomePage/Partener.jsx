@@ -7,13 +7,8 @@ export default function Partener() {
         padding: "32px 10%",
       }}
     >
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
       <h1 className="text-center text-[24px] font-bold mb-8 mt-8">
-       Approved & Supported By
+        Approved & Supported By
       </h1>
       <div className="flex gap-8 flex-wrap justify-center partner_container">
         <div className="supporeted_partner">
