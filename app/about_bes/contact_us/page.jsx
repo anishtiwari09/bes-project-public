@@ -17,7 +17,7 @@ export default function page() {
             New Delhi-110001 Tel: +91 11 23316709
           </span>
           <span className="pl-0 block">
-           Email: &nbps;<a href='mailto:bes@besindia.com'>bes@besindia.com</a>
+           Email: &nbsp;<a href='mailto:bes@besindia.com'>bes@besindia.com</a>
           </span>
         </p>
       </div>
