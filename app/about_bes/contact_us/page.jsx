@@ -16,6 +16,9 @@ export default function page() {
             912 Surya Kiran Building, 19 Kasturba Gandhi Marg, <br />
             New Delhi-110001 Tel: +91 11 23316709
           </span>
+          <span className="pl-0 block">
+           Email: &nbps;<a href='mailto:bes@besindia.com'>bes@besindia.com</a>
+          </span>
         </p>
       </div>
       <div className={styles.container}>
