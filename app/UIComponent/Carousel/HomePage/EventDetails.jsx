@@ -13,7 +13,7 @@ export default function EventDetails() {
       <div className="w-full flex flex-col">
         <table className="w-full m-auto">
           <tbody>
-            <tr>
+            {/* <tr>
               <td colSpan={"2"}>
                 <Image
                   className="w-full"
@@ -22,7 +22,7 @@ export default function EventDetails() {
                   src={"/Images/EventDetails/event-2025.jpg"}
                 />
               </td>
-            </tr>
+            </tr> */}
             <tr className="border-b-2">
               <td
                 colSpan={2}
