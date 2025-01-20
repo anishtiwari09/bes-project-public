@@ -16,23 +16,22 @@ export default function Notification() {
           BES EXPO-2025: {HOMEPAGE.eventCount} International Conference &
           Exhibition on Broadcast & Media Technology
         </h4>
-        {/* <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
+        <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
           {HOMEPAGE.expoStartDate.date}
           {HOMEPAGE.expoStartDate.postFix} to {HOMEPAGE.expoEndDate.date}
           {HOMEPAGE.expoEndDate.postFix} {HOMEPAGE.expoEndDate.fullMonth}{" "}
           {HOMEPAGE.expoEndDate.year}
-        </h3> */}
+        </h3>
       </React.Fragment>
 
       <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
-        Bharat Mandapam, Pragati Maidan, New Delhi
+        Jio World Convention Center, Bandra Kurla Complex, Mumbai
       </h3>
       {/* <div className="text-xl text-white w-fit m-auto text-center mt-4">
         Evolving Media Ecosystem: Innovative, Immersive & Sustainable
         Broadcasting
       </div> */}
 
-      {/* 
       <a className="flex w-fit" href="/pdf/others/INVITATIONWTD.pdf">
         <Button
           variant="contained"
@@ -41,7 +40,7 @@ export default function Notification() {
           INVITATION FOR WORLD TELECOM DAY-2024
         </Button>
       </a>
-*/}
+
       <a
         className="flex"
         href="https://app.wavesindia.org/register/exhibitor?ref=BES"
@@ -97,7 +96,7 @@ export default function Notification() {
           </Button>
         </Link>
       </div>
-      {/* <Countdown
+      <Countdown
         from={
           HOMEPAGE.expoStartDate.month +
           " " +
@@ -106,7 +105,7 @@ export default function Notification() {
           HOMEPAGE.expoStartDate.year +
           " 10:00:00 GMT+0530"
         }
-      /> */}
+      />
     </div>
   );
 }
