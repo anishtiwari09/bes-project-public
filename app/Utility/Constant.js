@@ -5,7 +5,7 @@ export const HOMEPAGE = {
     date: "30",
     month: "April",
     year: 2025,
-    fullMonth: "February",
+    fullMonth: "April",
     postFix: "th",
   },
   eventCount: "29th",
