@@ -5,13 +5,14 @@ export const HOMEPAGE = {
     date: "30",
     month: "April",
     year: 2025,
-    fullMonth: "April",
+    displayMonth: "April",
+
     postFix: "th",
   },
   eventCount: "29th",
   expoEndDate: {
     date: "4",
-    fullMonth: "May",
+    displayMonth: "May",
     year: 2025,
     postFix: "th",
   },

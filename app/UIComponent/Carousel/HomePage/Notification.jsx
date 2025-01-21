@@ -18,8 +18,9 @@ export default function Notification() {
         </h4>
         <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
           {HOMEPAGE.expoStartDate.date}
-          {HOMEPAGE.expoStartDate.postFix} to {HOMEPAGE.expoEndDate.date}
-          {HOMEPAGE.expoEndDate.postFix} {HOMEPAGE.expoEndDate.fullMonth}{" "}
+          {HOMEPAGE.expoStartDate.postFix} {HOMEPAGE.expoStartDate.displayMonth}{" "}
+          to {HOMEPAGE.expoEndDate.date}
+          {HOMEPAGE.expoEndDate.postFix} {HOMEPAGE.expoEndDate.displayMonth}{" "}
           {HOMEPAGE.expoEndDate.year}
         </h3>
       </React.Fragment>
@@ -32,14 +33,14 @@ export default function Notification() {
         Broadcasting
       </div> */}
 
-      <a className="flex w-fit" href="/pdf/others/INVITATIONWTD.pdf">
+      {/* <a className="flex w-fit" href="/pdf/others/INVITATIONWTD.pdf">
         <Button
           variant="contained"
           className="flex w-fit bg-[#008CBA] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
         >
           INVITATION FOR WORLD TELECOM DAY-2024
         </Button>
-      </a>
+      </a> */}
 
       <a
         className="flex"
