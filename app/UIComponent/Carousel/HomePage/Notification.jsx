@@ -98,14 +98,14 @@ export default function Notification() {
         </Link>
       </div>
       <Countdown
-        from={/*
+        from={
           HOMEPAGE.expoStartDate.month +
           " " +
           HOMEPAGE.expoStartDate.date +
           " , " +
           HOMEPAGE.expoStartDate.year +
           " 10:00:00 GMT+0530"
-        */}
+        }
       />
     </div>
   );
