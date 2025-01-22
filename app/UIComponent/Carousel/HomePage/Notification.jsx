@@ -25,9 +25,9 @@ export default function Notification() {
         </h3> */}
       </React.Fragment>
 
-      <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
+      {/* <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
         
-      </h3>
+      </h3> */}
       {/* <div className="text-xl text-white w-fit m-auto text-center mt-4">
         Evolving Media Ecosystem: Innovative, Immersive & Sustainable
         Broadcasting
@@ -97,7 +97,7 @@ export default function Notification() {
           </Button>
         </Link>
       </div>
-      <Countdown
+      {/* <Countdown
         from={
           HOMEPAGE.expoStartDate.month +
           " " +
@@ -106,7 +106,7 @@ export default function Notification() {
           HOMEPAGE.expoStartDate.year +
           " 10:00:00 GMT+0530"
         }
-      />
+      /> */}
     </div>
   );
 }
