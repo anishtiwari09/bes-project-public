@@ -26,7 +26,7 @@ export default function Notification() {
       </React.Fragment>
 
       <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
-        Jio World Convention Center, Bandra Kurla Complex, Mumbai
+        
       </h3>
       {/* <div className="text-xl text-white w-fit m-auto text-center mt-4">
         Evolving Media Ecosystem: Innovative, Immersive & Sustainable
