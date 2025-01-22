@@ -16,13 +16,13 @@ export default function Notification() {
           BES EXPO-2025: {HOMEPAGE.eventCount} International Conference &
           Exhibition on Broadcast & Media Technology
         </h4>
-        <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
+        {/* <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
           {HOMEPAGE.expoStartDate.date}
           {HOMEPAGE.expoStartDate.postFix} {HOMEPAGE.expoStartDate.displayMonth}{" "}
           to {HOMEPAGE.expoEndDate.date}
           {HOMEPAGE.expoEndDate.postFix} {HOMEPAGE.expoEndDate.displayMonth}{" "}
           {HOMEPAGE.expoEndDate.year}
-        </h3>
+        </h3> */}
       </React.Fragment>
 
       <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
