@@ -1,16 +1,17 @@
 [
+ 
   {
-    "name": "Shri Mukesh Kumar",
+    "name": "Shri Sunil",
     "design": "President, BES (I)",
-    "email": "mukeshkumar1965@gmail.com",
-    "img": "mukeshkumar.jpeg",
+    "email": "sunil.ddi@gmail.com",
+    "img": "sunil.jpg",
     "id": 1
   },
   {
-    "name": "Shri Sunil",
+    "name": "Shri Mukesh Kumar",
     "design": "Immediate Past President, BES (I)",
-    "email": "sunil.ddi@gmail.com",
-    "img": "sunil.jpg",
+    "email": "mukeshkumar1965@gmail.com",
+    "img": "mukeshkumar.jpeg",
     "id": 2
   },
   {

@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 });
 export function sendMail({ email, subject, text = "", html = "" }) {
   return transporter.sendMail({
-    from: `"besadmin 👻"<${SENDER_EMAIL}>`, // sender address
+    from: `"BES INDIA  "<${SENDER_EMAIL}>`, // sender address
     to: email, // list of receivers
     subject: subject, // Subject line
     text: text, // plain text body
