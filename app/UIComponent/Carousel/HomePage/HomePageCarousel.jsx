@@ -15,7 +15,7 @@ export default function HomePageCarousel({ data, url, path1 }) {
         interval={5000}
       >
         {data?.map((item, key) => (
-          <div className="w-full h-fit cursor-pointer" key={item?.key}>
+          <div className="w-full cursor-pointer" key={item?.key}>
             {item?.includes(".svg") ? (
               <ReactSVG src={`${url}/${item}`} />
             ) : (

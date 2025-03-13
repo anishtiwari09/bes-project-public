@@ -194,7 +194,7 @@ export default function BookYourSpace({
   }, [isDisabledOtpSendBtn, currentEmail]);
   return (
     <div className="flex gap-2 flex-col bg-white p-4 rounded">
-      <h3 className="text-[30px] font-bold">Book your space</h3>
+      <h3 className="text-[30px] text-center font-bold">Book your space</h3>
       <p className="text-[16px] font-bold">
         Please submit your details in the form below and a member of from our
         team will get back to you.
@@ -422,7 +422,7 @@ export default function BookYourSpace({
               <Button
                 onClick={handleSubmit}
                 variant="contained"
-                className={`${styles.submit_btn} w-fit m-auto`}
+                className={`${styles.submit_btn} w-[300px] m-auto`}
               >
                 Submit
               </Button>

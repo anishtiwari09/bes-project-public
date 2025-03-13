@@ -174,8 +174,8 @@ a.header2_menu_list_open::before {
 }
 
 .emoisis_text {
-  text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.5),
-    2px -2px 0 rgba(255, 255, 255, 0.9);
+  /* text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.5),
+    2px -2px 0 rgba(255, 255, 255, 0.9); */
   color: blue;
   font-size: 1.5rem;
 }

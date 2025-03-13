@@ -17,24 +17,22 @@ export default function FeeDetails() {
     >
       <h2 className="text-[26px] font-bold">Participation Fee </h2>
       <br />
-      <h4 className="font-bold">
-        Participation fee for exhibitors is as follows
+      <h4 className="font-bold text-xl">
+        Participation fee for space in BES EXPO 2025 in the shell, raw-space &
+        open-space schemes is as follows
       </h4>
       <br />
       <div className="flex gap-12">
         <div>
-          <h5 className="font-bold text-[20px]">
-            - For Booking up to 30th November 2024
-          </h5>
           <div px={2}>
             <Table border="1">
               <TableHead>
                 <TableRow className="border-black">
                   <StyledTableCell className="font-bold text-1xl">
-                    Types of Participants
+                    Category
                   </StyledTableCell>
                   <StyledTableCell className="font-bold text-1xl">
-                    Indoor Shell(std)
+                    Shell Scheme
                   </StyledTableCell>
                   <StyledTableCell className="font-bold text-1xl">
                     Raw Space
@@ -44,15 +42,22 @@ export default function FeeDetails() {
               <TableBody>
                 <TableRow className="border-black">
                   <StyledTableCell className="font-bold text-1xl">
-                    Exhibitor (in INR)
+                    Foreign Exhibitor (US$ Per sqm)
                   </StyledTableCell>
-                  <StyledTableCell>20,000/-</StyledTableCell>
-                  <StyledTableCell>15,000/-</StyledTableCell>
+                  <StyledTableCell>500/-</StyledTableCell>
+                  <StyledTableCell>400/-</StyledTableCell>
+                </TableRow>
+                <TableRow className="border-black">
+                  <StyledTableCell className="font-bold text-1xl">
+                    Indian Exhibitor (Rs Per sqm)
+                  </StyledTableCell>
+                  <StyledTableCell>20000/-</StyledTableCell>
+                  <StyledTableCell>15000/-</StyledTableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </div>
-          <h5 className="font-bold text-[20px] mt-4">
+          {/* <h5 className="font-bold text-[20px] mt-4">
             - For Booking up to 1st December 2024 to 31st January 2025
           </h5>
           <div px={2}>
@@ -80,7 +85,7 @@ export default function FeeDetails() {
                 </TableRow>
               </TableBody>
             </Table>
-          </div>
+          </div> */}
         </div>
         {/* <div>
           <h5 className="font-bold " style={{ fontStyle: "italic" }}>

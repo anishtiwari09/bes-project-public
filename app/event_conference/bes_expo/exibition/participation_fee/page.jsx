@@ -17,8 +17,8 @@ export default async function page() {
   }
   return (
     <div>
-      <FeeDetails />
       <BookYourSpace countryData={countryData} />
+      <FeeDetails />
     </div>
   );
 }

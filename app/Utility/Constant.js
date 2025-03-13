@@ -2,17 +2,17 @@ export const HOMEPAGE = {
   sliderImageDir: "/Images/Slider/",
   currentYear: "2024",
   expoStartDate: {
-    date: "30",
-    month: "April",
+    date: "3",
+    month: "July",
     year: 2025,
-    displayMonth: "April",
+    displayMonth: "July",
 
-    postFix: "th",
+    postFix: "rd",
   },
   eventCount: "29th",
   expoEndDate: {
-    date: "4",
-    displayMonth: "May",
+    date: "5",
+    displayMonth: "July",
     year: 2025,
     postFix: "th",
   },
@@ -25,17 +25,7 @@ export const OTHERPAGE = {
 export const NOTIFICATION_TEXT = {
   contents: [
     {
-      text: "WORLD AUDIO VISUAL & ENTERTAINMENT SUMMIT -WAVES-2025 ",
-      href: "https://www.wavesindia.org/",
-      target: "_blank",
-    },
-    {
-      text: "&",
-      href: "",
-      target: "",
-    },
-    {
-      text: "BROADCAST ENGINEERING SOCIETY (INDIA)-BES EXPO-2025 ",
+      text: "BES EXPO-2025 to be held from 3-5 July 2025",
       href: "/",
       target: "_self",
     },
