@@ -16,12 +16,13 @@ const transporter = nodemailer.createTransport({
     pass: SENDER_EMAIL_PASSWORD,
   },
 });
-export function sendMail({ email, subject, text = "", html = "" }) {
+export function sendMail({ email, subject, text = "", html = "",attachments=[] }) {
   return transporter.sendMail({
     from: `"BES INDIA  "<${SENDER_EMAIL}>`, // sender address
     to: email, // list of receivers
     subject: subject, // Subject line
     text: text, // plain text body
     html: html, // html body
+    attachments
   });
 }

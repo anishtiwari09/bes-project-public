@@ -34,6 +34,13 @@ const Schema = new mongoose.Schema(
       unique: true,
       default: Date.now(),
     },
+    unique_reference_number:{
+      type:String,
+      required:true,
+      unique:true,
+    
+    }
+    
   },
   { timestamps: true }
 );
