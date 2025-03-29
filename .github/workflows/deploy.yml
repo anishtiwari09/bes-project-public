@@ -16,23 +16,16 @@ jobs:
         with:
           ref: master
 
-      # Step 2: Get the owner account name and email automatically
-      - name: Get owner account name and email
-        id: get_owner
+      # Step 2: Set up Git configuration for the owner account automatically
+      - name: Set up Git for Account A (Owner)
         run: |
           # Fetch the GitHub owner's username from the context
           OWNER_USERNAME="${{ github.repository_owner }}"
 
-          # Use GitHub API to get the owner's email (public email)
-          OWNER_EMAIL=$(curl -s https://api.github.com/users/$OWNER_USERNAME | jq -r .email)
-
-          echo "OWNER_USERNAME=$OWNER_USERNAME"
-          echo "OWNER_EMAIL=$OWNER_EMAIL"
-
-          # Set Git configuration using the owner's name and email
+          # Set Git configuration dynamically using the owner's username
           git config user.name "$OWNER_USERNAME"
-          git config user.email "$OWNER_EMAIL"
-          
+          git config user.email "${OWNER_USERNAME}@users.noreply.github.com"
+
       # Step 3: Get commit author and check if it's not the owner account
       - name: Check commit author
         id: check_author
