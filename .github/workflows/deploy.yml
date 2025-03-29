@@ -1,9 +1,9 @@
-name: Auto Commit for Account A
+name: Auto Commit for Owner Account
 
 on:
   push:
     branches:
-      - master  # This triggers when there’s a push to the master branch
+      - master  # Trigger on any push to the master branch
 
 jobs:
   auto_commit:
@@ -14,30 +14,56 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: master  # Ensures it's the master branch
+          ref: master
 
-      # Step 2: Set up Git for committing as Account A
-      - name: Set up Git configuration
+      # Step 2: Get the owner account name and email automatically
+      - name: Get owner account name and email
+        id: get_owner
         run: |
-          git config user.name "anishtiwari09"  # Name of Account A
-          git config user.email "aneeshtiwari24@gmail.com"  # Email of Account A
+          # Fetch the GitHub owner's username from the context
+          OWNER_USERNAME="${{ github.repository_owner }}"
 
-      # Step 3: Create a new commit with the message format
-      - name: Create a commit from Account A
+          # Use GitHub API to get the owner's email (public email)
+          OWNER_EMAIL=$(curl -s https://api.github.com/users/$OWNER_USERNAME | jq -r .email)
+
+          echo "OWNER_USERNAME=$OWNER_USERNAME"
+          echo "OWNER_EMAIL=$OWNER_EMAIL"
+
+          # Set Git configuration using the owner's name and email
+          git config user.name "$OWNER_USERNAME"
+          git config user.email "$OWNER_EMAIL"
+          
+      # Step 3: Get commit author and check if it's not the owner account
+      - name: Check commit author
+        id: check_author
         run: |
-          # Extract the commit message from Account B's push
+          # Get the last commit author
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+          
+          # If the author is the owner account, exit the action early
+          if [[ "$LAST_COMMIT_AUTHOR" == "${{ github.repository_owner }}" ]]; then
+            echo "Commit made by the owner account, skipping."
+            exit 0
+          else
+            echo "Commit made by $LAST_COMMIT_AUTHOR, proceeding with new commit."
+          fi
+
+      # Step 4: Extract the last commit message and create a new commit from the owner account
+      - name: Create a commit from owner account
+        run: |
+          # Extract the last commit message
           COMMIT_MSG=$(git log -1 --pretty=%B)
-          
-          # Modify the commit message and create a new commit from Account A
-          NEW_COMMIT_MSG="deploy -- $COMMIT_MSG"
-          
+
+          # Prefix the message with "dep --"
+          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
+
           # Stage and commit the changes
           git add .
           git commit -m "$NEW_COMMIT_MSG"
 
-      # Step 4: Push the commit back to the master branch from Account A
-      - name: Push changes from Account A
+      # Step 5: Push the new commit to the master branch from the owner account
+      - name: Push changes from owner account
         run: |
-          git push https://github.com/<your-username>/<your-repo>.git master
+          git push https://github.com/${{ github.repository }}.git master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # This GitHub token allows pushing changes to the repository
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token to authenticate the push
