@@ -42,7 +42,7 @@ jobs:
           fi
 
       # Step 4: Extract the last commit message and create a new commit from the owner account
-      - name: Create a commit from owner account
+      - name: Check if there are any changes to commit
         run: |
           # Extract the last commit message
           COMMIT_MSG=$(git log -1 --pretty=%B)
@@ -50,9 +50,17 @@ jobs:
           # Prefix the message with "dep --"
           NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
 
-          # Stage and commit the changes
+          # Stage the changes (check if there are any changes)
           git add .
-          git commit -m "$NEW_COMMIT_MSG"
+          
+          # Check if there are any changes staged
+          if ! git diff --cached --quiet; then
+            # Commit the changes if there are any
+            git commit -m "$NEW_COMMIT_MSG"
+          else
+            echo "No changes to commit."
+            exit 0
+          fi
 
       # Step 5: Push the new commit to the master branch from the owner account
       - name: Push changes from owner account
