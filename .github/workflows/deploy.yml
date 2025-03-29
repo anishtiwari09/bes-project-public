@@ -18,7 +18,7 @@ jobs:
         with:
           ref: master
 
-      # Step 2: Set up Git configuration for the owner account automatically
+      # Step 2: Set up Git configuration for Account A (Owner)
       - name: Set up Git for Account A (Owner)
         run: |
           # Fetch the GitHub owner's username from the context
@@ -28,43 +28,51 @@ jobs:
           git config user.name "$OWNER_USERNAME"
           git config user.email "${OWNER_USERNAME}@users.noreply.github.com"
 
-      # Step 3: Get commit author and check if it's not the owner account
+      # Step 3: Get the commit author and check if it's not from Account A
       - name: Check commit author
         id: check_author
         run: |
           # Get the last commit author
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-          
-          # If the author is the owner account, exit the action early
+
+          # If the commit author is Account A (owner), skip the commit
           if [[ "$LAST_COMMIT_AUTHOR" == "${{ github.repository_owner }}" ]]; then
-            echo "Commit made by the owner account, skipping."
+            echo "Commit made by the owner account, skipping commit."
             exit 0
           else
             echo "Commit made by $LAST_COMMIT_AUTHOR, proceeding with new commit."
           fi
 
-      # Step 4: Extract the last commit message and create a new commit from the owner account
-      - name: Check if there are any changes to commit
+      # Step 4: Check for changes in the repository and stage them
+      - name: Check and stage changes
         run: |
-          # Extract the last commit message
-          COMMIT_MSG=$(git log -1 --pretty=%B)
+          # Check the status of the repository
+          git status
 
-          # Prefix the message with "dep --"
-          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
+          # Force Git to stage all changes
+          git add -A  # This stages all changes, including new files and modified files
 
-          # Stage the changes (check if there are any changes)
-          git add .
-          
+          # Log the status after adding files
+          git status
+
+      # Step 5: Create a new commit from Account A if there are changes
+      - name: Create and commit changes from Account A
+        run: |
           # Check if there are any changes staged
-          if ! git diff --cached --quiet; then
-            # Commit the changes if there are any
-            git commit -m "$NEW_COMMIT_MSG"
-          else
+          if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
+          else
+            # Extract the last commit message from Account B
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            NEW_COMMIT_MSG="dep -- $COMMIT_MSG"  # Add "dep --" prefix
+
+            # Commit the changes with the new commit message
+            git commit -m "$NEW_COMMIT_MSG"
+            echo "New commit created: $NEW_COMMIT_MSG"
           fi
 
-      # Step 5: Push the new commit to the master branch from the owner account
+      # Step 6: Push the changes from Account A (owner) to the master branch
       - name: Push changes from owner account
         run: |
           git push https://github.com/${{ github.repository }}.git master
