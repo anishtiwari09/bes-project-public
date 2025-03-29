@@ -1,31 +1,43 @@
-name: Deploy to Vercel
+name: Auto Commit for Account A
 
 on:
   push:
     branches:
-      - master  # Set the branch that should trigger the deployment
+      - master  # This triggers when there’s a push to the master branch
 
 jobs:
-  deploy:
+  auto_commit:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
         with:
-          node-version: '18'  # You can specify your Node.js version here
+          ref: master  # Ensures it's the master branch
 
-      - name: Install dependencies
+      # Step 2: Set up Git for committing as Account A
+      - name: Set up Git configuration
         run: |
-          npm install
+          git config user.name "anishtiwari09"  # Name of Account A
+          git config user.email "aneeshtiwari24@gmail.com"  # Email of Account A
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel
+      # Step 3: Create a new commit with the message format
+      - name: Create a commit from Account A
+        run: |
+          # Extract the commit message from Account B's push
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          # Modify the commit message and create a new commit from Account A
+          NEW_COMMIT_MSG="deploy -- $COMMIT_MSG"
+          
+          # Stage and commit the changes
+          git add .
+          git commit -m "$NEW_COMMIT_MSG"
 
-      - name: Deploy to Vercel
-        run: vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm
+      # Step 4: Push the commit back to the master branch from Account A
+      - name: Push changes from Account A
+        run: |
+          git push https://github.com/<your-username>/<your-repo>.git master
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # This GitHub token allows pushing changes to the repository
