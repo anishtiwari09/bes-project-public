@@ -28,7 +28,7 @@ jobs:
           git config user.name "$OWNER_USERNAME"
           git config user.email "${OWNER_USERNAME}@users.noreply.github.com"
 
-      # Step 3: Get the last commit message from the master branch
+      # Step 3: Get the last commit message
       - name: Get last commit message
         id: get_commit_msg
         run: |
@@ -60,12 +60,12 @@ jobs:
           COMMIT_MSG="${{ steps.get_commit_msg.outputs.commit_msg }}"
           
           # Prefix the message with "dep --" (or any other prefix you prefer)
-          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
+          NEW_COMMIT_MSG="deploy--  $COMMIT_MSG"
 
           # Create an empty commit using the last commit message from Account B (or other contributor)
           git commit --allow-empty -m "$NEW_COMMIT_MSG"
 
-      # Step 6: Push the new commit from Account A (owner)
+      # Step 6: Push the new commit from Account A (Owner)
       - name: Push changes from Account A (Owner)
         if: steps.check_commit_author.outputs.skip_commit == 'false'
         run: |
