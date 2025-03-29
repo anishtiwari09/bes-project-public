@@ -28,41 +28,25 @@ jobs:
           git config user.name "$OWNER_USERNAME"
           git config user.email "${OWNER_USERNAME}@users.noreply.github.com"
 
-      # Step 3: Get the commit author and check if it's not from Account A
-      - name: Check commit author
-        id: check_author
+      # Step 3: Get the commit message from Account B
+      - name: Get commit message from Account B
+        id: get_commit_msg
         run: |
-          # Get the last commit author
-          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-
-          # If the commit author is Account A (owner), skip the commit
-          if [[ "$LAST_COMMIT_AUTHOR" == "${{ github.repository_owner }}" ]]; then
-            echo "Commit made by the owner account, skipping commit."
-            exit 0
-          else
-            echo "Commit made by $LAST_COMMIT_AUTHOR, proceeding with new commit."
-          fi
-
-      # Step 4: Check if there are any file changes from Account B and create a new commit from Account A
-      - name: Create a new commit with Account A's message
-        run: |
-          # Extract the last commit message (from Account B)
+          # Get the last commit message made by Account B
           COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message from Account B: $COMMIT_MSG"
+          echo "::set-output name=commit_msg::$COMMIT_MSG"
 
+      # Step 4: Create a dummy commit with Account A's message
+      - name: Create dummy commit with Account A's message
+        run: |
+          COMMIT_MSG="${{ steps.get_commit_msg.outputs.commit_msg }}"
+          
           # Prefix the message with "dep --" (or any other prefix you prefer)
           NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
 
-          # Stage the changes (if there are any)
-          git add .
-
-          # Check if there are any staged changes. If there are no changes, we need to create an empty commit.
-          if ! git diff --cached --quiet; then
-            echo "No changes to commit, creating an empty commit with message."
-            git commit --allow-empty -m "$NEW_COMMIT_MSG"  # Create a dummy commit with the new message
-          else
-            echo "Changes detected, creating commit with changes."
-            git commit -m "$NEW_COMMIT_MSG"  # Commit if there are actual changes
-          fi
+          # Create an empty commit using the new commit message
+          git commit --allow-empty -m "$NEW_COMMIT_MSG"
 
       # Step 5: Push the new commit from Account A (owner)
       - name: Push changes from owner account
