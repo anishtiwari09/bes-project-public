@@ -28,28 +28,46 @@ jobs:
           git config user.name "$OWNER_USERNAME"
           git config user.email "${OWNER_USERNAME}@users.noreply.github.com"
 
-      # Step 3: Get the commit message from Account B
-      - name: Get commit message from Account B
+      # Step 3: Get the last commit message from the master branch
+      - name: Get last commit message
         id: get_commit_msg
         run: |
-          # Get the last commit message made by Account B
+          # Get the last commit message made (regardless of who committed)
           COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "Commit message from Account B: $COMMIT_MSG"
+          echo "Last commit message: $COMMIT_MSG"
           echo "::set-output name=commit_msg::$COMMIT_MSG"
 
-      # Step 4: Create a dummy commit with Account A's message
-      - name: Create dummy commit with Account A's message
+      # Step 4: Check if the commit was made by Account A (Owner)
+      - name: Check if commit is from Account A (Owner)
+        id: check_commit_author
+        run: |
+          # Get the last commit author
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+          
+          # Check if the commit was made by the owner account
+          if [[ "$LAST_COMMIT_AUTHOR" == "${{ github.repository_owner }}" ]]; then
+            echo "Commit made by Account A (Owner), skipping creation of new commit."
+            echo "::set-output name=skip_commit::true"
+          else
+            echo "Commit made by $LAST_COMMIT_AUTHOR, proceeding with new commit."
+            echo "::set-output name=skip_commit::false"
+          fi
+
+      # Step 5: Create a new commit with Account A's message (if not made by Account A)
+      - name: Create a commit from Account A
+        if: steps.check_commit_author.outputs.skip_commit == 'false'
         run: |
           COMMIT_MSG="${{ steps.get_commit_msg.outputs.commit_msg }}"
           
           # Prefix the message with "dep --" (or any other prefix you prefer)
-          NEW_COMMIT_MSG="deploy--  $COMMIT_MSG"
+          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
 
-          # Create an empty commit using the new commit message
+          # Create an empty commit using the last commit message from Account B (or other contributor)
           git commit --allow-empty -m "$NEW_COMMIT_MSG"
 
-      # Step 5: Push the new commit from Account A (owner)
-      - name: Push changes from owner account
+      # Step 6: Push the new commit from Account A (owner)
+      - name: Push changes from Account A (Owner)
+        if: steps.check_commit_author.outputs.skip_commit == 'false'
         run: |
           git push https://github.com/${{ github.repository }}.git master
         env:
