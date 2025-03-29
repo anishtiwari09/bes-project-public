@@ -53,14 +53,14 @@ jobs:
             echo "::set-output name=skip_commit::false"
           fi
 
-      # Step 5: Create a new commit with Account A's message (if not made by Account A)
+      # Step 5: Create a new commit from Account A (Owner)
       - name: Create a commit from Account A
         if: steps.check_commit_author.outputs.skip_commit == 'false'
         run: |
           COMMIT_MSG="${{ steps.get_commit_msg.outputs.commit_msg }}"
           
           # Prefix the message with "dep --" (or any other prefix you prefer)
-          NEW_COMMIT_MSG="deploy--  $COMMIT_MSG"
+          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
 
           # Create an empty commit using the last commit message from Account B (or other contributor)
           git commit --allow-empty -m "$NEW_COMMIT_MSG"
