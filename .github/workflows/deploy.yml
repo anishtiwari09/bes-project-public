@@ -43,36 +43,28 @@ jobs:
             echo "Commit made by $LAST_COMMIT_AUTHOR, proceeding with new commit."
           fi
 
-      # Step 4: Check for changes in the repository and stage them
-      - name: Check and stage changes
+      # Step 4: Check if there are any file changes from Account B and create a new commit from Account A
+      - name: Create a new commit with Account A's message
         run: |
-          # Check the status of the repository
-          git status
+          # Extract the last commit message (from Account B)
+          COMMIT_MSG=$(git log -1 --pretty=%B)
 
-          # Force Git to stage all changes
-          git add -A  # This stages all changes, including new files and modified files
+          # Prefix the message with "dep --" (or any other prefix you prefer)
+          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
 
-          # Log the status after adding files
-          git status
+          # Stage the changes (if there are any)
+          git add .
 
-      # Step 5: Create a new commit from Account A if there are changes
-      - name: Create and commit changes from Account A
-        run: |
-          # Check if there are any changes staged
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
+          # Check if there are any staged changes. If there are no changes, we need to create an empty commit.
+          if ! git diff --cached --quiet; then
+            echo "No changes to commit, creating an empty commit with message."
+            git commit --allow-empty -m "$NEW_COMMIT_MSG"  # Create a dummy commit with the new message
           else
-            # Extract the last commit message from Account B
-            COMMIT_MSG=$(git log -1 --pretty=%B)
-            NEW_COMMIT_MSG="dep -- $COMMIT_MSG"  # Add "dep --" prefix
-
-            # Commit the changes with the new commit message
-            git commit -m "$NEW_COMMIT_MSG"
-            echo "New commit created: $NEW_COMMIT_MSG"
+            echo "Changes detected, creating commit with changes."
+            git commit -m "$NEW_COMMIT_MSG"  # Commit if there are actual changes
           fi
 
-      # Step 6: Push the changes from Account A (owner) to the master branch
+      # Step 5: Push the new commit from Account A (owner)
       - name: Push changes from owner account
         run: |
           git push https://github.com/${{ github.repository }}.git master
