@@ -43,7 +43,7 @@ jobs:
           COMMIT_MSG="${{ steps.get_commit_msg.outputs.commit_msg }}"
           
           # Prefix the message with "dep --" (or any other prefix you prefer)
-          NEW_COMMIT_MSG="deploy -- $COMMIT_MSG"
+          NEW_COMMIT_MSG="deploy--  $COMMIT_MSG"
 
           # Create an empty commit using the new commit message
           git commit --allow-empty -m "$NEW_COMMIT_MSG"
