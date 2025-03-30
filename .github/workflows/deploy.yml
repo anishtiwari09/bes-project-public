@@ -42,7 +42,9 @@ jobs:
         run: |
           echo "Repository Owner: ${{ github.repository_owner }}"
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+          USERNAME_AUTHOR=$(git log -1 --pretty=%ae)
           echo "Last Commit Author: $LAST_COMMIT_AUTHOR"
+          echo "this is username: $USERNAME_AUTHOR"
 
       # Step 5: Check if the commit was made by Account A (Owner)
       - name: Check if commit is from Account A (Owner)
