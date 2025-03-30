@@ -40,13 +40,9 @@ jobs:
       # Step 4: Debug - Print repository owner and last commit author
       - name: Debug - Print repository owner and commit author
         run: |
-          echo "Repository Owner: ${{ github.repository_owner }}"
-          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-          USERNAME_AUTHOR=$(git log -1 --pretty=%ae)
-          GITHUB_TOKEN=$(secrets.GITHUB_TOKEN)
+          OWNER_EMAIL="aneeshtiwari24@gmail.com"
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%ae)
           echo "Last Commit Author: $LAST_COMMIT_AUTHOR"
-          echo "this is username: $GITHUB_TOKEN"
-
       # Step 5: Check if the commit was made by Account A (Owner)
       - name: Check if commit is from Account A (Owner)
         id: check_commit_author
@@ -55,7 +51,7 @@ jobs:
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
           
           # Check if the commit was made by the owner account
-          if [[ "$LAST_COMMIT_AUTHOR" == "${{ github.repository_owner }}" ]]; then
+          if [[ "$LAST_COMMIT_AUTHOR" == "$OWNER_EMAIL" ]]; then
             echo "Commit made by Account A (Owner), skipping creation of new commit."
             echo "SKIP_COMMIT=true" >> $GITHUB_ENV  # Skip commit creation
           else
@@ -67,7 +63,7 @@ jobs:
       - name: Create a commit from Account A
         if: env.SKIP_COMMIT == 'false'
         run: |
-          NEW_COMMIT_MSG="dep -- $COMMIT_MSG"
+          NEW_COMMIT_MSG="deploy--  $COMMIT_MSG"
           
           # Create an empty commit using the last commit message from Account B (or other contributor)
           git commit --allow-empty -m "$NEW_COMMIT_MSG"
