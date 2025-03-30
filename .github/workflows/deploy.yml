@@ -22,11 +22,11 @@ jobs:
       - name: Set up Git for Account A (Owner)
         run: |
           # Fetch the GitHub owner's username from the context
-          OWNER_USERNAME="${{ github.repository_owner }}"
+          OWNER_USERNAME="aneeshtiwari24"
 
           # Set Git configuration dynamically using the owner's username
           git config user.name "$OWNER_USERNAME"
-          git config user.email "${OWNER_USERNAME}@users.noreply.github.com"
+          git config user.email "${OWNER_USERNAME}@gmail.com"
 
       # Step 3: Get the last commit message
       - name: Get last commit message
@@ -48,7 +48,7 @@ jobs:
         id: check_commit_author
         run: |
           # Get the last commit author
-          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%ae)
           
           # Check if the commit was made by the owner account
           if [[ "$LAST_COMMIT_AUTHOR" == "$OWNER_EMAIL" ]]; then
