@@ -24,8 +24,8 @@ jobs:
           # Fetch the GitHub owner's username from the context
           
           # Set Git configuration dynamically using the owner's username
-          git config user.name "${secrets.OWNER_USERNAME}"
-          git config user.email "${secrets.OWNER_EMAIL}"
+          git config user.name "${{secrets.OWNER_USERNAME}}"
+          git config user.email "${{secrets.OWNER_EMAIL}}"
           
 
       # Step 3: Get the last commit message
@@ -51,9 +51,9 @@ jobs:
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%ae)
           
           # Check if the commit was made by the owner account
-          echo "This last commit author: $LAST_COMMIT_AUTHOR, owner email: ${secrets.OWNER_EMAIL}"
+          echo "This last commit author: $LAST_COMMIT_AUTHOR, owner email: ${{secrets.OWNER_EMAIL}}"
           
-          if [[ "$LAST_COMMIT_AUTHOR" == ${secrets.OWNER_EMAIL} ]]; then
+          if [[ "$LAST_COMMIT_AUTHOR" == ${{secrets.OWNER_EMAIL}} ]]; then
             echo "Commit made by Account A (Owner), skipping creation of new commit."
             echo "SKIP_COMMIT=true" >> $GITHUB_ENV  # Skip commit creation
           else
