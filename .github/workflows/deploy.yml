@@ -51,7 +51,7 @@ jobs:
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%ae)
           
           # Check if the commit was made by the owner account
-          echo "this last commit other: $LAST_COMMIT_AUTHOR, owner email: $OWNER_EMAIL; $LAST_COMMIT_AUTHOR" == $OWNER_EMAIL"
+          echo "this last commit other: $LAST_COMMIT_AUTHOR owner email: $OWNER_EMAIL; $LAST_COMMIT_AUTHOR" == $OWNER_EMAIL";
           if [[ "$LAST_COMMIT_AUTHOR" == $OWNER_EMAIL ]]; then
             echo "Commit made by Account A (Owner), skipping creation of new commit."
             echo "SKIP_COMMIT=true" >> $GITHUB_ENV  # Skip commit creation
