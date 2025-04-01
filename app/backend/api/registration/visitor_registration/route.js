@@ -96,7 +96,7 @@ const handleSuccess=async(name,organisation,city,mobile,email,area_of_work,urn)=
       'urn':urn,
     
     }),
-    attachments:[{filname:'qrcode.png',content:qrcodeUrl,cid:'qr-code'}]
+    attachments:[{filname:'qrcode.png',content:qrcodeUrl,cid:'qr-code',encoding: "base64"}]
   })
   return Promise.all([adminMail,userMail ]);
   
