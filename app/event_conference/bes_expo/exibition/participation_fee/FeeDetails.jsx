@@ -44,15 +44,15 @@ export default function FeeDetails() {
                   <StyledTableCell className="font-bold text-1xl">
                     Foreign Exhibitor (US$ Per sqm)
                   </StyledTableCell>
-                  <StyledTableCell>500/-</StyledTableCell>
-                  <StyledTableCell>400/-</StyledTableCell>
+                  <StyledTableCell>375/-</StyledTableCell>
+                  <StyledTableCell>300/-</StyledTableCell>
                 </TableRow>
                 <TableRow className="border-black">
                   <StyledTableCell className="font-bold text-1xl">
                     Indian Exhibitor (Rs Per sqm)
                   </StyledTableCell>
-                  <StyledTableCell>20000/-</StyledTableCell>
-                  <StyledTableCell>15000/-</StyledTableCell>
+                  <StyledTableCell>13000/-</StyledTableCell>
+                  <StyledTableCell>12000/-</StyledTableCell>
                 </TableRow>
               </TableBody>
             </Table>
