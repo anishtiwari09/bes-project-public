@@ -15,3 +15,5 @@ export const accountSchema = z.object({
   city: z.string().min(3, { message: "This field is required" }),
   country: z.string().min(1, { message: "This field is required" }),
 });
+
+export const emailSchema = z.string().email('Invalid email address');

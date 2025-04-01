@@ -22,9 +22,8 @@ import {
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
 import { cookies } from "next/headers";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "@/app/helper/accountSchema";
-import { z } from "zod";
+import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
+import VisitorRegistration from "../models/visitor_registration.model";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -496,3 +495,47 @@ export const updateMyAccountDetails = async (prevState, formData) => {
 
   return { ...prevState, status: false, message: "Something went wrong..." };
 };
+
+
+
+export const getVisitorDetails = async (prevState, formData) => {  
+ 
+  const email=formData.get('email') || "";
+  const result = emailSchema.safeParse(email);
+if(!result.success){
+  return {
+    
+    status: false,
+    message: "Please enter valid email address",
+  }}
+try{
+  let user = await VisitorRegistration.findOne({email:email}).lean(true);
+  if(!user){
+    return {
+    
+      status: false,
+      message: "Please enter valid email address",
+      isError:true
+     
+      
+    };
+  }
+  return {
+  
+    status: true,
+    isError:false,
+    message: "User Found",
+    urn:user?.unique_reference_number||'something',
+  }
+}
+catch(e){
+  console.log(e);
+  return {
+   
+    status: false,
+    message: "Something went wrong",
+    isError:true
+  };
+}
+
+} 
