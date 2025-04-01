@@ -56,8 +56,8 @@ export default function Content() {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>2</TableCell>
-                    <TableCell> Life fellow</TableCell>
+                    <TableCell>1</TableCell>
+                    <TableCell> Life Member</TableCell>
                     <TableCell>
                       1. Either (a) be a graduate in engineering in electronics/
                       communication/ computer science/ information technology or

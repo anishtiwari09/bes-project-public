@@ -1,0 +1,79 @@
+name: Auto Commit for Owner Account
+
+on:
+  push:
+    branches:
+      - master  # Trigger on any push to the master branch
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Grant write access to repository contents
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      # Step 2: Set up Git configuration for Account A (Owner)
+      - name: Set up Git for Account A (Owner)
+        run: |
+          # Fetch the GitHub owner's username from the context
+          
+          # Set Git configuration dynamically using the owner's username
+          git config user.name "${{secrets.OWNER_USERNAME}}"
+          git config user.email "${{secrets.OWNER_EMAIL}}"
+          
+
+      # Step 3: Get the last commit message
+      - name: Get last commit message
+        id: get_commit_msg
+        run: |
+          # Get the last commit message made (regardless of who committed)
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Last commit message: $COMMIT_MSG"
+          echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV  # Store commit message
+
+      # Step 4: Debug - Print repository owner and last commit author
+      - name: Debug - Print repository owner and commit author
+        run: |
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%ae)
+          echo "Last Commit Author: $LAST_COMMIT_AUTHOR"
+
+      # Step 5: Check if the commit was made by Account A (Owner)
+      - name: Check if commit is from Account A (Owner)
+        id: check_commit_author
+        run: |
+          # Get the last commit author
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=%ae)
+          
+          # Check if the commit was made by the owner account
+          echo "This last commit author: $LAST_COMMIT_AUTHOR, owner email: ${{secrets.OWNER_EMAIL}}"
+          
+          if [[ "$LAST_COMMIT_AUTHOR" == ${{secrets.OWNER_EMAIL}} ]]; then
+            echo "Commit made by Account A (Owner), skipping creation of new commit."
+            echo "SKIP_COMMIT=true" >> $GITHUB_ENV  # Skip commit creation
+          else
+            echo "Commit made by $LAST_COMMIT_AUTHOR, proceeding with new commit."
+            echo "SKIP_COMMIT=false" >> $GITHUB_ENV  # Proceed with new commit
+          fi
+
+      # Step 6: Create a new commit from Account A
+      - name: Create a commit from Account A
+        if: env.SKIP_COMMIT == 'false'
+        run: |
+          NEW_COMMIT_MSG="deploy--  $COMMIT_MSG"
+          
+          # Create an empty commit using the last commit message from Account B (or other contributor)
+          git commit --allow-empty -m "$NEW_COMMIT_MSG"
+
+      # Step 7: Push the new commit from Account A (Owner)
+      - name: Push changes from Account A (Owner)
+        if: env.SKIP_COMMIT == 'false'
+        run: |
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token to authenticate the push
