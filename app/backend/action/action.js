@@ -24,6 +24,7 @@ import feedbackDb from "@/app/about_bes/feedback/db.json";
 import { cookies } from "next/headers";
 import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
 import VisitorRegistration from "../models/visitor_registration.model";
+import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -539,3 +540,33 @@ catch(e){
 }
 
 } 
+
+export const sendMailToUser=async (email)=>{
+  const subject="Otp For Verification";  
+   let otp = generateOtp(4);
+if(!emailValidator(email)){
+  return {
+    status:false,
+    message:"Please enter valid email address",
+  }
+
+}
+try{
+  await sendMail({
+    email,
+    subject,
+   html: generateOtpTemplate(otp),
+  })
+  return {
+    status:true,
+    message:"Email sent successfully"
+  }
+
+
+}catch(e){          
+  console.log(e);
+  return {
+    status:false,
+    message:"Something went wrong",
+  } }
+}

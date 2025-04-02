@@ -86,7 +86,6 @@ const handleSuccess=async(name,organisation,city,mobile,email,area_of_work,urn)=
     html: visitorTemplate,
   })
   let qrcodeUrl=await generateQrCodeBuffer(`http://localhost:3000/registrationform/e-badges/download-badge/visitor/${urn}`)
-  console.log({qrcodeUrl})
   let userMail=sendMail({
     email: email,
     subject: `Welcome to BES EXPO ${EVENT_YEAR} 🎉`,

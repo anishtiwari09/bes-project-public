@@ -21,6 +21,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "email-mask": "^1.0.5",
     "html-react-parser": "^5.1.8",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.0",
