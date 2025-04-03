@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 
-export default function EmailOtp() {
+export default function EmailVerified() {
   return (
     <Box
       sx={{

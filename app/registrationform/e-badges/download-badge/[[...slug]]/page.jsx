@@ -3,11 +3,14 @@ import React from "react";
 import OTP from "../../../Form/otpinput";
 import { redirect } from "next/navigation";
 import DownloadBadgePage from "./component/download-badge-page";
-import EmailAddressBox from "./component/email-address-box";
+
 import { getVisitorDetails, sendMailToUser } from "@/app/backend/action/action";
 import VisitorRegistration from "@/app/backend/models/visitor_registration.model";
 import emailMask from "email-mask";
-
+import EmailVerified from "./component/email-verified";
+import EmailAddressBox from "./component/email-address-box";
+import { connect } from "@/app/backend/dbConfig/dbConfig";
+connect();
 export default async function page(req) {
   let { slug } = req.params;
   const [slug1] = slug || [];
@@ -25,7 +28,7 @@ export default async function page(req) {
     const maskedEmail = emailMask(email);
     return (
       <DownloadBadgePage>
-        <EmailAddressBox />
+        <EmailVerified />
       </DownloadBadgePage>
     );
   }
