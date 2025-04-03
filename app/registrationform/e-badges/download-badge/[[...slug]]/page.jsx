@@ -4,6 +4,8 @@ import { getUserDetailFromUrn } from "@/app/backend/action/getUserDetails";
 import DownloadBadgePage from "./component/download-badge-page";
 import EmailAddressBox from "./component/email-address-box";
 import EmailVerifingBox from "./component/email-verified";
+import { Typography } from "@mui/material";
+import { sendMailToUser } from "@/app/backend/action/action";
 export default async function page(req) {
   let { slug } = req.params;
   const [slug1] = slug || [];
@@ -17,8 +19,17 @@ export default async function page(req) {
       return <div>Hellow</div>;
     }
     try {
-      // await csendMailToUser(email);
-    } catch (e) {}
+      await sendMailToUser(email);
+    } catch (e) {
+      console.log(e);
+      return (
+        <Typography variant="h5" textAlign={"center"} color={"red"}>
+          Something went wrong, please try again later. Something went wrong
+          please try again after
+        </Typography>
+      );
+    }
+
     const maskedEmail = emailMask(email);
 
     return (
