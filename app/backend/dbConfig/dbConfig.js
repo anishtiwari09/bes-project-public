@@ -8,11 +8,11 @@ export async function connect() {
     return;
   }
   try {
-    await mongoose.connect(MONGODB_URI);
-    const connection = mongoose.connection;
-    connection.isConnected = connection.readyState;
-    connection.on("connected", () => {});
-    connection.on("error", (e) => {
+    await mongoose?.connect(MONGODB_URI);
+    const connectionState = mongoose.connection;
+    connection.isConnected = connectionState.readyState;
+    connectionState.on("connected", () => {});
+    connectionState.on("error", (e) => {
       console.log(e);
       process.exit(500);
     });

@@ -44,9 +44,6 @@ const Schema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-const VisitorRegistration =
-  mongoose.models.visitorRegistrationUser ||
-  mongoose.model("visitorRegistrationUser", Schema);
+const VisitorRegistration = mongoose.models?.visitorRegistrationUser || mongoose.model("visitorRegistrationUser", Schema);
 
 export default VisitorRegistration;

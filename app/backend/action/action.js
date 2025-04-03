@@ -25,6 +25,7 @@ import { cookies } from "next/headers";
 import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
 import VisitorRegistration from "../models/visitor_registration.model";
 import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
+import { generateOtp } from "../helper/mailHelper/otpGenerator";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -497,76 +498,64 @@ export const updateMyAccountDetails = async (prevState, formData) => {
   return { ...prevState, status: false, message: "Something went wrong..." };
 };
 
-
-
-export const getVisitorDetails = async (prevState, formData) => {  
- 
-  const email=formData.get('email') || "";
+export const getVisitorDetails = async (prevState, formData) => {
+  const email = formData.get("email") || "";
   const result = emailSchema.safeParse(email);
-if(!result.success){
-  return {
-    
-    status: false,
-    message: "Please enter valid email address",
-  }}
-try{
-  let user = await VisitorRegistration.findOne({email:email}).lean(true);
-  if(!user){
+  if (!result.success) {
     return {
-    
       status: false,
       message: "Please enter valid email address",
-      isError:true
-     
-      
     };
   }
-  return {
-  
-    status: true,
-    isError:false,
-    message: "User Found",
-    urn:user?.unique_reference_number||'something',
+  try {
+    let user = await VisitorRegistration.findOne({ email: email }).lean(true);
+    if (!user) {
+      return {
+        status: false,
+        message: "Please enter valid email address",
+        isError: true,
+      };
+    }
+    return {
+      status: true,
+      isError: false,
+      message: "User Found",
+      urn: user?.unique_reference_number || "something",
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      status: false,
+      message: "Something went wrong",
+      isError: true,
+    };
   }
-}
-catch(e){
-  console.log(e);
-  return {
-   
-    status: false,
-    message: "Something went wrong",
-    isError:true
-  };
-}
+};
 
-} 
-
-export const sendMailToUser=async (email)=>{
-  const subject="Otp For Verification";  
-   let otp = generateOtp(4);
-if(!emailValidator(email)){
-  return {
-    status:false,
-    message:"Please enter valid email address",
+export const sendMailToUser = async (email) => {
+  const subject = "Otp For Verification";
+  let otp = generateOtp(4);
+  if (!emailValidator(email)) {
+    return {
+      status: false,
+      message: "Please enter valid email address",
+    };
   }
-
-}
-try{
-  await sendMail({
-    email,
-    subject,
-   html: generateOtpTemplate(otp),
-  })
-  return {
-    status:true,
-    message:"Email sent successfully"
+  try {
+    await sendMail({
+      email,
+      subject,
+      html: generateOtpTemplate(otp),
+    });
+    return {
+      status: true,
+      message: "Email sent successfully",
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      status: false,
+      message: "Something went wrong",
+    };
   }
-
-
-}catch(e){          
-  console.log(e);
-  return {
-    status:false,
-    message:"Something went wrong",
-  } }
-}
+};

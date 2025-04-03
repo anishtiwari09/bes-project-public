@@ -1,3 +1,4 @@
+"use client";
 import { getVisitorDetails } from "@/app/backend/action/action";
 import {
   Box,

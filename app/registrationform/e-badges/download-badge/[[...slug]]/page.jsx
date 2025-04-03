@@ -1,34 +1,29 @@
-"use client";
 import React from "react";
-import OTP from "../../../Form/otpinput";
-import { redirect } from "next/navigation";
-import DownloadBadgePage from "./component/download-badge-page";
-
-import { getVisitorDetails, sendMailToUser } from "@/app/backend/action/action";
-import VisitorRegistration from "@/app/backend/models/visitor_registration.model";
 import emailMask from "email-mask";
-import EmailVerified from "./component/email-verified";
+import { getUserDetailFromUrn } from "@/app/backend/action/getUserDetails";
+import DownloadBadgePage from "./component/download-badge-page";
 import EmailAddressBox from "./component/email-address-box";
-import { connect } from "@/app/backend/dbConfig/dbConfig";
-connect();
+import EmailVerifingBox from "./component/email-verified";
 export default async function page(req) {
   let { slug } = req.params;
   const [slug1] = slug || [];
   if (slug1) {
-    const formData = new FormData(req.body);
-    const data = await VisitorRegistration.findOne({
-      unique_reference_number: slug1,
-    });
-    if (!data) {
-      return redirect("/");
+    let email = "";
+    try {
+      const data = await getUserDetailFromUrn(slug1);
+      email = data?.email;
+    } catch (e) {
+      //return redirect("/");
+      return <div>Hellow</div>;
     }
-    const email = data?.email;
-    sendMailToUser(email);
-
+    try {
+      // await csendMailToUser(email);
+    } catch (e) {}
     const maskedEmail = emailMask(email);
+
     return (
       <DownloadBadgePage>
-        <EmailVerified />
+        <EmailVerifingBox maskedEmail={maskedEmail} />
       </DownloadBadgePage>
     );
   }

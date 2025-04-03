@@ -1,7 +1,14 @@
-import { Box, Stack, Typography } from "@mui/material";
-import React from "react";
+"use client";
+import OTP from "@/app/registrationform/Form/otpinput";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { useFormStatus } from "react-dom";
 
-export default function EmailVerified() {
+export default function EmailVerifingBox({ maskedEmail }) {
+  const onSubmit = () => {};
+  const { pending } = useFormStatus();
+  const [otp, setOtp] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
   return (
     <Box
       sx={{
@@ -13,12 +20,33 @@ export default function EmailVerified() {
       }}
       className="bg-white w-full min-w-full mt-5"
     >
-      <form action={formAction} onSubmit={onSubmit}>
+      <form onSubmit={onSubmit}>
         <Stack gap={2} justifyContent={"center"} margin={"auto"}>
-          <Typography variant="h5" textAlign={"center"}>
-            Enter your email address
-          </Typography>
+          <Typography
+            variant="h5"
+            textAlign="center"
+            sx={{
+              fontWeight: 400, // Regular weight for clarity
+              color: "text.primary", // Uses the default Material UI theme text color
+              // More subtle spacing
 
+              lineHeight: 1.5, // Makes the text more readable
+              fontSize: "1rem", // Regular font size for readability
+              letterSpacing: "0.5px", // Subtle letter spacing for polished look
+            }}
+          >
+            A one-time password (OTP) has been sent to your registered email:{" "}
+            {maskedEmail}
+          </Typography>
+          <Stack w="fit-content" margin={"auto"}>
+            <OTP
+              separator={" "}
+              value={otp}
+              disabled={pending}
+              onChange={pending ? () => {} : setOtp}
+              length={4}
+            />
+          </Stack>
           <Button
             variant="contained"
             type="submit"
@@ -34,7 +62,7 @@ export default function EmailVerified() {
             {pending ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "Send OTP"
+              "Download Badge"
             )}
           </Button>
           <Typography variant="body2" textAlign={"center"}>
