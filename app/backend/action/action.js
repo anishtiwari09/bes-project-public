@@ -26,6 +26,7 @@ import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
 import VisitorRegistration from "../models/visitor_registration.model";
 import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
 import { generateOtp } from "../helper/mailHelper/otpGenerator";
+import { updateEmailOtpOnDb } from "./updateDb";
 connect();
 export const signUpAction = async (prevState, formData) => {
   let obj = {};
@@ -541,21 +542,11 @@ export const sendMailToUser = async (email) => {
       message: "Please enter valid email address",
     };
   }
-  try {
-    await sendMail({
-      email,
-      subject,
-      html: generateOtpTemplate(otp),
-    });
-    return {
-      status: true,
-      message: "Email sent successfully",
-    };
-  } catch (e) {
-    console.log(e);
-    return {
-      status: false,
-      message: "Something went wrong",
-    };
-  }
+
+  await sendMail({
+    email,
+    subject,
+    html: generateOtpTemplate(otp),
+  });
+  await updateEmailOtpOnDb({ email, otp });
 };

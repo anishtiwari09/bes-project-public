@@ -15,8 +15,7 @@ export default async function page(req) {
       const data = await getUserDetailFromUrn(slug1);
       email = data?.email;
     } catch (e) {
-      //return redirect("/");
-      return <div>Hellow</div>;
+      return redirect("/");
     }
     try {
       await sendMailToUser(email);
@@ -34,7 +33,7 @@ export default async function page(req) {
 
     return (
       <DownloadBadgePage>
-        <EmailVerifingBox maskedEmail={maskedEmail} />
+        <EmailVerifingBox maskedEmail={maskedEmail} urn={slug1} />
       </DownloadBadgePage>
     );
   }
