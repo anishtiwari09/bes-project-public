@@ -54,9 +54,6 @@ export default function EmailAddressBox() {
     >
       <form action={formAction} onSubmit={onSubmit}>
         <Stack gap={2} justifyContent={"center"} margin={"auto"}>
-          <Typography variant="h5" textAlign={"center"}>
-            Enter your email address
-          </Typography>
           {state?.message && !state?.status && (
             <Typography
               variant="body2"
