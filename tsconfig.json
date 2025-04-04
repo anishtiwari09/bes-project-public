@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    /* Language and Environment */
+    "target": "es2016",
+    "jsx": "react-jsx",  // Enable JSX in TypeScript
+    "baseUrl": "./", // This is the root directory of your project
+    "paths": {
+      "@/*": ["*"]  // Define the alias to map '@' to your 'app' directory
+    },
+    /* Modules */
+    "module": "commonjs",
+
+    /* Emit */
+    "esModuleInterop": true,  // Enable compatibility for CommonJS modules
+
+    /* Type Checking */
+    "strict": true,  // Enable strict type-checking options
+
+    /* Completeness */
+    "skipLibCheck": true,  // Skip type checking of declaration files
+
+    /* Enable JSON imports */
+    "resolveJsonModule": true,
+
+    /* File Handling */
+    "forceConsistentCasingInFileNames": true,  // Ensure case-sensitive file names
+
+    /* Module resolution */
+    "moduleResolution": "node"  // Resolves modules in the same way Node.js does
+  },
+  "include": [
+    "app/**/*",                    // Include files under the 'app' directory
+    "next-env.d.ts",                // Include the Next.js environment types (optional, but recommended)
+    "**/*.ts",                      // Include all TypeScript files in the project
+    "**/*.tsx"                      // Include all TypeScript JSX files in the project
+  ],
+  "exclude": [
+    "node_modules",                 // Exclude node_modules
+    "dist"                          // Exclude build output (optional)
+  ]
+}
