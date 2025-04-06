@@ -3,6 +3,7 @@ import chromium from "@sparticuz/chromium"; // handles Vercel-compatible Chromiu
 import { badgetemplage } from "./badge-templage.js";
 
 export const generateBadgePdf = async (name, company, qrCodeUrl, urn) => {
+  //test
   const isVercel = !!process.env.AWS_REGION; // Vercel sets AWS_REGION in serverless environment
 
   const executablePath = isVercel
