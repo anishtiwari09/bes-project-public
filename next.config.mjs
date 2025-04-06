@@ -1,8 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     eslint: {
-        ignoreDuringBuilds: true,
+      ignoreDuringBuilds: true,
     },
-};
-
-export default nextConfig;
+    webpack(config, { isServer }) {
+      config.module.rules.push({
+        test: /\.js\.map$/,
+        use: 'ignore-loader',
+      });
+      return config;
+    },
+  };
+  
+  export default nextConfig;
+  
