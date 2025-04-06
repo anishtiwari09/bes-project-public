@@ -40,7 +40,8 @@
     "uuid": "^10.0.0",
     "zod": "^3.23.8",
 "chrome-aws-lambda": "^10.1.0",
-    "puppeteer-core": "19.11.1"
+    "puppeteer-core": "19.11.1",
+    "@sparticuz/chromium": "^133.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
