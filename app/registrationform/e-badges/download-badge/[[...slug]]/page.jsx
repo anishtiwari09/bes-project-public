@@ -6,6 +6,7 @@ import EmailAddressBox from "./component/email-address-box";
 import EmailVerifingBox from "./component/email-verified";
 import { Typography } from "@mui/material";
 import { sendMailToUser } from "@/app/backend/action/action";
+import { redirect } from "next/navigation";
 export default async function page(req) {
   let { slug } = req.params;
   const [slug1] = slug || [];
