@@ -1,42 +1,40 @@
 {
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig to read more about this file */
     /* Language and Environment */
-    "target": "es2016",
-    "jsx": "react-jsx",  // Enable JSX in TypeScript
-    "baseUrl": "./", // This is the root directory of your project
+    "target": "es2016",              // Target modern JavaScript
+    "jsx": "react-jsx",              // Enable JSX for React projects
+    "baseUrl": "./",                  // The root directory of your project
     "paths": {
-      "@/*": ["*"]  // Define the alias to map '@' to your 'app' directory
+      "@/*": ["*"]                   // Define the alias for the 'app' directory
     },
+
     /* Modules */
-    "module": "commonjs",
+    "module": "commonjs",            // Module system for Node.js compatibility
 
     /* Emit */
-    "esModuleInterop": true,  // Enable compatibility for CommonJS modules
+    "esModuleInterop": true,         // Enable compatibility with CommonJS modules
 
     /* Type Checking */
-    "strict": true,  // Enable strict type-checking options
-
-    /* Completeness */
-    "skipLibCheck": true,  // Skip type checking of declaration files
+    "strict": true,                  // Enable strict type-checking options
+    "skipLibCheck": true,            // Skip type-checking of declaration files
 
     /* Enable JSON imports */
-    "resolveJsonModule": true,
+    "resolveJsonModule": true,       // Allows importing JSON files
 
     /* File Handling */
     "forceConsistentCasingInFileNames": true,  // Ensure case-sensitive file names
 
     /* Module resolution */
-    "moduleResolution": "node"  // Resolves modules in the same way Node.js does
+    "moduleResolution": "node"      // Use Node.js module resolution
   },
   "include": [
-    "app/**/*",                    // Include files under the 'app' directory
-    "next-env.d.ts",                // Include the Next.js environment types (optional, but recommended)
-    "**/*.ts",                      // Include all TypeScript files in the project
-    "**/*.tsx"                      // Include all TypeScript JSX files in the project
+    "app/**/*",                      // Include files in your 'app' directory
+    "next-env.d.ts",                  // Next.js environment types
+    "**/*.ts",                        // Include TypeScript files in the project
+    "**/*.tsx"                        // Include TypeScript JSX files
   ],
   "exclude": [
-    "node_modules",                 // Exclude node_modules
-    "dist"                          // Exclude build output (optional)
+    "node_modules",                   // Exclude 'node_modules' from type-checking
+    "dist"                            // Exclude build output folder
   ]
 }
