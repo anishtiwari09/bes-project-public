@@ -2,7 +2,7 @@ import React from "react";
 import visitorDb from "./Utility/db.json";
 import Form from "../Form/Form";
 import styles from "../Form/form.module.css";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { REGISTRATION_PATH } from "@/app/Utility/_shared/Constant";
 export default function page() {
   return (
@@ -18,6 +18,13 @@ export default function page() {
             boxSizing: "border-box",
           }}
         >
+          <Button
+            component="a"
+            href="/registrationform/e-badges/download-badge "
+            sx={{ marginLeft: "auto" }}
+          >
+            Get your Badge
+          </Button>
           <h2 className="text-center font-bold text-[30px] text-[#75c24c]">
             Visitor Registration
           </h2>

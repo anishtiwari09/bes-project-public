@@ -18,6 +18,7 @@ import {
   ADMIN_RECEIVER_MAIL,
   JSESSIONID,
   ENVIROMENT,
+  PREFIX_REFERENCE_NUMBER,
 } from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
@@ -28,6 +29,7 @@ import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
 import { generateOtp } from "../helper/mailHelper/otpGenerator";
 import { updateEmailOtpOnDb } from "./updateDb";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import uniqueIdGenerator from "../helper/unique-id-generator";
 connect();
 export const signUpAction = async (prevState: any, formData: any) => {
   let obj:{[key:string]:string} = {};
@@ -518,11 +520,19 @@ export const getVisitorDetails = async (prevState: any, formData: any) => {
         isError: true,
       };
     }
+    if (!user?.unique_reference_number) {
+      let urnNumber = PREFIX_REFERENCE_NUMBER + uniqueIdGenerator(7);
+      await VisitorRegistration.updateOne(
+        { email },
+        { unique_reference_number: urnNumber }
+      );
+      user.unique_reference_number = urnNumber;
+    }
     return {
       status: true,
       isError: false,
       message: "User Found",
-      urn: user?.unique_reference_number || "something",
+      urn: user?.unique_reference_number,
     };
   } catch (e) {
     console.log(e);
