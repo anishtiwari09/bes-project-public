@@ -1,14 +1,16 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { JSESSIONID } from "./app/backend/constant";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 // import { updateVisitorCounter } from "./app/backend/helper/visitor_helper/visitor_counter_helper";
-export async function middleware(request) {
+export async function middleware(request:any) {
   const cookieStore = cookies();
   let besSessionCookies = cookieStore.get("besSessionCookies");
   let response = NextResponse.next();
   if (!besSessionCookies) {
-    response.cookies.set("besSessionCookies", Date.now());
+    response.cookies.set("besSessionCookies", Date.now().toString());
     // updateVisitorCounter();
     // cookieStore.set("besSessionCookies", Date.now());
   }
@@ -40,17 +42,17 @@ export const config = {
   ],
 };
 
-function handleSignOut(request) {
+function handleSignOut(request:Request) {
   let response = handleHomePageRedirect(request);
   response.cookies.delete(JSESSIONID);
   return response;
 }
-function isLogin(cookies) {
+function isLogin(cookies:ReadonlyRequestCookies) {
   let token = cookies.get(JSESSIONID)?.value;
 
   return !!token;
 }
-function isProtectedRoute(pathname) {
+function isProtectedRoute(pathname:string) {
   pathname = pathname || "";
   for (let item of protectedRoute) {
     if (pathname.startsWith(item)) return true;
@@ -58,7 +60,7 @@ function isProtectedRoute(pathname) {
   return false;
 }
 
-function handleHomePageRedirect(request) {
+function handleHomePageRedirect(request:Request) {
   return NextResponse.redirect(new URL("/", request.url));
 }
 const protectedRoute = ["/user/"];
