@@ -1,10 +1,11 @@
 import React from "react";
 import styles from "@/app/about_bes/content.module.css";
+import BesExpo2025 from "./components/participation";
 export default function page() {
   return (
     <div
       className={
-        "flex flex-col max-w-[800px] m-auto p-4 " + styles.content_container
+        "flex flex-col  m-auto p-4 " + styles.content_container
       }
     >
       <h2 className="text-[26px] font-bold">Who can participate? </h2>
@@ -16,6 +17,7 @@ export default function page() {
           and TV broadcasting from India and abroad
         </p>
       </div>
+      <BesExpo2025 />  
     </div>
   );
 }
