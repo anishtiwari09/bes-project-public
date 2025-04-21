@@ -6,12 +6,14 @@
       {
         "id": "1",
         "name": "About BES EXPO",
-        "path": "/event_conference/bes_expo/exibition/history"
+        "path": "/event_conference/bes_expo/exibition/history",
+        "target": "_self"
       },
       {
         "id": "2",
         "name": "Dates & Venue",
-        "path": "/event_conference/bes_expo/exibition/venue"
+        "path": "/event_conference/bes_expo/exibition/venue",
+        "target": "_self"
       },
       {
         "id": "brochure",
@@ -22,19 +24,21 @@
       {
         "id": "4",
         "name": "Book a Space",
-        "path": "/event_conference/bes_expo/exibition/participation_fee"
+        "path": "/event_conference/bes_expo/exibition/participation_fee",
+        "target": "_self"
       },
-
       {
         "id": "6",
         "name": "Approvals & Supports",
         "path": "/about_bes/contact_us",
-        "normalLink": true
+        "normalLink": true,
+        "target": "_self"
       },
       {
         "id": "7",
         "name": "Floor Plan",
-        "path": "/event_conference/bes_expo/exibition/floor_plan"
+        "path": "/event_conference/bes_expo/exibition/floor_plan",
+        "target": "_self"
       }
     ]
   },
@@ -45,31 +49,33 @@
       {
         "name": "Conference Theme",
         "id": 1,
-        "path": "/event_conference/bes_expo/conference/conference_theme"
+        "path": "/event_conference/bes_expo/conference/conference_theme",
+        "target": "_self"
       },
       {
         "name": "Conference Sessions",
         "id": 2,
-        "path": "/event_conference/bes_expo/conference/conference_schedule"
+        "path": "/event_conference/bes_expo/conference/conference_schedule",
+        "target": "_self"
       },
-
       {
         "name": "Conference Speakers",
         "id": 5,
-        "path": "/event_conference/bes_expo/conference/list_of_speakers"
+        "path": "/event_conference/bes_expo/conference/list_of_speakers",
+        "target": "_self"
       },
-
       {
         "name": "Request for Speakers",
         "id": 7,
         "path": "/about_bes/contact_us",
-        "normalLink": true
+        "normalLink": true,
+        "target": "_self"
       },
-
       {
         "name": "Register as Delegate",
         "id": 9,
-        "path": "/registrationform/delegateregistration"
+        "path": "/registrationform/delegateregistration",
+        "target": "_self"
       }
     ]
   }
