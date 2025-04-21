@@ -18,13 +18,13 @@ export default function page() {
             boxSizing: "border-box",
           }}
         >
-          <Button
+          {/* <Button
             component="a"
             href="/registrationform/e-badges/download-badge "
             sx={{ marginLeft: "auto" }}
           >
             Get your Badge
-          </Button>
+          </Button> */}
           <h2 className="text-center font-bold text-[30px] text-[#75c24c]">
             Visitor Registration
           </h2>

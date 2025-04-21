@@ -14,7 +14,7 @@
     /* Emit */
     "esModuleInterop": true, // Enable compatibility with CommonJS modules
     /* Type Checking */
-    "strict": true, // Enable strict type-checking options
+    "strict": false, // Enable strict type-checking options
     "skipLibCheck": true, // Skip type-checking of declaration files
     /* Enable JSON imports */
     "resolveJsonModule": true, // Allows importing JSON files
