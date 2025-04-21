@@ -85,18 +85,18 @@ const handleSuccess=async(name: any,organisation: any,city: any,mobile: any,emai
     subject: `New User (Visitor) Registered`,
     html: visitorTemplate,
   })
-  let qrcodeUrl=await generateQrCodeBuffer(`http://localhost:3000/registrationform/e-badges/download-badge/visitor/${urn}`)
-  let userMail=sendMail({
-    email: email,
-    subject: `Welcome to BES EXPO ${EVENT_YEAR} 🎉`,
-    html: userEventTemplate({
-      href:'http://localhost:3000/registrationform/e-badges/download-badge',
-      'fullName':name,
-      'urn':urn,
+  // let qrcodeUrl=await generateQrCodeBuffer(`http://localhost:3000/registrationform/e-badges/download-badge/visitor/${urn}`)
+  // let userMail=sendMail({
+  //   email: email,
+  //   subject: `Welcome to BES EXPO ${EVENT_YEAR} 🎉`,
+  //   html: userEventTemplate({
+  //     href:'http://localhost:3000/registrationform/e-badges/download-badge',
+  //     'fullName':name,
+  //     'urn':urn,
     
-    }),
-    attachments:[{filname:'qrcode.png',content:qrcodeUrl,cid:'qr-code',encoding: "base64"}]
-  })
-  return Promise.all([adminMail,userMail ]);
+  //   }),
+  //   attachments:[{filname:'qrcode.png',content:qrcodeUrl,cid:'qr-code',encoding: "base64"}]
+  // })
+  return Promise.all([adminMail ]);
   
 }

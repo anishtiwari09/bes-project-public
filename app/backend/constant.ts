@@ -13,5 +13,5 @@ export const EVENT_DATE="July 3-5, 2025"
 export const EVENT_YEAR=2025
 
 export const VENUE_DETAILS='Hall No. 8,9 & 10 Pragati Maidan, New Delhi'
-export const PREFIX_REFERENCE_NUMBER=process.env.PREFIX_REFERENCE_NUMBER
+export const PREFIX_REFERENCE_NUMBER=process.env.PREFIX_REFERENCE_NUMBER||"BES25"
 
