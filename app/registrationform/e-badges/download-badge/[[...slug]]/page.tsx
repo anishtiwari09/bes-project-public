@@ -9,7 +9,6 @@ import { redirect } from "next/navigation";
 export default async function page(req: any) {
   let { slug } = req.params;
   const [slug1] = slug || [];
-  // force build
   return redirect("/");
   if (slug1) {
     let email = "";

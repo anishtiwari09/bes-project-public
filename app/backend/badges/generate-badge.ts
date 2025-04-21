@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
-import { badgetemplage } from "./badge-templage.js";
+import { badgetemplage } from "./badge-template.js";
+
 
 export const generateBadgePdf = async (name:string, company:string, qrCodeUrl:string, urn:string) => {
   const html = badgetemplage(name, company, qrCodeUrl, urn);
