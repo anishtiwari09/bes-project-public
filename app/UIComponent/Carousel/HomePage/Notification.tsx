@@ -55,7 +55,7 @@ export default function Notification() {
       </a>
 
       <div className="flex gap-2 justify-center mt-4 registration_btn_container">
-        <Link href={"/registrationform/visitor"} target="_blank">
+        <Link href={"/registrationform/visitor"} target="_self">
           <Button
             className="bg-orange-400 registration_btn"
             variant="contained"
@@ -67,7 +67,7 @@ export default function Notification() {
           </Button>
         </Link>
 
-        <Link href={"/registrationform/delegateregistration"} target="_blank">
+        <Link href={"/registrationform/delegateregistration"} target="_self">
           <Button
             variant="contained"
             className="bg-orange-400 registration_btn"

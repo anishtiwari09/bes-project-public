@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "@/app/about_bes/content.module.css";
+import Image from "next/image";
 export default function page() {
   return (
     <div
@@ -13,6 +14,18 @@ export default function page() {
           New Delhi.
         </p>
       </div>
+      
+      <div style={{ position: 'relative', width: '100%',height:500 }}>
+  <Image
+    src="/Images/common/floor-plan.jpg"
+    alt="Sample"
+fill
+style={{ objectFit: 'contain' }} 
+  />
+</div>
+
+
+
     </div>
   );
 }

@@ -117,22 +117,22 @@
     "id": "visitor_registration_",
     "subChildren": [],
     "isExpandable": false,
-    "target": "_blank",
+    "target": "_self",
     "haveChildren": "no",
     "isSeprateParentPath": true,
-    "parentPath": "https://app.wavesindia.org",
-    "name": "Public Visitors Registration",
-    "path": "/register/publicvisitorr"
+    "parentPath": "/registrationform",
+    "name": "Visitor Registration",
+    "path": "/visitor"
   },
   {
     "id": "delegate_registration",
     "subChildren": [],
     "isExpandable": false,
     "isSeprateParentPath": true,
-    "target": "_blank",
-    "parentPath": "https://app.wavesindia.org",
+    "target": "_self",
+    "parentPath": "/registrationform",
     "haveChildren": "no",
-    "name": "Business Visitor Registration",
-    "path": "/register/businessvisitor"
+    "name": "Delegate Registration",
+    "path": "/delegateregistration"
   }
 ]
