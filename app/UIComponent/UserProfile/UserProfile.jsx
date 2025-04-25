@@ -40,6 +40,6 @@ export default function UserProfile({ isSignIn, deleteCookies, userName }) {
       )}
     </>
   ) : (
-    <LoginButton />
+   null
   );
 }
