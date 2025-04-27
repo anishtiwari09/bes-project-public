@@ -21,7 +21,7 @@ export const verifyJsonToken = (token: any) => {
 export const decodeJsonToken = (token: any) => {
   let verifiedToken = "";
   try {
-    let obj = jwt.decode(token);
+    let obj:any = jwt.decode(token);
     verifiedToken = obj?.user?.verifiedToken || "";
   } catch (e) {
     console.log("invalid token");

@@ -1,6 +1,21 @@
-import mongoose from "mongoose";
-
-const delegateUserSchema = new mongoose.Schema(
+import mongoose, { Model } from "mongoose";
+ interface IDelegateUser extends Document {
+  name: string;
+  organisation: string;
+  city: string;
+  mobile: string;
+  email: string;
+  query?: string;
+  category: string;
+  payment_type: string;
+  transaction_no: number;
+  amount: number;
+  other_details?: string;
+  tracking_id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+const delegateUserSchema = new mongoose.Schema<IDelegateUser>(
   {
     name: {
       type: String,
@@ -57,7 +72,7 @@ const delegateUserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const DelegateUser =
+const DelegateUser:Model<IDelegateUser> =
   mongoose.models.delegateUser ||
   mongoose.model("delegateUser", delegateUserSchema);
 export default DelegateUser;

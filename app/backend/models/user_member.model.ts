@@ -1,6 +1,25 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 
-const userMember = new mongoose.Schema(
+interface IUserMember extends Document {
+  name: string;
+  organisation?: string;
+  password?: string;
+  designation?: string;
+  city?: string;
+  country?: string;
+  mobile?: string;
+  email: string;
+  token: string;
+  isEmailVerified: boolean;
+  isActive: boolean;
+  isVerified: boolean;
+  isLinkExpired: boolean;
+  tracking_id: string;
+  role: string;
+  tokenGeneratedTime: number;
+  verifiedToken?: string;
+}
+const userMember = new mongoose.Schema<IUserMember>(
   {
     name: {
       type: String,
@@ -81,6 +100,6 @@ const userMember = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const UserMember =
+const UserMember:Model<IUserMember> =
   mongoose.models.userMember || mongoose.model("userMember", userMember);
 export default UserMember;

@@ -50,7 +50,7 @@ export default function BookYourSpace({
       data[type].isError = false;
     } else {
       isFlag = false;
-      data[type] = data[type] || {};
+      data[type] = data[type] || ({} as any);
       data[type].isError = true;
     }
     data[type].error = "";

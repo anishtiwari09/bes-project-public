@@ -1,6 +1,18 @@
-import mongoose from "mongoose";
-
-const bookMySpace = new mongoose.Schema(
+import mongoose, { Model } from "mongoose";
+ interface IBookMySpace extends Document {
+  name: string;
+  organisation: string;
+  designation?: string;
+  city: string;
+  country: string;
+  mobile: string;
+  email: string;
+  how_did_you_hear_about_expo?: string;
+  tracking_id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+const bookMySpace = new mongoose.Schema<IBookMySpace>(
   {
     name: {
       type: String,
@@ -46,6 +58,6 @@ const bookMySpace = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const BookMySpace =
+const BookMySpace:Model<IBookMySpace> =
   mongoose.models.bookMySpace || mongoose.model("bookMySpace", bookMySpace);
 export default BookMySpace;
