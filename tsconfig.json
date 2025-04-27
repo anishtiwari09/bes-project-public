@@ -14,7 +14,6 @@
     "forceConsistentCasingInFileNames": true, // Ensure case-sensitive file names
     "moduleResolution": "node", // Module resolution strategy
     "noImplicitAny": false, // Allow implicit 'any' types
-    "suppressImplicitAnyIndexErrors": true, // Suppress errors for 'any' type indexing
     "lib": ["dom", "dom.iterable", "esnext"], // Standard lib files for modern JS
     "allowJs": false, // Don't allow JavaScript files
     "noEmit": true, // Don't emit output files
