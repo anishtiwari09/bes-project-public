@@ -282,8 +282,7 @@ export default function Content() {
                 New Delhi-110001
                 <br />
                 Tel: + 91 11 23316709
-                <br />
-                Fax: + 91 11 23316710
+               
                 <br />
                 Email: bes@besinida.com
                 <br />
