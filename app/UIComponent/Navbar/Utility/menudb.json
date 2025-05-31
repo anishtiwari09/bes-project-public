@@ -96,6 +96,30 @@
         "isExpandable": false,
         "isActive": true,
         "subChildren": []
+      },
+      {
+        "id": 10,
+        "isSeprateParentPath": true,
+        "parentPath": "/",
+        "name": "Memorandum (Bylaws)",
+        "path": "pdf/others/memorandum-by-laws.pdf",
+        "target":"_blank",
+        "haveChildren": "no",
+        "isExpandable": false,
+        "isActive": true,
+        "subChildren": []
+      },
+      {
+        "id": 11,
+        "isSeprateParentPath": true,
+        "parentPath": "/",
+        "name": "FR-OP",
+        "path": "pdf/others/fr_op.pdf",
+        "haveChildren": "no",
+        "isExpandable": false,
+        "isActive": true,
+        "target":"_blank",
+        "subChildren": []
       }
     ]
   },

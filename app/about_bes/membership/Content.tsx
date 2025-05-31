@@ -174,30 +174,30 @@ export default function Content() {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>Life Member</TableCell>
-                    <TableCell>Rs. 2,100 *</TableCell>
-                    <TableCell>US $410</TableCell>
+                    <TableCell>Life Fellow </TableCell>
+                    <TableCell>Rs. 10,000 </TableCell>
+                    <TableCell>US $1000</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>Life Fellow</TableCell>
-                    <TableCell>-do-</TableCell>
-                    <TableCell>-do-</TableCell>
+                    <TableCell>Life Member *</TableCell>
+                    <TableCell>Rs. 5,000</TableCell>
+                    <TableCell>US $500</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Associate Member</TableCell>
-                    <TableCell>-do-</TableCell>
-                    <TableCell>-do-</TableCell>
+                    <TableCell>Rs. 5,000</TableCell>
+                    <TableCell>US $500</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Affiliate Member</TableCell>
-                    <TableCell>-do-</TableCell>
-                    <TableCell>-do-</TableCell>
+                    <TableCell>Rs. 5,000</TableCell>
+                    <TableCell>US $500</TableCell>
                   </TableRow>
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell>Student Member</TableCell>
                     <TableCell>Rs. 1100</TableCell>
                     <TableCell>US $210</TableCell>
-                  </TableRow>
+                  </TableRow> */}
                   <TableRow>
                     <TableCell>Life Corporate Member</TableCell>
                     <TableCell>Rs. 1,00,000</TableCell>
@@ -282,8 +282,7 @@ export default function Content() {
                 New Delhi-110001
                 <br />
                 Tel: + 91 11 23316709
-                <br />
-                Fax: + 91 11 23316710
+               
                 <br />
                 Email: bes@besinida.com
                 <br />
