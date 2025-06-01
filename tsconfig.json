@@ -45,7 +45,7 @@
     "**/*.tsx" // Include TypeScript JSX files
     ,
     ".next/types/**/*.ts"
-  ],
+, "scripts"  ],
   "exclude": [
     "node_modules", // Exclude 'node_modules' from type-checking
     "dist" // Exclude build output folder

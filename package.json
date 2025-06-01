@@ -1,15 +1,15 @@
-
 {
   "name": "besproject",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
-    
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "ts-migrate": "ts-migrate"
+    "ts-migrate": "ts-migrate",
+    "seed": "ts-node scripts/initilizeDB/initilizeDB",
+    "predev": "npm run seed"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -28,6 +28,7 @@
     "chrome-aws-lambda": "^10.1.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
     "html-react-parser": "^5.1.8",
     "jsonwebtoken": "^9.0.2",
     "maskemail": "^1.0.0",
@@ -45,6 +46,7 @@
     "react-hot-toast": "^2.4.1",
     "react-material-ui-carousel": "^3.4.2",
     "react-svg": "^16.1.34",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"
