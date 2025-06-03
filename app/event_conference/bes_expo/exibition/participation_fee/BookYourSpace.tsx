@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Autocomplete,
@@ -15,6 +15,7 @@ import {
   TextField,
   FormControlLabel,
   Select,
+  Typography,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,61 +24,20 @@ import axios from "axios";
 import OTP from "@/app/registrationform/Form/otpinput";
 import EmailOtpLoader from "@/app/registrationform/Form/EmailOtpLoader";
 import SuccessModal from "@/app/UIComponent/Modals/SuccessModal";
-
-// Original email validation regex from your earlier code:
+import { CountryDataApiReponse, SpaceType } from "./types";
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-// Original mobile validation (numberValidator) simplified as digits only:
-const mobileRegex = /^[0-9]{10,15}$/;
-let SPACE_TYPE = ["row-space", "shell-space"];
-// Validation schema with participantType added
-const schema = z.object({
-  name: z.string().min(1, "This Field is Required"),
-  company: z.string().min(1, "This Field is Required"),
-  designation: z.string().optional(),
-  email: z
-    .string()
-    .min(1, "This Field is Required")
-    .regex(emailRegex, "Please provide valid email"),
-  mobile: z
-    .string()
-    .min(1, "This Field is Required")
-    .regex(mobileRegex, "Please provide valid mobile"),
-  city: z.string().min(1, "This Field is Required"),
-  country: z.string().min(1, "This Field is Required"),
-  about_expo: z.string().min(1, "This Field is Required"),
-
-  gst_number: z
-    .union([
-      z.literal(""),
-      z.string().length(15, "GST number must be exactly 15 characters"),
-    ])
-    .optional(),
-  postal_address: z.string().min(1, "This Field is Required"),
-
-  space_type: z.string().refine((val) => SPACE_TYPE.includes(val), {
-    message: "This Field is Required",
-  }),
-});
-
-type FormData = z.infer<typeof schema>;
+// Original email validation regex from your earlier code:
+type FormData = z.infer<ReturnType<typeof validateSchema>>;
 
 export default function BookYourSpace({
   countryData,
   currentPath = "bookMySpace",
-  spacesTypes,
-}: any) {
-  const {
-    handleSubmit,
-    control,
-    setError,
-    clearErrors,
-    formState: { errors },
-    watch,
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    mode: "onTouched",
-  });
+  spaceTypes,
+}: {
+  currentPath: string;
+  countryData: string[];
+  spaceTypes: SpaceType[];
+}) {
   const [submit, setSubmit] = useState(false);
   const [showSuccessModal, setSuccessModal] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -87,13 +47,35 @@ export default function BookYourSpace({
   const [alertMessage, setAlertMessage] = useState("");
   const [isOtpSend, setIsOtpSend] = useState(false);
   const [currentEmail, setCurrentEmail] = useState("");
-  const emailValue = watch("email");
-  const [initialLoad, setInitialLoad] = useState(true);
-  if (initialLoad) {
-    setInitialLoad(false);
-    SPACE_TYPE = spacesTypes.map(({ type }) => type);
-  }
+  const [selectedSpace, setSelectedSpace] = useState<SpaceType>(spaceTypes[0]);
+  const alertBoxRef = useRef(null);
+  const {
+    handleSubmit,
+    control,
+    setError,
+    clearErrors,
+    formState: { errors },
+    watch,
+  } = useForm<FormData>({
+    resolver: zodResolver(
+      validateSchema(
+        spaceTypes.map((item) => item?.type),
+        selectedSpace
+      )
+    ),
+    mode: "onTouched",
+  });
 
+  const emailValue = watch("email");
+
+  const currentSelectedSpace = watch("space_type");
+  if (selectedSpace.type != currentSelectedSpace && currentSelectedSpace) {
+    const newSpaceType =
+      spaceTypes.filter(
+        (spaceType) => spaceType.type === currentSelectedSpace
+      )?.[0] || spaceTypes[0];
+    setSelectedSpace(newSpaceType);
+  }
   // Disable editing email after OTP sent or verified
   const isEmailFieldDisabled = submit || isEmailVerified || isOtpSend;
 
@@ -171,6 +153,9 @@ export default function BookYourSpace({
     setAlertMessage("");
     if (!isEmailVerified) {
       setAlertMessage("Please Verify the email");
+      if (alertBoxRef.current) {
+        alertBoxRef.current.scrollIntoView({ behavior: "smooth" });
+      }
       return;
     }
 
@@ -203,7 +188,11 @@ export default function BookYourSpace({
         team will get back to you.
       </p>
 
-      {alertMessage && <Alert severity="error">{alertMessage}</Alert>}
+      {alertMessage && (
+        <div ref={alertBoxRef}>
+          <Alert severity="error">{alertMessage}</Alert>
+        </div>
+      )}
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -454,7 +443,7 @@ export default function BookYourSpace({
             control={control}
             render={({ field }) => (
               <RadioGroup {...field} row>
-                {spacesTypes?.map((item) => {
+                {spaceTypes?.map((item) => {
                   return (
                     <FormControlLabel
                       value={item?.type}
@@ -468,7 +457,35 @@ export default function BookYourSpace({
           />
           <FormHelperText>{errors.space_type?.message}</FormHelperText>
         </FormControl>
-
+        {currentSelectedSpace && (
+          <Stack gap={0}>
+            <Controller
+              name="area_required"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Enter Area In Sqm"
+                  error={!!errors.area_required}
+                  helperText={errors.area_required?.message}
+                  fullWidth
+                  variant="outlined"
+                  disabled={!currentSelectedSpace}
+                  onChange={(e) => {
+                    // Only allow digits
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      field.onChange(value);
+                    }
+                  }}
+                />
+              )}
+            />
+            <Typography component="p" fontSize={12}>
+              In Sqm
+            </Typography>
+          </Stack>
+        )}
         {/* Submit button */}
         <Button
           variant="contained"
@@ -480,11 +497,58 @@ export default function BookYourSpace({
         </Button>
       </form>
 
-      {/* <SuccessModal
-        showModal={showSuccessModal}
-        setShowModal={setSuccessModal}
-        formType="bookMySpace"
-      /> */}
+      {showSuccessModal && (
+        <SuccessModal
+          showModal={showSuccessModal}
+          setShowModal={setSuccessModal}
+          formType="bookMySpace"
+        />
+      )}
     </div>
   );
 }
+
+const validateSchema = (space_type, selectedSpace: SpaceType) => {
+  // Original mobile validation (numberValidator) simplified as digits only:
+  const mobileRegex = /^[0-9]{10,15}$/;
+  // Validation schema with participantType added
+  const schema = z.object({
+    name: z.string().min(1, "This Field is Required"),
+    company: z.string().min(1, "This Field is Required"),
+    designation: z.string().optional(),
+    email: z
+      .string()
+      .min(1, "This Field is Required")
+      .regex(emailRegex, "Please provide valid email"),
+    mobile: z
+      .string()
+      .min(1, "This Field is Required")
+      .regex(mobileRegex, "Please provide valid mobile"),
+    city: z.string().min(1, "This Field is Required"),
+    country: z.string().min(1, "This Field is Required"),
+    about_expo: z.string().min(1, "This Field is Required"),
+
+    gst_number: z
+      .union([
+        z.literal(""),
+        z.string().length(15, "GST number must be exactly 15 characters"),
+      ])
+      .optional(),
+    postal_address: z.string().min(1, "This Field is Required"),
+
+    space_type: z
+      .string({ required_error: "This Field is Required" })
+      .min(1, "This Field is Required")
+      .refine((val) => space_type.includes(val), {
+        message: "Invalid space type selected",
+      }),
+    area_required: z.coerce
+      .number({ invalid_type_error: "This field must be a number" })
+      .min(
+        selectedSpace.minimum_space_rquired,
+        `Minimum area required is ${selectedSpace.minimum_space_rquired} sqm.`
+      ),
+  });
+
+  return schema;
+};

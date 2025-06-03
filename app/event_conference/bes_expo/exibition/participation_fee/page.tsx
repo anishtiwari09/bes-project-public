@@ -23,7 +23,7 @@ export default async function page() {
   try {
     spaceTypesData = await SpaceTypeScheme.find(
       { is_active: true },
-      { type: 1, _id: 0, name: 1, description: 1 }
+      { type: 1, _id: 0, name: 1, description: 1, minimum_space_rquired: 1 }
     ).lean();
   } catch (e) {
     console.log("error while fetch space");
@@ -31,7 +31,11 @@ export default async function page() {
 
   return (
     <div>
-      <BookYourSpace countryData={countryData} spacesTypes={spaceTypesData} />
+      <BookYourSpace
+        countryData={countryData}
+        spaceTypes={spaceTypesData}
+        currentPath="bookMySpace"
+      />
       <FeeDetails />
     </div>
   );

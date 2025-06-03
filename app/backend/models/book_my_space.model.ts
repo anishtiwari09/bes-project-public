@@ -10,7 +10,7 @@ export interface IBookMySpace extends Document {
   mobile: string;
   email: string;
   how_did_you_hear_about_expo?: string;
-  tracking_id: number;
+  tracking_id: String;
   gst_number?: number;
   postal_address: string;
   space_scheme: mongoose.Types.ObjectId;
@@ -20,6 +20,7 @@ export interface IBookMySpace extends Document {
   total_gst_amount: number;
   createdAt?: Date;
   updatedAt?: Date;
+  selected_space_scheme:Object
 }
 
 // Schema definition
@@ -43,7 +44,7 @@ const bookMySpaceSchema: Schema<IBookMySpace> = new Schema(
     },
     how_did_you_hear_about_expo: { type: String },
     tracking_id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
       default: () => Date.now(),
@@ -54,6 +55,10 @@ const bookMySpaceSchema: Schema<IBookMySpace> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "SpaceTypeScheme",
       required: true,
+    },
+    selected_space_scheme:{
+type: Object,
+  required: true,
     },
     space_sqm: {
       type: Number,
