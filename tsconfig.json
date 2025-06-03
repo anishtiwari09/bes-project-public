@@ -29,9 +29,10 @@
     "app/**/*", // Include files in your 'app' directory
     "next-env.d.ts", // Next.js environment types
     "**/*.ts", // Include TypeScript files in the project
-    "**/*.tsx", // Include TypeScript JSX files
-    ".next/types/**/*.ts" // Next.js type definitions
-  ],
+    "**/*.tsx" // Include TypeScript JSX files
+    ,
+    ".next/types/**/*.ts"
+, "scripts"  ],
   "exclude": [
     "node_modules", // Exclude 'node_modules' from type-checking
     "dist" // Exclude build output folder

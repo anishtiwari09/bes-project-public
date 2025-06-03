@@ -17,3 +17,10 @@ name:{
     common:string
 }
 }
+
+export interface SpaceType{
+    type:string;
+    name:string;
+    description:string
+    minimum_space_rquired:number
+}

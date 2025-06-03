@@ -17,8 +17,9 @@ export default function Content({
   return (
     <div
       className={
-        "flex flex-col max-w-[800px] m-auto p-4 " + styles.content_container
+        "flex flex-col m-auto p-4 " + styles.content_container
       }
+      style={{maxWidth:"100%"}}
     >
       <h2 className="text-[26px] font-bold">Commitees</h2>
 
@@ -29,6 +30,7 @@ export default function Content({
               <StyledTableCell>S.No</StyledTableCell>
               <StyledTableCell>Name of Commitees</StyledTableCell>
               <StyledTableCell>Chairman</StyledTableCell>
+                 <StyledTableCell>Co-Chairman</StyledTableCell>
               <StyledTableCell>Email</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -39,6 +41,7 @@ export default function Content({
                   <StyledTableCell>{key + 1}</StyledTableCell>
                   <StyledTableCell>{item.nameOfCommitees}</StyledTableCell>
                   <StyledTableCell>{item?.chairman}</StyledTableCell>
+                    <StyledTableCell>{item?.coChairman}</StyledTableCell>
                   <StyledTableCell>
                     {item?.email ? (
                       <Link href={"mailto:" + item.email}>{item.email}</Link>
