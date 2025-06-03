@@ -4,9 +4,10 @@ import { sendMail } from "../../sendMail/mail";
 import { connect } from "@/app/backend/dbConfig/dbConfig";
 import BookMySpace from "@/app/backend/models/book_my_space.model";
 import SpaceTypeScheme from "@/app/backend/models/space_type_scheme";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { bookMySpaceTemplate } from "@/app/backend/helper/mailHelper/template/book_my_space_template";
 import emailVerification from "@/app/backend/models/email_verification.model";
+import { bookMySpaceTemplateVisitor } from "@/app/backend/helper/mailHelper/template/book_my_space_template_visitor";
 
 connect();
 
@@ -21,15 +22,14 @@ interface BookMySpaceRequestBody {
   email: string;
   otp: string;
   space_type: string; // "row" | "shell"
-  gst_number:string
-  postal_address:string
-  area_required:string
-  
+  gst_number: string;
+  postal_address: string;
+  area_required: string;
 }
 
-function generateTrackingId(prefix = 'EXPO'): string {
-  const uuid = uuidv4().replace(/-/g, '').slice(0, 12).toUpperCase(); // 12 characters from UUID
-  const date = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // e.g., 20250603
+function generateTrackingId(prefix = "EXPO"): string {
+  const uuid = uuidv4().replace(/-/g, "").slice(0, 12).toUpperCase(); // 12 characters from UUID
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, ""); // e.g., 20250603
   return `${prefix}-${date}-${uuid}`;
 }
 
@@ -40,25 +40,24 @@ export async function POST(req: Request) {
     const {
       name,
       about_expo,
-    designation,
-      company:organisation,
+      designation,
+      company: organisation,
       city,
       country,
       mobile,
       email,
       otp,
       space_type,
-    
+
       gst_number,
       postal_address,
       area_required,
-      
     } = json;
 
     const existingUser = await BookMySpace.findOne({
       $or: [{ email }, { mobile }],
     });
-const space_sqm=Number(area_required)||0
+    const space_sqm = Number(area_required) || 0;
     if (existingUser) {
       return NextResponse.json(
         { message: "Email or mobile is already registered", status: false },
@@ -66,7 +65,10 @@ const space_sqm=Number(area_required)||0
       );
     }
 
-    const emailResult = await emailVerification.findOne({ email, otpCode: otp });
+    const emailResult = await emailVerification.findOne({
+      email,
+      otpCode: otp,
+    });
 
     if (!emailResult || !emailResult.isVerified || emailResult.hasOtpExpired) {
       return NextResponse.json(
@@ -76,7 +78,10 @@ const space_sqm=Number(area_required)||0
     }
 
     // Pricing
-    const scheme = await SpaceTypeScheme.findOne({ type: space_type, is_active: true }).lean();
+    const scheme = await SpaceTypeScheme.findOne({
+      type: space_type,
+      is_active: true,
+    }).lean();
     if (!scheme) {
       return NextResponse.json(
         { message: "Invalid space type selected", status: false },
@@ -84,9 +89,15 @@ const space_sqm=Number(area_required)||0
       );
     }
 
-    if(!scheme.minimum_space_rquired&&scheme.minimum_space_rquired>space_sqm){
-return NextResponse.json(
-        { message: `Minimum area required is ${scheme.minimum_space_rquired} sqm.`, status: false },
+    if (
+      !scheme.minimum_space_rquired &&
+      scheme.minimum_space_rquired > space_sqm
+    ) {
+      return NextResponse.json(
+        {
+          message: `Minimum area required is ${scheme.minimum_space_rquired} sqm.`,
+          status: false,
+        },
         { status: 400 }
       );
     }
@@ -115,9 +126,8 @@ return NextResponse.json(
       total_gst_amount: taxAmount,
       total_price_with_gst: totalAmount,
       tracking_id: trackingId,
-      space_scheme:scheme,
-      selected_space_scheme:scheme
-  
+      space_scheme: scheme,
+      selected_space_scheme: scheme,
     });
 
     await newUser.save();
@@ -132,9 +142,9 @@ return NextResponse.json(
         Country: country,
         Mobile: mobile,
         Email: email,
-        Address:postal_address,
-        GST_Number:gst_number,
-        "Space Type": space_type,
+        Address: postal_address,
+        GST_Number: gst_number,
+        "Space Type": scheme?.name,
         "Selected Area (sqm)": space_sqm,
         "Base Price": `₹${basePrice}`,
         "GST (%)": `${taxRate}%`,
@@ -144,15 +154,45 @@ return NextResponse.json(
       },
       "New Registration for BookMySpace"
     );
+    const userVisitorTemplate = bookMySpaceTemplateVisitor(
+      {
+        Name: name,
+        Designation: designation,
+        Organisation: organisation,
+        City: city,
+        Country: country,
+        Mobile: mobile,
+        Email: email,
+        Address: postal_address,
+        GST_Number: gst_number,
+        "Space Type": scheme?.name,
+        "Selected Area (sqm)": space_sqm,
+        "Base Price": `₹${basePrice}`,
+        "GST (%)": `${taxRate}%`,
+        "GST Amount": `₹${taxAmount}`,
+        "Total Amount": `₹${totalAmount}`,
+        "Tracking ID": trackingId,
+      },
+      "We have SuccessFully Registed your details"
+    );
 
-    await sendMail({
+    sendMail({
       email: ADMIN_RECEIVER_MAIL,
       subject: `New User Registered [${trackingId}]`,
       html: visitorTemplate,
     });
 
+    sendMail({
+      email: email,
+      subject: `Bes Book Your Space Confirmation - [${trackingId}]`,
+      html: userVisitorTemplate,
+    });
     return NextResponse.json(
-      { message: "User registered successfully", status: true, tracking_id: trackingId },
+      {
+        message: "User registered successfully",
+        status: true,
+        tracking_id: trackingId,
+      },
       { status: 201 }
     );
   } catch (error) {

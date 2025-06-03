@@ -25,6 +25,7 @@ import OTP from "@/app/registrationform/Form/otpinput";
 import EmailOtpLoader from "@/app/registrationform/Form/EmailOtpLoader";
 import SuccessModal from "@/app/UIComponent/Modals/SuccessModal";
 import { CountryDataApiReponse, SpaceType } from "./types";
+import useSelectedSpacePrice from "@/app/frontend/hooks/useSelectedSpacePrice";
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 // Original email validation regex from your earlier code:
 type FormData = z.infer<ReturnType<typeof validateSchema>>;
@@ -49,12 +50,13 @@ export default function BookYourSpace({
   const [currentEmail, setCurrentEmail] = useState("");
   const [selectedSpace, setSelectedSpace] = useState<SpaceType>(spaceTypes[0]);
   const alertBoxRef = useRef(null);
+
   const {
     handleSubmit,
     control,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
   } = useForm<FormData>({
     resolver: zodResolver(
@@ -67,8 +69,8 @@ export default function BookYourSpace({
   });
 
   const emailValue = watch("email");
-
   const currentSelectedSpace = watch("space_type");
+  const areaRequired = watch("area_required");
   if (selectedSpace.type != currentSelectedSpace && currentSelectedSpace) {
     const newSpaceType =
       spaceTypes.filter(
@@ -76,6 +78,17 @@ export default function BookYourSpace({
       )?.[0] || spaceTypes[0];
     setSelectedSpace(newSpaceType);
   }
+  const isEnabled =
+    isValid &&
+    currentSelectedSpace &&
+    areaRequired &&
+    selectedSpace?.minimum_space_rquired <= areaRequired;
+  const { calculatedBasePrice } = useSelectedSpacePrice({
+    selectedSpace: currentSelectedSpace,
+    totalArea: areaRequired,
+    isEnabled: isEnabled,
+    delay: 800,
+  });
   // Disable editing email after OTP sent or verified
   const isEmailFieldDisabled = submit || isEmailVerified || isOtpSend;
 
@@ -404,32 +417,6 @@ export default function BookYourSpace({
           <FormHelperText>{errors.gst_number?.message}</FormHelperText>
         </FormControl>
         {/* About Expo */}
-        <Controller
-          name="about_expo"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <FormControl fullWidth error={!!errors.about_expo}>
-              <Select {...field} displayEmpty>
-                <MenuItem value="">Select an option</MenuItem>
-                <MenuItem value={"Google"}>Google</MenuItem>
-                <MenuItem value={"LinkedIn"}>LinkedIn</MenuItem>
-                <MenuItem value={"Facebook"}>Facebook</MenuItem>
-                <MenuItem value={"Twitter"}>Twitter</MenuItem>
-                <MenuItem value={"Instagram"}>Instagram</MenuItem>
-                <MenuItem value={"Emailer"}>Emailer</MenuItem>
-                <MenuItem value={"Newspaper Ads"}>Newspaper Ads</MenuItem>
-                <MenuItem value={"Magazine Ads"}>Magazine Ads</MenuItem>
-                <MenuItem value={"Referral from friend / colleague"}>
-                  Referral from friend / colleague
-                </MenuItem>
-                <MenuItem value={"Whatsapp / SMS"}>Whatsapp / SMS</MenuItem>
-                <MenuItem value={"Others"}>Others</MenuItem>
-              </Select>
-              <FormHelperText>{errors.about_expo?.message}</FormHelperText>
-            </FormControl>
-          )}
-        />
 
         {/* Participant Type Radio Buttons */}
         <FormControl
@@ -486,6 +473,37 @@ export default function BookYourSpace({
             </Typography>
           </Stack>
         )}
+        {!!isEnabled && !!calculatedBasePrice && (
+          <Typography component="p" fontSize={14} color={"green"}>
+            You have to Pay {calculatedBasePrice} excluding gst
+          </Typography>
+        )}
+        <Controller
+          name="about_expo"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <FormControl fullWidth error={!!errors.about_expo}>
+              <Select {...field} displayEmpty>
+                <MenuItem value="">Select an option</MenuItem>
+                <MenuItem value={"Google"}>Google</MenuItem>
+                <MenuItem value={"LinkedIn"}>LinkedIn</MenuItem>
+                <MenuItem value={"Facebook"}>Facebook</MenuItem>
+                <MenuItem value={"Twitter"}>Twitter</MenuItem>
+                <MenuItem value={"Instagram"}>Instagram</MenuItem>
+                <MenuItem value={"Emailer"}>Emailer</MenuItem>
+                <MenuItem value={"Newspaper Ads"}>Newspaper Ads</MenuItem>
+                <MenuItem value={"Magazine Ads"}>Magazine Ads</MenuItem>
+                <MenuItem value={"Referral from friend / colleague"}>
+                  Referral from friend / colleague
+                </MenuItem>
+                <MenuItem value={"Whatsapp / SMS"}>Whatsapp / SMS</MenuItem>
+                <MenuItem value={"Others"}>Others</MenuItem>
+              </Select>
+              <FormHelperText>{errors.about_expo?.message}</FormHelperText>
+            </FormControl>
+          )}
+        />
         {/* Submit button */}
         <Button
           variant="contained"
@@ -497,13 +515,7 @@ export default function BookYourSpace({
         </Button>
       </form>
 
-      {showSuccessModal && (
-        <SuccessModal
-          showModal={showSuccessModal}
-          setShowModal={setSuccessModal}
-          formType="bookMySpace"
-        />
-      )}
+      {showSuccessModal && <SuccessModal isOpen={showSuccessModal} />}
     </div>
   );
 }

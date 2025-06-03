@@ -18,9 +18,7 @@ const style = {
   pb: 3,
 };
 
-export default function SuccessModal({
-  isOpen
-}: any) {
+export default function SuccessModal({ isOpen }: { isOpen: boolean }) {
   const [open, _] = React.useState(isOpen);
   const [count, setCount] = React.useState(10);
   const router = useRouter();
@@ -35,15 +33,19 @@ export default function SuccessModal({
     return () => clearInterval(id);
   }, []);
   if (count < 1) redirect("/");
+
   return (
     <div>
       <Modal
-        open={open}
+        open={true}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
         <Box sx={{ ...style, width: 400 }}>
-          <Alert severity="success">You have successFully Registered.</Alert>
+          <Alert severity="success">
+            You have successfully Registered. A confirmation details has been
+            sent to your registered Email
+          </Alert>
           <Typography>Redireting to homepage... </Typography>
           <Typography className="text-center">{count} </Typography>
         </Box>
