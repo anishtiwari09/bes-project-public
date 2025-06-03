@@ -9,7 +9,7 @@
     "lint": "next lint",
     "ts-migrate": "ts-migrate",
     "seed": "ts-node scripts/initilizeDB/initilizeDB",
-    "predev": "npm run seed"
+    "postinstall": "npm run seed"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
