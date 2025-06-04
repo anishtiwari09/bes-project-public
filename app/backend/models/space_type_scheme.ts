@@ -11,15 +11,15 @@ export interface ISpaceTypeScheme extends Document {
   tax_rate: number;
   createdAt?: Date;
   updatedAt?: Date;
-  minimum_space_rquired?:number
-  name:"Row space Scheme" | "Shell Space Scheme"
+  minimum_space_rquired?: number;
+  name: "Row space Scheme" | "Shell Space Scheme";
 }
 
 // Mongoose Schema
 const spaceTypeSchemeSchema: Schema<ISpaceTypeScheme> = new Schema(
   {
-    type:{
-    type: String,
+    type: {
+      type: String,
       required: true,
       enum: ["row-space", "shell-space"],
       unique: true,
@@ -27,8 +27,7 @@ const spaceTypeSchemeSchema: Schema<ISpaceTypeScheme> = new Schema(
     name: {
       type: String,
       required: true,
-      enum: ["Row space Scheme" , "Shell Space Scheme"],
-
+      enum: ["Row space Scheme", "Shell Space Scheme"],
     },
     price_per_sqm: {
       type: Number,
@@ -38,7 +37,7 @@ const spaceTypeSchemeSchema: Schema<ISpaceTypeScheme> = new Schema(
       type: Boolean,
       default: true,
     },
- 
+
     description: {
       type: String,
     },
@@ -46,11 +45,10 @@ const spaceTypeSchemeSchema: Schema<ISpaceTypeScheme> = new Schema(
       type: Number,
       default: 18, // You can customize this per scheme
     },
-    minimum_space_rquired:{
-        type:Number,
-        default:1
+    minimum_space_rquired: {
+      type: Number,
+      default: 1,
     },
-    
   },
   { timestamps: true }
 );
@@ -60,24 +58,20 @@ const SpaceTypeScheme: Model<ISpaceTypeScheme> =
   mongoose.models.SpaceTypeScheme ||
   mongoose.model<ISpaceTypeScheme>("SpaceTypeScheme", spaceTypeSchemeSchema);
 
-
-
-
-
 export async function createSpaceTypeSchemeIfNotExist() {
   try {
-    const existing = await SpaceTypeScheme.findOne({ name: "row-space" });
+    const existing = await SpaceTypeScheme.findOne({ type: "row-space" });
     if (!existing) {
       // Create row space
       const rowSpace = new SpaceTypeScheme({
         type: "row-space",
         price_per_sqm: 1200,
         is_active: true,
-    
+
         description: "Row Space Scheme",
         tax_rate: 18,
-        name:'Row space Scheme',
-        minimum_space_rquired:9,
+        name: "Row space Scheme",
+        minimum_space_rquired: 9,
       } as ISpaceTypeScheme);
       await rowSpace.save();
       console.log("Row space scheme created");
@@ -86,19 +80,19 @@ export async function createSpaceTypeSchemeIfNotExist() {
     }
 
     // Similarly for shell-space
-    const existingShell = await SpaceTypeScheme.findOne({ name: "shell-space" });
+    const existingShell = await SpaceTypeScheme.findOne({
+      type: "shell-space",
+    });
     if (!existingShell) {
       const shellSpace = new SpaceTypeScheme({
         type: "shell-space",
         price_per_sqm: 1400,
         is_active: true,
-      
+
         description: "Shell Space Scheme",
         tax_rate: 18,
-        name:'Shell Space Scheme',
-        minimum_space_rquired:13
-        
-    
+        name: "Shell Space Scheme",
+        minimum_space_rquired: 13,
       } as ISpaceTypeScheme);
       await shellSpace.save();
       console.log("Shell space scheme created");
@@ -110,5 +104,3 @@ export async function createSpaceTypeSchemeIfNotExist() {
   }
 }
 export default SpaceTypeScheme;
-
-

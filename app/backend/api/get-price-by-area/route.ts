@@ -35,7 +35,15 @@ export async function POST(req: Request) {
       );
     }
     const basePrice = scheme.price_per_sqm * space_sqm;
-    return NextResponse.json({ status: true, basePrice }, { status: 200 });
+    return NextResponse.json(
+      {
+        status: true,
+        basePrice: `₹${basePrice}`,
+        calculatedPrice: basePrice,
+        currency: "INR",
+      },
+      { status: 200 }
+    );
   } catch (e) {
     return NextResponse.json(
       { message: "Something went wrong", status: false },

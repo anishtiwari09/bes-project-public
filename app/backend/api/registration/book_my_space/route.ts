@@ -154,27 +154,25 @@ export async function POST(req: Request) {
       },
       "New Registration for BookMySpace"
     );
-    const userVisitorTemplate = bookMySpaceTemplateVisitor(
-      {
-        Name: name,
-        Designation: designation,
-        Organisation: organisation,
-        City: city,
-        Country: country,
-        Mobile: mobile,
-        Email: email,
-        Address: postal_address,
-        GST_Number: gst_number,
-        "Space Type": scheme?.name,
-        "Selected Area (sqm)": space_sqm,
-        "Base Price": `₹${basePrice}`,
-        "GST (%)": `${taxRate}%`,
-        "GST Amount": `₹${taxAmount}`,
-        "Total Amount": `₹${totalAmount}`,
-        "Tracking ID": trackingId,
-      },
-      "We have SuccessFully Registed your details"
-    );
+    const dataField = [
+      { Name: name },
+      { Designation: designation },
+      { Organisation: organisation },
+      { City: city },
+      { Country: country },
+      { Mobile: mobile },
+      { Address: postal_address },
+      { GST_Number: gst_number },
+      { "Space Type": scheme?.name },
+      { "Selected Area (sqm)": space_sqm },
+      { "Base Price": `₹${basePrice}` },
+      { "GST (%)": `${taxRate}%` },
+      { "GST Amount": `₹${taxAmount}` },
+      { "Total Amount": `₹${totalAmount}` },
+      { "Tracking ID": trackingId },
+    ];
+
+    const userVisitorTemplate = bookMySpaceTemplateVisitor(dataField);
 
     sendMail({
       email: ADMIN_RECEIVER_MAIL,
