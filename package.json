@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "ts-migrate": "ts-migrate",
-    "seed": "ts-node scripts/initilizeDB/initilizeDB",
+    "seed": "ts-node scripts/initilizeDB/initilizeDB"
    
   },
   "dependencies": {
