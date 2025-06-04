@@ -375,29 +375,47 @@ export default function BookYourSpace({
         />
 
         {/* Country */}
-        <Controller
-          name="country"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              options={countryData}
-              getOptionLabel={(option) => option}
-              onChange={(_, value) => field.onChange(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Country *"
-                  error={!!errors.country}
-                  helperText={errors.country?.message}
-                  fullWidth
-                  variant="outlined"
-                />
-              )}
-            />
-          )}
-        />
+        {countryData?.length ? (
+          <Controller
+            name="country"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                options={countryData}
+                getOptionLabel={(option) => option}
+                onChange={(_, value) => field.onChange(value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Country *"
+                    error={!!errors.country}
+                    helperText={errors.country?.message}
+                    fullWidth
+                    variant="outlined"
+                  />
+                )}
+              />
+            )}
+          />
+        ) : (
+          <Controller
+            name="country"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Country *"
+                error={!!errors.country}
+                helperText={errors.country?.message}
+                fullWidth
+                variant="outlined"
+              />
+            )}
+          />
+        )}
 
         {/* GST Number (Optional) */}
         <FormControl fullWidth error={!!errors.gst_number}>
