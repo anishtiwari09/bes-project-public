@@ -6,9 +6,18 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const OpenImage = ({ open, handleClose, imagePath, data, startIndex }: any) => {
-  console.log(startIndex);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  console.log({ isMobile });
+  const height = isMobile
+    ? {
+        height: isMobile ? 650 : "initial",
+        maxHeight: isMobile ? 650 : "initial",
+      }
+    : {};
   return (
     <Dialog
       open={open}
@@ -16,8 +25,16 @@ const OpenImage = ({ open, handleClose, imagePath, data, startIndex }: any) => {
       maxWidth={"xl"}
       fullWidth
       style={{ zIndex: 9999999 }}
-      PaperProps={{ style: { overflow: "hidden", background: "#000" } }}
-      id="item-id2"
+      PaperProps={{
+        style: {
+          overflow: "hidden",
+          background: "#000",
+
+          padding: "5px",
+          borderRadius: "15px",
+          ...height,
+        },
+      }}
     >
       <Box
         display="flex"
@@ -39,6 +56,9 @@ const OpenImage = ({ open, handleClose, imagePath, data, startIndex }: any) => {
         sx={{
           padding: 1,
           overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
         <Carousel
