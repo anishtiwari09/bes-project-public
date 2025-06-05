@@ -280,63 +280,67 @@ export default function BookYourSpace({
         />
 
         {/* Email OTP Section */}
-        {!isEmailVerified && (
-          <div className="flex flex-col gap-3">
-            {isDisabledOtpSendBtn && !isEmailVerified ? (
-              <Stack direction={"column"} alignItems={"center"} gap={1}>
-                <Stack direction={"row"} gap={1} alignItems="center">
-                  <OTP
-                    separator={" "}
-                    value={otpInput}
-                    disabled={isDisabled}
-                    onChange={isDisabled ? () => {} : setOtpInput}
-                    length={4}
-                  />
-                  {isDisabled ? (
-                    <h3>Otp is Verifying</h3>
-                  ) : (
-                    <Stack direction="row" spacing={2}>
-                      <Button
-                        sx={{
-                          backgroundColor: "#2ecc71",
-                          color: "#fff",
-                          "&:hover": { backgroundColor: "#27ae60" },
-                        }}
-                        onClick={handleEmailVerify}
-                      >
-                        Verify OTP
-                      </Button>
-
-                      <Button
-                        variant="outlined"
-                        color="info"
-                        onClick={() => {
-                          console.log("working");
-                          setIsEmailVerified(false);
-                          setIsDisabled(false);
-                          setIsOtpSend(false);
-                          setIsDisabledOtpSendBtn(false);
-                        }}
-                      >
-                        Edit
-                      </Button>
-                    </Stack>
-                  )}
+        <div className="flex flex-row gap-2">
+          {!isEmailVerified && (
+            <div className="flex flex-col gap-3">
+              {isDisabledOtpSendBtn && !isEmailVerified ? (
+                <Stack direction={"column"} alignItems={"center"} gap={1}>
+                  <Stack direction={"row"} gap={1} alignItems="center">
+                    <OTP
+                      separator={" "}
+                      value={otpInput}
+                      disabled={isDisabled}
+                      onChange={isDisabled ? () => {} : setOtpInput}
+                      length={4}
+                    />
+                    {isDisabled ? (
+                      <h3>Otp is Verifying</h3>
+                    ) : (
+                      <Stack direction="row" spacing={2}>
+                        <Button
+                          sx={{
+                            backgroundColor: "#2ecc71",
+                            color: "#fff",
+                            "&:hover": { backgroundColor: "#27ae60" },
+                          }}
+                          onClick={handleEmailVerify}
+                        >
+                          Verify OTP
+                        </Button>
+                      </Stack>
+                    )}
+                  </Stack>
+                  <EmailOtpLoader setIsOtpSend={setIsDisabledOtpSendBtn} />
                 </Stack>
-                <EmailOtpLoader setIsOtpSend={setIsDisabledOtpSendBtn} />
-              </Stack>
-            ) : (
-              <Button
-                onClick={handleSendEmailOtp}
-                variant="outlined"
-                sx={{ width: 200 }}
-              >
-                {isOtpSend ? "Resend " : "Send "}Otp
-              </Button>
-            )}
-          </div>
-        )}
-
+              ) : (
+                <Button
+                  onClick={handleSendEmailOtp}
+                  variant="outlined"
+                  sx={{ width: 200 }}
+                >
+                  {isOtpSend ? "Resend " : "Send "}Otp
+                </Button>
+              )}
+            </div>
+          )}
+          {isEmailFieldDisabled && (
+            <Button
+              variant="outlined"
+              color="info"
+              sx={{ maxWidth: 40, height: 40 }}
+              onClick={() => {
+                console.log("working");
+                setIsEmailVerified(false);
+                setIsDisabled(false);
+                setIsOtpSend(false);
+                setIsDisabledOtpSendBtn(false);
+                setOtpInput("");
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        </div>
         {/* Mobile */}
         <Controller
           name="mobile"
