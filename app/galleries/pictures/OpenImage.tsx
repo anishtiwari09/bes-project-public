@@ -7,22 +7,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Box } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 
-const OpenImage = ({
-  open,
-  handleClose,
-  imagePath,
-  data,
-  startIndex
-}: any) => {
+const OpenImage = ({ open, handleClose, imagePath, data, startIndex }: any) => {
   console.log(startIndex);
   return (
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="lg"
+      maxWidth={"xl"}
       fullWidth
       style={{ zIndex: 9999999 }}
-      PaperProps={{ style: { overflow: "hidden" } }}
+      PaperProps={{ style: { overflow: "hidden", background: "#000" } }}
+      id="item-id2"
     >
       <Box
         display="flex"
@@ -35,11 +30,17 @@ const OpenImage = ({
           color="inherit"
           onClick={handleClose}
           aria-label="close"
+          sx={{ color: "white" }}
         >
           <CloseIcon />
         </IconButton>
       </Box>
-      <DialogContent sx={{ padding: 1, overflow: "hidden" }}>
+      <DialogContent
+        sx={{
+          padding: 1,
+          overflow: "hidden",
+        }}
+      >
         <Carousel
           autoPlay={false}
           animation={"slide"}
@@ -48,11 +49,12 @@ const OpenImage = ({
           interval={5000}
           index={startIndex}
           strictIndexing={true}
-          height={"calc(100vh - 164px)"}
+          sx={{ width: "100%", height: "fit-content" }}
           swipe={true}
           cycleNavigation={false}
           className="static"
           navButtonsAlwaysVisible={true}
+          IndicatorIcon={false}
         >
           {data?.map((item: any, key: any) => (
             <Box
@@ -60,10 +62,11 @@ const OpenImage = ({
               src={`${imagePath}/${item}`}
               alt={item}
               key={key}
+              id="item-id"
               sx={{
                 width: "100%",
                 maxWidth: "100%",
-                height: "auto",
+
                 // Subtract height for the close button and padding
                 objectFit: "contain",
               }}
