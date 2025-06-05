@@ -25,9 +25,14 @@ export const OTHERPAGE = {
 export const NOTIFICATION_TEXT = {
   contents: [
     {
-      text: "BES EXPO-2025 to be held from 3-5 July 2025",
-      href: "/",
-      target: "_self",
+      text: "Invitation for BES Expo 2025",
+      href: "/pdf/others/invitation-for-bes-expo-2025.pdf",
+      target: "_blank",
+    },
+      {
+      text: "Registration form for delegate BES Expo 2025",
+      href: "/pdf/others/registration-form-for-delegate-bes-expo-2025.pdf",
+      target: "_blank",
     },
   ],
   isShow: true,
