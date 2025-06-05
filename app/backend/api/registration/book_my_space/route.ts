@@ -165,10 +165,10 @@ export async function POST(req: Request) {
       { GST_Number: gst_number },
       { "Space Type": scheme?.name },
       { "Selected Area (sqm)": space_sqm },
-      { "Base Price": `₹${basePrice}` },
-      { "GST (%)": `${taxRate}%` },
-      { "GST Amount": `₹${taxAmount}` },
-      { "Total Amount": `₹${totalAmount}` },
+      // { "Base Price": `₹${basePrice}` },
+      // { "GST (%)": `${taxRate}%` },
+      // { "GST Amount": `₹${taxAmount}` },
+      // { "Total Amount": `₹${totalAmount}` },
       { "Tracking ID": trackingId },
     ];
 

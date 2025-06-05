@@ -86,7 +86,7 @@ export default function BookYourSpace({
   const { calculatedBasePrice } = useSelectedSpacePrice({
     selectedSpace: currentSelectedSpace,
     totalArea: areaRequired,
-    isEnabled: isEnabled,
+    isEnabled: false,
     delay: 800,
   });
   // Disable editing email after OTP sent or verified
