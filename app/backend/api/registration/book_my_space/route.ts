@@ -173,18 +173,22 @@ export async function POST(req: Request) {
     ];
 
     const userVisitorTemplate = bookMySpaceTemplateVisitor(dataField);
-
-    sendMail({
-      email: ADMIN_RECEIVER_MAIL,
-      subject: `New User Registered [${trackingId}]`,
-      html: visitorTemplate,
-    });
-
-    sendMail({
-      email: email,
-      subject: `Bes Book Your Space Confirmation - [${trackingId}]`,
-      html: userVisitorTemplate,
-    });
+    try {
+      await Promise.all([
+        sendMail({
+          email: ADMIN_RECEIVER_MAIL,
+          subject: `New User Registered [${trackingId}]`,
+          html: visitorTemplate,
+        }),
+        sendMail({
+          email: email,
+          subject: `Bes Book Your Space Confirmation - [${trackingId}]`,
+          html: userVisitorTemplate,
+        }),
+      ]);
+    } catch (e) {
+      console.error("❌ Error while sending mail to:", email, "\n", e);
+    }
     return NextResponse.json(
       {
         message: "User registered successfully",
