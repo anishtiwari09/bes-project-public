@@ -1,13 +1,5 @@
 "use client";
-import {
-  Button,
-  IconButton,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import OpenImage from "./OpenImage";
 import { Box } from "@mui/material";
