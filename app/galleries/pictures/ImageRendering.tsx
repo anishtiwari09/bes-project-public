@@ -5,6 +5,8 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import OpenImage from "./OpenImage";
@@ -17,6 +19,7 @@ export default function ImageRendering({
 }: any) {
   const [open, setOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState("");
+
   const handleOpen = (i: any) => {
     setSelectedImageIndex(i);
     setOpen(true);
@@ -57,16 +60,20 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
   handleOpen,
 }) => {
   // Generate random heights only once per render, matching images length
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const heights = React.useMemo(
     () => images.map(() => 350 + Math.floor(Math.random() * 200)),
     [images]
   );
-
+  console.log({ isMobile });
+  const mobileHeight = 300;
   return (
     <Box sx={{ px: 2, py: 4, bgcolor: "#f3f3f3" }}>
       <Box
         sx={{
-          columnCount: { xs: 2, sm: 3, md: 4 },
+          columnCount: { xs: 1, sm: 2, md: 4, "2xl": 6 },
           columnGap: 2,
         }}
       >
@@ -85,7 +92,8 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
               ":hover": {
                 transform: "scale(1.03)",
               },
-              height: heights[i],
+              height: isMobile ? mobileHeight : heights[i],
+              fill: "Highlight",
             }}
             onClick={() => {
               handleOpen(i);
@@ -110,5 +118,3 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
     </Box>
   );
 };
-
-MasonryGallery;
