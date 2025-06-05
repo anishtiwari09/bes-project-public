@@ -86,7 +86,7 @@ export default function BookYourSpace({
   const { calculatedBasePrice } = useSelectedSpacePrice({
     selectedSpace: currentSelectedSpace,
     totalArea: areaRequired,
-    isEnabled: false,
+    isEnabled: isEnabled,
     delay: 800,
   });
   // Disable editing email after OTP sent or verified
@@ -518,7 +518,7 @@ export default function BookYourSpace({
             </Typography>
           </Stack>
         )}
-        {!!isEnabled && !!calculatedBasePrice && (
+        {false && !!isEnabled && !!calculatedBasePrice && (
           <Typography component="p" fontSize={14} color={"green"}>
             You have to Pay {calculatedBasePrice} excluding gst
           </Typography>
