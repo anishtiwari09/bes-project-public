@@ -295,9 +295,32 @@ export default function BookYourSpace({
                   {isDisabled ? (
                     <h3>Otp is Verifying</h3>
                   ) : (
-                    <Button color="error" onClick={handleEmailVerify}>
-                      Verify Otp
-                    </Button>
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        sx={{
+                          backgroundColor: "#2ecc71",
+                          color: "#fff",
+                          "&:hover": { backgroundColor: "#27ae60" },
+                        }}
+                        onClick={handleEmailVerify}
+                      >
+                        Verify OTP
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        color="info"
+                        onClick={() => {
+                          console.log("working");
+                          setIsEmailVerified(false);
+                          setIsDisabled(false);
+                          setIsOtpSend(false);
+                          setIsDisabledOtpSendBtn(false);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </Stack>
                   )}
                 </Stack>
                 <EmailOtpLoader setIsOtpSend={setIsDisabledOtpSendBtn} />
