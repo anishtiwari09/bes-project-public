@@ -143,9 +143,8 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
   // Adjusted heights (only recalculated when required)
   const balancedHeights = useMemo(() => {
     if (!heights.length) return randomHeights; // Default to random heights if not yet set
-
     let columnCount = 4;
-    if (!md && !isBelow2XL) columnCount = 6;
+    // if (!md && !isBelow2XL) columnCount = 6;
 
     return adjustHeights([...heights], columnCount);
   }, [heights, randomHeights, isMobile, md, isBelow2XL]);
