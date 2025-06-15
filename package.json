@@ -9,13 +9,14 @@
     "lint": "next lint",
     "ts-migrate": "ts-migrate",
     "seed": "ts-node scripts/initilizeDB/initilizeDB"
-   
+  
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.9.0",
     "@mui/base": "^5.0.0-beta.40",
+    "@mui/icons-material": "^7.1.1",
     "@mui/material": "^5.15.5",
     "@sparticuz/chromium": "^133.0.0",
     "@types/node": "^22.14.0",

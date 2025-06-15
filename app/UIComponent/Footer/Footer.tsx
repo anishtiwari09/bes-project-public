@@ -3,6 +3,8 @@ import footerData from "./Utility/footerdb.json";
 import React from "react";
 import { handleGetDynamicLink } from "@/app/Utility/helper/helper";
 import  { Toaster } from "react-hot-toast";
+import SocialMediaFooter from "../social-media/social-media-footer";
+
 export default function Footer({ initialCount = 0 }) {
   return (
     <>
@@ -68,6 +70,7 @@ export default function Footer({ initialCount = 0 }) {
             </React.Fragment>
           ))}
         </div>
+        <SocialMediaFooter />
       </div>
     </>
   );
