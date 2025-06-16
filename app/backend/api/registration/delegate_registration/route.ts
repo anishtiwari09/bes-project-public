@@ -12,17 +12,19 @@ export async function POST(req: any) {
     const {
       name,
       organisation,
-      city,
+      department,
       mobile,
       email,
       query,
-      category,
+      session_type,
       payment_type,
       bank_name,
       transaction_no,
       amount,
       other_details,
       otp,
+      address
+      
     } = json;
     let user = await DelegateUser.findOne({
       $or: [{ email: email }, { mobile: mobile }],
@@ -56,32 +58,34 @@ export async function POST(req: any) {
       let newUser = new DelegateUser({
         name,
         organisation,
-        city,
+        department,
         mobile,
         email,
         query,
-        category,
+        session_type,
         payment_type,
         bank_name,
         transaction_no,
         amount,
         other_details,
+        postal_address:address
       });
       await newUser.save();
       let visitorTemplate = visitorUserDetailsTemplate(
         {
           name,
           organisation,
-          city,
+          department,
           mobile,
           email,
           query,
-          category,
+          session_type,
           payment_type,
           bank_name,
           transaction_no,
           amount,
           other_details,
+          "postal Address":address
         },
         "New Registration for Delegate"
       );

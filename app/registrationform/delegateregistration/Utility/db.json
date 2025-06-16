@@ -1,7 +1,7 @@
 [
   {
     "key": "name",
-    "name": "Name",
+    "name": "Full Name",
     "required": true,
     "fieldType": "text",
     "type": "text",
@@ -27,8 +27,22 @@
     "type": "text",
     "options": [],
     "showError": false,
-    "errorMsg": "This Field is Required"
+    "errorMsg": "This Field is Required",
+    "inactive":true
   },
+  
+  {
+    "key": "department",
+    "name": "Department",
+    "fieldType": "text",
+    "required": true,
+    "type": "text",
+    "options": [],
+    "showError": false,
+    "errorMsg": "This Field is Required",
+    "inactive":false
+  },
+  
   {
     "key": "mobile",
     "name": "Mobile",
@@ -57,7 +71,19 @@
     "type": "textarea",
     "options": [],
     "showError": false,
-    "errorMsg": "This Field is Required"
+    "errorMsg": "This Field is Required",
+    "inactive":true
+  },
+   {
+    "key": "address",
+    "name": "Postal Address",
+    "fieldType": "text",
+    "required": true,
+    "type": "textarea",
+    "options": [],
+    "showError": false,
+    "errorMsg": "This Field is Required",
+    "inactive":false
   },
   {
     "key": "category",
@@ -65,6 +91,7 @@
     "fieldType": "select",
     "required": true,
     "type": "select",
+    "inactive":true,
     "options": [
       {
         "key": "select_category",
@@ -106,6 +133,40 @@
         "value": "student",
         "label": "Student"
       }
+    ],
+    "value": "",
+    "showError": false,
+    "errorMsg": "This Field is Required"
+  },
+  {
+    "key": "session_type",
+    "name": "Fees Type",
+    "fieldType": "select",
+    "required": true,
+    "type": "select",
+    "inactive":false,
+    "options": [ {
+        "key": "select_category",
+        "value": " ",
+        "label": "Select Fees"
+      },
+      {
+        "key": "All the sessions @8000",
+        "value": "All the sessions @8000",
+        "label": "All the sessions @8000 INR"
+      },
+       
+       {
+        "key": "Sessions I to VII @4000",
+        "value":  "Sessions I to VII @4000",
+        "label":  "Sessions I to VII @4000 INR"
+      },
+       {
+        "key": "Sessions VIII to XII @4000",
+        "value": "Sessions VIII to XII @4000",
+        "label":  "Sessions VIII to XII @4000 INR"
+      }
+    
     ],
     "value": "",
     "showError": false,

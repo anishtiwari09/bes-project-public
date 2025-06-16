@@ -14,6 +14,9 @@ import mongoose, { Model } from "mongoose";
   tracking_id: number;
   createdAt?: Date;
   updatedAt?: Date;
+  department:string
+  session_type:string
+  postal_address:string
 }
 const delegateUserSchema = new mongoose.Schema<IDelegateUser>(
   {
@@ -25,10 +28,19 @@ const delegateUserSchema = new mongoose.Schema<IDelegateUser>(
       type: String,
       required: true,
     },
-    city: {
+      department: {
       type: String,
       required: true,
     },
+     postal_address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: false,
+    },
+     
     mobile: {
       type: String,
       required: true,
@@ -45,7 +57,11 @@ const delegateUserSchema = new mongoose.Schema<IDelegateUser>(
     },
     category: {
       type: String,
-      required: true,
+      required: false,
+    },
+      session_type: {
+      type: String,
+      required: false,
     },
     payment_type: {
       type: String,
