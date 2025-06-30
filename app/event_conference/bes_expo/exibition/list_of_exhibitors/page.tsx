@@ -116,7 +116,7 @@ export default function page() {
         <br />
         Gospell&nbsp;Digital&nbsp;Technology&nbsp;Pvt&nbsp;Ltd, China
         <br />
-        Grassvalley (a Belden Brand), USA
+        Grassvalley India Pvt Ltd
         <br />
         G-Technology, USA
         <br />
