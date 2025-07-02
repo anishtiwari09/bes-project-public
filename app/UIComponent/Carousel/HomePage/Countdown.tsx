@@ -14,7 +14,7 @@ export default function Countdown({
     timerRef.current = setInterval(() => {
       let currentDate = Date.now();
       let eventTime = new Date(from).getTime(); //Feb 16 , 2024 10:00:00 GMT+0530
-      let difference = eventTime - currentDate - 60 * 60 * 1000 * 24;
+      let difference = eventTime - currentDate ;
       difference = Math.floor(difference / 1000);
 
       if (difference > 0) {
