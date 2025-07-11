@@ -1,5 +1,5 @@
 export const HOMEPAGE = {
-  sliderImageDir: "/Images/imageGallery/",
+  sliderImageDir: "/Images/ImageGallery/",
   currentYear: "2025",
   expoStartDate: {
     date: "3",
@@ -29,7 +29,7 @@ export const NOTIFICATION_TEXT = {
       href: "/pdf/others/invitation-for-bes-expo-2025.pdf",
       target: "_blank",
     },
-      {
+    {
       text: "Registration form for delegate BES Expo 2025",
       href: "/pdf/others/registration-form-for-delegate-bes-expo-2025.pdf",
       target: "_blank",
