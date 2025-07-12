@@ -18,7 +18,7 @@ export default function ExclusiveGallery() {
     <div className="bg-[#f2f2f2] px-2">
       {" "}
       <h1 className="text-center text-[24px] font-bold py-8">
-        The Highlights From last Year
+        BES EXPO-2025 Conference Sessions
       </h1>
       <SliderComponent allImagePath={allImagePath} path={selectDb.folderPath} />
     </div>
