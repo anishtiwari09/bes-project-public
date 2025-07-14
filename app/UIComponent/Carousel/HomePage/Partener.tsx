@@ -41,7 +41,7 @@ export default function Partener() {
     <h1 className="text-center text-[24px] font-bold mb-8 mt-8">
       Media Partners
     </h1>
-    <div className="flex gap-8 flex-wrap justify-center partner_container">
+    {/* <div className="flex gap-8 flex-wrap justify-center partner_container">
       <div>
         <a href="https://www.broadcastandcablesat.co.in" target="_blank">
           <img src="/Images/expo2020/Media1.jpg" alt="Media 1" />
@@ -52,7 +52,7 @@ export default function Partener() {
           <img src="/Images/expo2020/Media2.jpg" alt="Media 2" />
         </a>
       </div>
-    </div>
+    </div> */}
   </div>
   
   );

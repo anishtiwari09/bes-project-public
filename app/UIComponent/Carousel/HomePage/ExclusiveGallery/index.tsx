@@ -12,7 +12,7 @@ export default function ExclusiveGallery() {
     allImagePath = [];
     console.log(e);
   }
-  console.log(allImagePath);
+
   if (!allImagePath.length) return null;
   return (
     <div className="bg-[#f2f2f2] px-2">

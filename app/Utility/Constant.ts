@@ -35,5 +35,5 @@ export const NOTIFICATION_TEXT = {
       target: "_blank",
     },
   ],
-  isShow: true,
+  isShow: false,
 };
