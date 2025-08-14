@@ -14,7 +14,7 @@ export const HOMEPAGE = {
     date: "31",
     displayMonth: "Janauary",
     year: 2026,
-    postFix: "th",
+    postFix: "st",
   },
 };
 
