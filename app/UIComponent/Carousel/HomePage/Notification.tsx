@@ -25,10 +25,10 @@ export default function Notification() {
       <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
         Hall No. 12A Pragati Maidan, New Delhi
       </h3>
-      <div className="text-xl text-[#222fda] font-bold w-fit m-auto text-center  mt-4">
+      {/* <div className="text-xl text-[#222fda] font-bold w-fit m-auto text-center  mt-4">
         Theme: Transforming the Media Landscape through AI:Create, Collaborate,
         Monetize
-      </div>
+      </div> */}
 
       {/* <a
         className="flex"
