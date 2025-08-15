@@ -10,7 +10,7 @@ export default function Notification() {
     <div className="flex gap-4 items-center flex-col w-full">
       <React.Fragment>
         <h4 className="font-bold text-4 text-white text-center ubuntu_font .conference_text conference_text emoisis_text text-8">
-          BES EXPO-2025: {HOMEPAGE.eventCount} International Conference &
+          BES EXPO-2026: {HOMEPAGE.eventCount} International Conference &
           Exhibition on Broadcast & Media Technology
         </h4>
         <h3 className="font-bold text-2xl text-[#faac1d] text-center conference_text conference_text2 text-shadow">
@@ -22,13 +22,13 @@ export default function Notification() {
         </h3>
       </React.Fragment>
 
-      {/* <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
-        Hall No. 8,9 & 10 Pragati Maidan, New Delhi
+      <h3 className="font-bold text-md text-white bg-[#ff008499] w-fit p-3 text-center conference_text">
+        Hall No. 12A Pragati Maidan, New Delhi
       </h3>
       <div className="text-xl text-[#222fda] font-bold w-fit m-auto text-center  mt-4">
         Theme: Transforming the Media Landscape through AI:Create, Collaborate,
         Monetize
-      </div> */}
+      </div>
 
       {/* <a
         className="flex"

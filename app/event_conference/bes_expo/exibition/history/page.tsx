@@ -9,7 +9,7 @@ export default function page() {
 
       <div>
         <p>
-          BES EXPO is in its 29th year of presentation. Organised for the first
+          BES EXPO is in its 30th year of presentation. Organised for the first
           time in 1995 in Hotel Taj Palace, New Delhi, the show is now organized
           in Pragati Maidan, New Delhi. The expo is rated as the biggest
           broadcast & media technology show in India.
