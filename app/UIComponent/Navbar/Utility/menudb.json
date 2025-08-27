@@ -1,5 +1,18 @@
 [
   {
+    "id": 0,
+    "name": "Home",
+    "path": "/",
+    "normalLink": false,
+    "parentPath": "",
+    "isSeprateParentPath": true,
+    "haveChildren": "no",
+    "isExpandable": false,
+    "isLink": true,
+    "isActive": true,
+    "subChildren": []
+  },
+  {
     "id": 1,
     "name": "About BES India",
     "path": "/about_bes",
