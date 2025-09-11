@@ -9,11 +9,11 @@ export default function page() {
         <p>
           A 3–day conference on the theme{" "}
           <strong>
-            Transforming the Media Landscape through AI:Create, Collaborate,
+            Broadcast Intelligence Innovation: Make in India for the World
             Monetize
           </strong>{" "}
-          will be held from <strong>3-5 July 2025</strong> in{" "}
-          <strong> Hall No 8,9 & 10 at Pragati Maidan, New Delhi </strong>{" "}
+          will be held from <strong>29-31 January 2026</strong> in{" "}
+          <strong> Hall 12A at Pragati Maidan, New Delhi </strong>{" "}
           concurrently with the exhibition. Delegates attending the conference
           invariably visit the exhibition. Besides keynote addresses, the
           conference will have presentations on current and future broadcast

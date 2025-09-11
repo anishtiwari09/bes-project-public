@@ -51,8 +51,8 @@ export default function FeeDetails() {
                   <StyledTableCell className="font-bold text-1xl">
                     Indian Exhibitor (Rs Per sqm)
                   </StyledTableCell>
-                  <StyledTableCell>13000/-</StyledTableCell>
-                  <StyledTableCell>12000/-</StyledTableCell>
+                  <StyledTableCell>14500/-</StyledTableCell>
+                  <StyledTableCell>13500/-</StyledTableCell>
                 </TableRow>
               </TableBody>
             </Table>
