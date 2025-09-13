@@ -1,37 +1,63 @@
 "use client";
-import { FormControl, MenuItem, Select } from "@mui/material";
-import  { useEffect, useRef, useState } from "react";
+
+import {
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+interface ImageOption {
+  name: string;
+  value: string | number;
+}
+
+interface SelectBoxProps {
+  allImagePath: ImageOption[];
+  selectedValue?: ImageOption;
+}
 
 export default function SelectBox({
   allImagePath,
-  selectedValue
-}: any) {
-  const [state, setState] = useState(selectedValue?.value);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const ref = useRef<HTMLButtonElement>(null);
-  const handleChange = (event: any) => {
-    setState(event.target.value);
-    setIsSubmit(true);
+  selectedValue,
+}: SelectBoxProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentValue =
+    searchParams.get("selectedValue") || selectedValue?.value || "";
+
+  const [state, setState] = useState<string | number>(currentValue);
+
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    setState(value);
+
+    // Update URL with query param
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("selectedValue", value);
+
+    router.push(`${window.location.pathname}?${params.toString()}`);
   };
+
+  // Sync state with URL if user navigates back/forward
   useEffect(() => {
-    if (isSubmit && ref.current) {
- 
-      ref.current.click();
-    }
-  }, [isSubmit]);
+    setState(searchParams.get("selectedValue") || selectedValue?.value || "");
+  }, [searchParams, selectedValue]);
+
   return (
-    <form className="flex w-[300px] gap-2 items-center" method="GET">
+    <div className="flex w-[300px] gap-2 items-center">
       <label>Select Year:</label>
       <FormControl className="flex-1" fullWidth>
         <Select value={state} onChange={handleChange} name="selectedValue">
-          {allImagePath.map((image: any, index: any) => (
+          {allImagePath.map((image, index) => (
             <MenuItem value={image.value} key={index}>
-              {image.name}{" "}
+              {image.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      <button className="hidden" ref={ref} type="submit"></button>
-    </form>
+    </div>
   );
 }

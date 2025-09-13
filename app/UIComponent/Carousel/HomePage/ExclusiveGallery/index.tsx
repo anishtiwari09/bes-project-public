@@ -5,8 +5,6 @@ export default function ExclusiveGallery() {
   let allImagePath: any = [];
   let selectDb = { folderPath: "/Images/homepage_exclusive_images" };
   try {
-    process.env.enviroment === "production" ? "/vercel/path0" : process.cwd();
-
     allImagePath = getSliderImages(selectDb?.folderPath);
   } catch (e) {
     allImagePath = [];

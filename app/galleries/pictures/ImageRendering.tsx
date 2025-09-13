@@ -54,17 +54,11 @@ const adjustHeights = (heights: number[], numberOfParts = 4): number[] => {
 
 interface ImageRenderingProps {
   path: string;
-  path2?: string;
   allImage: string[];
   message?: string;
 }
 
-const ImageRendering: React.FC<ImageRenderingProps> = ({
-  path,
-  allImage,
-  message,
-  path2,
-}) => {
+const ImageRendering: React.FC<ImageRenderingProps> = ({ path, allImage }) => {
   const [open, setOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null

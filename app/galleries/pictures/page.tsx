@@ -11,18 +11,10 @@ export default function page(req: any) {
   }
   let allImagePath: any = [];
   let message = "no message";
-  let path1 = "";
   try {
-    const fs = require("fs");
-    const path = require("path");
-    let directory =
-      process.env.enviroment === "production" ? "/vercel/path0" : process.cwd();
-
-    let files = path.join(directory, `/public${selectDb?.folderPath}`);
-    path1 = files;
     allImagePath = getSliderImages(selectDb?.folderPath);
-  } catch (e:any) {
-    allImagePath = []
+  } catch (e: any) {
+    allImagePath = [];
     message = e?.message || "something went wrong";
   }
 
@@ -33,7 +25,6 @@ export default function page(req: any) {
         path={selectDb?.folderPath}
         allImage={allImagePath}
         message={message}
-        path2={path1}
       />
     </div>
   );
