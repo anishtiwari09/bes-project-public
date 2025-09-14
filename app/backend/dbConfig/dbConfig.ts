@@ -1,43 +1,46 @@
 import mongoose from "mongoose";
 import { MONGODB_URI } from "../config/constant";
 
-// Use global variable to persist connection across serverless function invocations
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+// MongoDB connection states (numeric values)
+const CONNECTED = 1;
+const DISCONNECTED = 0;
+const CONNECTING = 2;
 
 export async function connect() {
-  // Return existing connection if available
-  if (cached.conn) {
-    return cached.conn;
+  // Check if the connection is already established
+  if (mongoose.connection.readyState === CONNECTED) {
+    return mongoose.connection;
   }
 
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI as string, {
-      bufferCommands: false,
+  // If the connection is still connecting or disconnected, try reconnecting
+  if (
+    mongoose.connection.readyState === CONNECTING ||
+    mongoose.connection.readyState === DISCONNECTED
+  ) {
+    await new Promise((resolve, reject) => {
+      mongoose.connection.once("connected", resolve);
+      mongoose.connection.once("error", reject);
     });
+    return mongoose.connection;
   }
 
+  // Create a new connection if needed
   try {
-    cached.conn = await cached.promise;
+    await mongoose.connect(MONGODB_URI as string, {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000, // Timeout for DB connection
+    });
 
-    const connection = mongoose.connection;
-
-    connection.on("connected", () => {
+    mongoose.connection.on("connected", () => {
       console.log("MongoDB connected");
     });
 
-    connection.on("error", (err) => {
+    mongoose.connection.on("error", (err) => {
       console.error("MongoDB connection error:", err);
-      // No process.exit — just logging
     });
 
-    return cached.conn;
+    return mongoose.connection;
   } catch (error) {
-    // Reset cached.promise so that next call can retry
-    cached.promise = null;
     console.error("MongoDB connection failed:", error);
     throw error;
   }
