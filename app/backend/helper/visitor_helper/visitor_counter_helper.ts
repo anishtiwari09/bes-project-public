@@ -30,6 +30,7 @@ export const updateVisitorCounter = async () => {
       options
     );
   } catch (e) {
-    console.log("error while updating counter", e);
+    console.log("error while updating counter: " + e?.message);
+    console.log(e);
   }
 };
