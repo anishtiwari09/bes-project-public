@@ -3,7 +3,7 @@ import VisitorCounter from "../../models/visitor_counter.model";
 import { InitialCounterValue } from "../types";
 connect();
 export const getVisitorCounter = async () => {
-  let initialCounterValue:InitialCounterValue|null = {numberOfVisitor:0};
+  let initialCounterValue: InitialCounterValue | null = { numberOfVisitor: 0 };
   try {
     initialCounterValue = await VisitorCounter.findOne(
       {},
@@ -21,11 +21,15 @@ export const updateVisitorCounter = async () => {
     upsert: true, // Create the document if it doesn't exist
     setDefaultsOnInsert: true, // Apply schema defaults on insert
   };
-  return VisitorCounter.findOneAndUpdate(
-    { numberOfVisitor: { $gte: 0 } },
-    {
-      $inc: { numberOfVisitor: 1 },
-    },
-    options
-  );
+  try {
+    return await VisitorCounter.findOneAndUpdate(
+      { numberOfVisitor: { $gte: 0 } },
+      {
+        $inc: { numberOfVisitor: 1 },
+      },
+      options
+    );
+  } catch (e) {
+    console.log("error while updating counter", e);
+  }
 };
