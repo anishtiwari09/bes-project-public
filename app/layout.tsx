@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: any) {
   let besSessionCookies = cookieStore.get("updateCounter")?.value;
 
   if (besSessionCookies) {
-    await updateVisitorCounter();
+    updateVisitorCounter();
   }
 
   return (
