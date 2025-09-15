@@ -1,16 +1,27 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { JSESSIONID } from "./app/backend/constant";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 // import { updateVisitorCounter } from "./app/backend/helper/visitor_helper/visitor_counter_helper";
-export async function middleware(request:any) {
+export async function middleware(request: any) {
   const cookieStore = cookies();
   let besSessionCookies = cookieStore.get("besSessionCookies");
   let response = NextResponse.next();
+  const cookieOptions = {
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 365 * 10, // 10 years in seconds
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict" as const, // ✅ Fix TypeScript error
+  };
+  response.cookies.delete("updateCounter");
   if (!besSessionCookies) {
-    response.cookies.set("besSessionCookies", Date.now().toString());
+    response.cookies.set(
+      "besSessionCookies",
+      Date.now().toString(),
+      cookieOptions
+    );
+    response.cookies.set("updateCounter", "true", cookieOptions);
     // updateVisitorCounter();
     // cookieStore.set("besSessionCookies", Date.now());
   }
@@ -42,17 +53,17 @@ export const config = {
   ],
 };
 
-function handleSignOut(request:Request) {
+function handleSignOut(request: Request) {
   let response = handleHomePageRedirect(request);
   response.cookies.delete(JSESSIONID);
   return response;
 }
-function isLogin(cookies:ReadonlyRequestCookies) {
+function isLogin(cookies: ReadonlyRequestCookies) {
   let token = cookies.get(JSESSIONID)?.value;
 
   return !!token;
 }
-function isProtectedRoute(pathname:string) {
+function isProtectedRoute(pathname: string) {
   pathname = pathname || "";
   for (let item of protectedRoute) {
     if (pathname.startsWith(item)) return true;
@@ -60,7 +71,7 @@ function isProtectedRoute(pathname:string) {
   return false;
 }
 
-function handleHomePageRedirect(request:Request) {
+function handleHomePageRedirect(request: Request) {
   return NextResponse.redirect(new URL("/", request.url));
 }
 const protectedRoute = ["/user/"];

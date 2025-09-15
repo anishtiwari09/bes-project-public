@@ -20,8 +20,9 @@ export const metadata = {
 export default async function RootLayout({ children }: any) {
   let intitalCounter = await getVisitorCounter();
   const cookieStore = cookies();
-  let besSessionCookies = cookieStore.get("besSessionCookies");
-  if (!besSessionCookies) {
+  let besSessionCookies = cookieStore.get("updateCounter")?.value;
+
+  if (besSessionCookies) {
     await updateVisitorCounter();
   }
 
