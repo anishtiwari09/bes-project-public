@@ -29,7 +29,7 @@ export default function Notification() {
         Theme: Broadcast Intelligence Innovation: Make in India for the World
       </div>
 
-      {/* <a
+ <a
         className="flex"
         href="/event_conference/bes_expo/exibition/participation_fee"
       >
@@ -42,14 +42,14 @@ export default function Notification() {
       </a>
       <a
         className="flex"
-        href="/pdf/others/sponsorship_opportunity.pdf"
+        href="/document/besexpo/brochure2026.pdf"
         target="_blank"
       >
         <Button
           variant="contained"
           className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
         >
-          Sponsorship Opportunities
+          Brochure 
         </Button>
       </a>
 
@@ -78,7 +78,7 @@ export default function Notification() {
           </Button>
         </Link>
       </div>
-     */}
+
       <Countdown
         from={
           HOMEPAGE.expoStartDate.month +
