@@ -12,7 +12,7 @@ export default function DownloadBrochureButton() {
       //   download="brochure.pdf"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed z-40 right-6 bottom-10"
+      className="fixed z-40 right-2 bottom-2"
     >
       <Button
         variant="contained"
@@ -22,11 +22,10 @@ export default function DownloadBrochureButton() {
         {/* Icon on top */}
 
         {/* Vertical Text */}
-        <span className="mt-1 flex flex-col leading-4">
-          {"BROCHURE | 2026".split("").map((letter, i) => (
-            <span key={i}>{letter}</span>
-          ))}
+        <span className="mt-1 [writing-mode:vertical-rl] [text-orientation:upright]  my-2">
+          BROCHURE ︱ 2026
         </span>
+
         <DownloadIcon fontSize="medium" />
       </Button>
     </Link>
