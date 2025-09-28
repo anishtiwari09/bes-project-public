@@ -32,7 +32,7 @@ import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import uniqueIdGenerator from "../helper/unique-id-generator";
 connect();
 export const signUpAction = async (prevState: any, formData: any) => {
-  let obj:{[key:string]:string} = {};
+  let obj: { [key: string]: string } = {};
   let retrieveParams = ["name", "email", "city", "organisation"];
   for (let key of retrieveParams) {
     let value = formData.get(key);
@@ -69,7 +69,7 @@ export const signUpAction = async (prevState: any, formData: any) => {
   }
   try {
     let user = await UserMember.findOne({ email: obj?.email });
-    if (user && user?.isEmailVerified) {
+    if (user && user.status === "email_verified") {
       return {
         ...prevState,
         status: false,
@@ -194,10 +194,10 @@ export const createNewPasswordAction = async (
 export const checkWheatherUserExist = async (obj: any) => {
   let isValid = false;
   try {
-    let data = await UserMember.findOne(obj);
+    let data = await UserMember.findOne({ email: "a" });
     isValid = !!data;
     if (isValid) {
-      isValid = !data?.isLinkExpired;
+      isValid = !!data;
     }
   } catch (e) {
     console.log(e);
@@ -244,7 +244,7 @@ export const forgotPasswordAction = async (prevState: any, formData: any) => {
 
 export const contactUsAction = async (prevState: any, formData: any) => {
   let retrieveParams = ["name", "email", "mobile", "message"];
-  let obj:{[key:string]:string} = {};
+  let obj: { [key: string]: string } = {};
   for (let key of retrieveParams) {
     let value = formData.get(key);
     value = value?.trim();
@@ -302,7 +302,7 @@ export const contactUsAction = async (prevState: any, formData: any) => {
 };
 export const feedbackFormAction = async (prevState: any, formData: any) => {
   let retrieveParams = feedbackDb;
-  let obj:{[key:string]:string} = {};
+  let obj: { [key: string]: string } = {};
   for (let params of retrieveParams) {
     const { key } = params;
     let value = formData.get(key);
@@ -346,7 +346,7 @@ export const feedbackFormAction = async (prevState: any, formData: any) => {
     });
     await new Promise<void>((res) => {
       setTimeout(() => {
-              res();
+        res();
       }, 5000);
     });
     return {
@@ -393,7 +393,10 @@ export const userLoginAction = async (prevState: any, formData: any) => {
       };
     }
 
-    let isValidPassword = await compareHashPassword(password, data.password);
+    let isValidPassword = await compareHashPassword(
+      password,
+      data.passwordHash
+    );
     if (!isValidPassword) {
       return {
         ...prevState,
@@ -401,7 +404,7 @@ export const userLoginAction = async (prevState: any, formData: any) => {
         message: "Email or Password is invalid.",
       };
     }
-    if (!data.isActive) {
+    if (data?.status !== "approved") {
       return {
         ...prevState,
         status: false,
@@ -410,7 +413,7 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     }
     let token = jwtGenerateToken({
       date: Date.now(),
-      verifiedToken: data.verifiedToken,
+      verifiedToken: data.verificationToken,
     });
     cookies().set(JSESSIONID, token, { secure: true });
     return { ...prevState, status: true, message: "Successfully Login", token };
@@ -458,7 +461,7 @@ export const getUserDetails = async (token: any) => {
 };
 
 export const updateMyAccountDetails = async (prevState: any, formData: any) => {
-  let user:{[key:string]:string} = {};
+  let user: { [key: string]: string } = {};
   let arr = [
     "name",
     "mobile",
@@ -477,7 +480,7 @@ export const updateMyAccountDetails = async (prevState: any, formData: any) => {
     console.log(e);
     return { ...prevState, status: false, message: "All Field is required..." };
   }
-  let token:RequestCookie|string|undefined = cookies()!.get(JSESSIONID);
+  let token: RequestCookie | string | undefined = cookies()!.get(JSESSIONID);
 
   token = token?.value || "";
 
@@ -490,7 +493,7 @@ export const updateMyAccountDetails = async (prevState: any, formData: any) => {
         status: true,
         message: "Account has been Successfully updated",
       };
-    } catch (e:any) {
+    } catch (e: any) {
       return {
         ...prevState,
         status: false,

@@ -7,9 +7,10 @@ import { decodeJsonToken, verifyJsonToken } from "@/app/helper/helper";
 import UserProfile from "../UserProfile/UserProfile";
 import { getUserName } from "@/app/backend/action/action";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import LoginButton from "../LoginButton/LoginButton";
 
 export default async function Navbar() {
-  let token:RequestCookie|string|undefined = cookies().get(JSESSIONID);
+  let token: RequestCookie | string | undefined = cookies().get(JSESSIONID);
   token = token?.value || "";
   let isValid = false;
   if (token) {
@@ -41,11 +42,11 @@ export default async function Navbar() {
         />
         <Header2 />
       </div>
-      {/* {isValid ? null : (
+      {isValid ? null : (
         <div className="absolute right-1 top-1 text-white">
           <LoginButton />
         </div>
-      )} */}
+      )}
     </div>
   );
 }
