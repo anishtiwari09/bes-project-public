@@ -3,7 +3,6 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
-  mobile: string;
   passwordHash?: string;
   role: "admin" | "regular";
   status:
@@ -11,7 +10,10 @@ export interface IUser extends Document {
     | "email_verified"
     | "profile_completed"
     | "approved"
-    | "rejected";
+    | "rejected"
+    | "inactive"
+    | "active"
+    | "deleted";
   rejectionMsg?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -23,7 +25,6 @@ const UserSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    mobile: { type: String, required: true, unique: true },
     passwordHash: { type: String },
     role: {
       type: String,
@@ -38,6 +39,9 @@ const UserSchema = new Schema<IUser>(
         "profile_completed",
         "approved",
         "rejected",
+        "inactive",
+        "active",
+        "deleted",
       ],
       default: "pending_email_verification",
     },
