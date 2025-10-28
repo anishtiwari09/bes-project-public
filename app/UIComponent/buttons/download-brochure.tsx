@@ -23,7 +23,7 @@ export default function DownloadBrochureButton() {
 
         {/* Vertical Text */}
         <span className="mt-1 [writing-mode:vertical-rl] [text-orientation:upright]  my-2">
-          BROCHURE ︱ 2026
+          BROCHURE
         </span>
 
         <DownloadIcon fontSize="medium" />
