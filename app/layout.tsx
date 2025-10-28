@@ -10,6 +10,7 @@ import {
 } from "./backend/helper/visitor_helper/visitor_counter_helper";
 import { cookies } from "next/headers";
 import { ENVIROMENT } from "./backend/constant";
+import DownloadBrochureButton from "./UIComponent/buttons/download-brochure";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }: any) {
         <Navbar />
         <div className="overflow-auto inner_page scroll-smooth">
           <div className="body_page">{children}</div>
+          <DownloadBrochureButton />
           <Footer initialCount={intitalCounter} />
         </div>
         {ENVIROMENT === "production" && <Analytics />}

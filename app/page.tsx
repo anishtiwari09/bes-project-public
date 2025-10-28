@@ -7,6 +7,7 @@ import { getSliderImages } from "./Utility/lib/file";
 import NotificationText from "./UIComponent/Carousel/HomePage/NotificationText";
 import ExclusiveGallery from "./UIComponent/Carousel/HomePage/ExclusiveGallery";
 import MarginTopSpace from "./UIComponent/Carousel/HomePage/MarginTopSpace";
+
 export default async function Home() {
   let data =
     getSliderImages(HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear) || [];

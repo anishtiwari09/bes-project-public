@@ -50,7 +50,7 @@ export async function POST(req: any) {
       qrCodeUrl,
       payload?.urn
     );
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as any, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
