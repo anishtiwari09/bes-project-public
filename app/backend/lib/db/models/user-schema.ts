@@ -1,19 +1,23 @@
+import User from "@/app/backend/models/user_member.model";
 import mongoose, { Document, Model, Schema } from "mongoose";
 
+export enum UserStatus {
+  PendingEmailVerification = "pending_email_verification",
+  EmailVerified = "email_verified",
+  ProfileCompleted = "profile_completed",
+  Approved = "approved",
+  Rejected = "rejected",
+  Inactive = "inactive",
+  Active = "active",
+  Deleted = "deleted",
+}
 export interface IUser extends Document {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   passwordHash?: string;
   role: "admin" | "regular";
-  status:
-    | "pending_email_verification"
-    | "email_verified"
-    | "profile_completed"
-    | "approved"
-    | "rejected"
-    | "inactive"
-    | "active"
-    | "deleted";
+  status: UserStatus;
   rejectionMsg?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -23,7 +27,8 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String },
     role: {
@@ -33,17 +38,8 @@ const UserSchema = new Schema<IUser>(
     },
     status: {
       type: String,
-      enum: [
-        "pending_email_verification",
-        "email_verified",
-        "profile_completed",
-        "approved",
-        "rejected",
-        "inactive",
-        "active",
-        "deleted",
-      ],
-      default: "pending_email_verification",
+      enum: Object.values(UserStatus),
+      default: UserStatus.PendingEmailVerification,
     },
     verificationToken: { type: String },
     verificationTokenExpires: { type: Date },
@@ -51,7 +47,7 @@ const UserSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
-const User: Model<IUser> =
+const UserModel: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
-export default User;
+export default UserModel;

@@ -1,7 +1,7 @@
 "use server";
 
 import { emailValidator, numberValidator } from "@/app/Utility/validator";
-import { connect } from "../dbConfig/dbConfig";
+
 import UserMember from "../models/user_member.model";
 import { generateUniqueLink } from "../helper/helper";
 import { sendMail } from "../api/sendMail/mail";
@@ -30,82 +30,34 @@ import { generateOtp } from "../helper/mailHelper/otpGenerator";
 import { updateEmailOtpOnDb } from "./updateDb";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import uniqueIdGenerator from "../helper/unique-id-generator";
-connect();
+import { signupSchema } from "@/app/_shared/validation-schema";
+import { UserService } from "../lib/services/user-services";
+import { SignupData, UserData } from "../lib/types";
+// connect();
 export const signUpAction = async (prevState: any, formData: any) => {
-  let obj: { [key: string]: string } = {};
-  let retrieveParams = ["name", "email", "city", "organisation"];
-  for (let key of retrieveParams) {
-    let value = formData.get(key);
-    value = value?.trim();
-    if (!value) {
-      return {
-        ...prevState,
-        status: false,
-        message: "Please fill all the field",
-      };
-    }
-    if (key === "email" && !emailValidator(value)) {
-      return {
-        ...prevState,
-        status: false,
-        message: "Email is not valid please try again with valid email",
-      };
-    }
-    if (key === "mobile" && !numberValidator(value)) {
-      return {
-        ...prevState,
-        status: false,
-        message:
-          "Mobile number is not valid please try again with valid number",
-      };
-    }
-    obj[key] = value;
-
-    // if (value.trim()) {
-    //   if(key==='email'){
-    //     let isValid='emai'
-    //   }
-    // }
+  console.log({ formData });
+  const data = formData || {};
+  const parsedData = signupSchema.safeParse(data);
+  if (!parsedData.success) {
+    const firstError = parsedData.error.errors[0].message;
+    return { ...prevState, status: false, message: firstError };
   }
-  try {
-    let user = await UserMember.findOne({ email: obj?.email });
-    if (user && user.status === "email_verified") {
-      return {
-        ...prevState,
-        status: false,
-        message:
-          "This email is already registed with us please register with different email.",
-      };
-    }
-  } catch (e) {
-    console.log(e);
-    return {
-      ...prevState,
-      status: false,
-      message: "Something went wrong please try again later",
-    };
-  }
+  const obj = parsedData.data;
   try {
     let uniqueId = generateUniqueLink();
-    const options = {
-      new: true, // Return the updated document
-      upsert: true, // Create the document if it doesn't exist
-      setDefaultsOnInsert: true, // Apply schema defaults on insert
-    };
-
-    await UserMember.findOneAndUpdate(
-      { email: obj?.email },
-      {
-        ...obj,
-        token: uniqueId,
-        tracking_id: uniqueId,
-        tokenGeneratedTime: Date.now(),
-      },
-      options
-    );
+    const user = new UserService();
+    let passwordHash = await generateBcryptPassword(obj.password, 4);
     let jwtToken = jwtGenerateToken({ email: obj?.email });
     let url = ENVIROMENT === "production" ? PRODUCTION_URL : LOCAL_URL;
     url += "/account_setup/" + uniqueId + "/" + jwtToken;
+    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+    await user.createUser({
+      ...obj,
+      passwordHash: passwordHash,
+      verificationToken: jwtToken,
+      unique: uniqueId,
+      verificationTokenExpires,
+    } as SignupData);
     try {
       await sendMail({
         email: obj.email,
@@ -115,18 +67,11 @@ export const signUpAction = async (prevState: any, formData: any) => {
     } catch (e) {
       console.log(e);
     }
-    return {
-      ...prevState,
-      status: true,
-      message:
-        "Account Creation has been successfully done, a verification link has been sent to you on email.",
-    };
   } catch (e) {
-    console.log(e);
     return {
       ...prevState,
       status: false,
-      message: "Something went worng",
+      message: e?.message || "Something went wrong please try again later",
     };
   }
 };

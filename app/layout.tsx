@@ -4,11 +4,6 @@ import Navbar from "./UIComponent/Navbar/Navbar";
 import Footer from "./UIComponent/Footer/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
-import {
-  getVisitorCounter,
-  updateVisitorCounter,
-} from "./backend/helper/visitor_helper/visitor_counter_helper";
-import { cookies } from "next/headers";
 import { ENVIROMENT } from "./backend/constant";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,21 +13,21 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: any) {
-  let intitalCounter = await getVisitorCounter();
-  const cookieStore = cookies();
-  let besSessionCookies = cookieStore.get("updateCounter")?.value;
+  // let intitalCounter = await getVisitorCounter();
+  // const cookieStore = cookies();
+  // let besSessionCookies = cookieStore.get("updateCounter")?.value;
 
-  if (besSessionCookies) {
-    updateVisitorCounter();
-  }
+  // if (besSessionCookies) {
+  //   updateVisitorCounter();
+  // }
 
   return (
     <html lang="en" className="h-full">
-      <body className="h-full overflow-hidden">
+      <body className="h-full overflow-hidden flex flex-col">
         <Navbar />
         <div className="overflow-auto inner_page scroll-smooth">
           <div className="body_page">{children}</div>
-          <Footer initialCount={intitalCounter} />
+          <Footer initialCount={0} />
         </div>
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
