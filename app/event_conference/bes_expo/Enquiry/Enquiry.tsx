@@ -34,7 +34,7 @@ export default function Enquiry() {
               <br />
               <strong>E-mail:</strong>{" "}
               <a href="mailto:exhibition@besindia.com">
-                exhibition@besindia.com
+                exhibition@besindia.com; <br /> bes.artiuniyal@gmail.com
               </a>
             </td>
           </tr>

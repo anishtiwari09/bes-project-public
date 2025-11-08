@@ -48,7 +48,8 @@ export default function EventDetails() {
                 For Exhibition: <br />
                 The Coordinator BES EXPO
                 <br />
-                E-mail: exhibition@besindia.com
+                E-mail:  bes.artiuniyal@gmail.com  
+                <br/>exhibition@besindia.com
               </td>
             </tr>
           </tbody>
