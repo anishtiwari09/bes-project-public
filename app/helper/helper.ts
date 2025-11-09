@@ -1,8 +1,7 @@
-
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 export const jwtGenerateToken = (user: any) => {
-  return jwt.sign({ user }, 'add', {
+  return jwt.sign({ user }, "add", {
     expiresIn: "24h",
   });
 };
@@ -21,7 +20,7 @@ export const verifyJsonToken = (token: any) => {
 export const decodeJsonToken = (token: any) => {
   let verifiedToken = "";
   try {
-    let obj:any = jwt.decode(token);
+    let obj: any = jwt.decode(token);
     verifiedToken = obj?.user?.verifiedToken || "";
   } catch (e) {
     console.log("invalid token");
@@ -37,7 +36,7 @@ export const isValidPassword = (str: any) => {
   return regex.test(str);
 };
 
-export const generateBcryptPassword = async (original: any, salt = 4) => {
+export const generateBcryptPassword = async (original: any, salt = 5) => {
   return bcrypt.hash(original, salt);
 };
 

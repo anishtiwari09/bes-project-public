@@ -22,7 +22,7 @@ export const generateSignupTemplate = (link: any) => {
                 <tr>
                   <td style="padding: 40px 0px 0px;">
                     <div style="text-align: left;">
-                      <div style="padding-bottom: 20px;"><img src="${LOGO_URL}" alt="Company" style="width: 56px;">
+                      <div><img src="${LOGO_URL}" alt="Company" style="width: 100%;">
                       </div>
                     </div>
                     <div style="padding: 20px; background-color: rgb(255, 255, 255);">

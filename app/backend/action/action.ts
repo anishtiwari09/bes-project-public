@@ -7,7 +7,6 @@ import { generateUniqueLink } from "../helper/helper";
 import { sendMail } from "../api/sendMail/mail";
 import { generateSignupTemplate } from "../helper/mailHelper/template/signup_template";
 import {
-  compareHashPassword,
   decodeJsonToken,
   generateBcryptPassword,
   jwtGenerateToken,
@@ -17,7 +16,6 @@ import {
   PRODUCTION_URL,
   ADMIN_RECEIVER_MAIL,
   JSESSIONID,
-  ENVIROMENT,
   PREFIX_REFERENCE_NUMBER,
 } from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
@@ -33,9 +31,11 @@ import uniqueIdGenerator from "../helper/unique-id-generator";
 import { signupSchema } from "@/app/_shared/validation-schema";
 import { UserService } from "../lib/services/user-services";
 import { SignupData, UserData } from "../lib/types";
+import { expiryDate } from "../helper/util";
+import EmailNotification from "../lib/services/notification/email-notification";
+import JwtTokenService from "../lib/services/jwt-service";
 // connect();
 export const signUpAction = async (prevState: any, formData: any) => {
-  console.log({ formData });
   const data = formData || {};
   const parsedData = signupSchema.safeParse(data);
   if (!parsedData.success) {
@@ -46,11 +46,12 @@ export const signUpAction = async (prevState: any, formData: any) => {
   try {
     let uniqueId = generateUniqueLink();
     const user = new UserService();
-    let passwordHash = await generateBcryptPassword(obj.password, 4);
-    let jwtToken = jwtGenerateToken({ email: obj?.email });
-    let url = ENVIROMENT === "production" ? PRODUCTION_URL : LOCAL_URL;
-    url += "/account_setup/" + uniqueId + "/" + jwtToken;
-    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+    let passwordHash = await generateBcryptPassword(obj.password);
+
+    const jwtService = new JwtTokenService();
+    let jwtToken = await jwtService.createToken({ email: obj?.email }, "24h");
+    let url = "/account_setup/" + uniqueId + "/" + jwtToken;
+    const verificationTokenExpires = expiryDate(24); // 24 hours from now
     await user.createUser({
       ...obj,
       passwordHash: passwordHash,
@@ -58,19 +59,17 @@ export const signUpAction = async (prevState: any, formData: any) => {
       unique: uniqueId,
       verificationTokenExpires,
     } as SignupData);
-    try {
-      await sendMail({
-        email: obj.email,
-        subject: "Action Required For New Account Creation",
-        html: generateSignupTemplate(url),
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    await EmailNotification.memberSignup(obj?.email, url);
+    return {
+      ...prevState,
+      status: true,
+      message: "Account created successfully, please check your email",
+    };
   } catch (e) {
     return {
       ...prevState,
       status: false,
+
       message: e?.message || "Something went wrong please try again later",
     };
   }
@@ -136,17 +135,10 @@ export const createNewPasswordAction = async (
   }
 };
 
-export const checkWheatherUserExist = async (obj: any) => {
-  let isValid = false;
-  try {
-    let data = await UserMember.findOne({ email: "a" });
-    isValid = !!data;
-    if (isValid) {
-      isValid = !!data;
-    }
-  } catch (e) {
-    console.log(e);
-  }
+export const checkAndUpdateToken = async (obj: { token: string }) => {
+  let user = new UserService();
+  const isValid = await user.validateAndUpdateToken(obj?.token);
+
   return isValid;
 };
 export const forgotPasswordAction = async (prevState: any, formData: any) => {
@@ -328,46 +320,42 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     };
   }
   try {
-    const data = await UserMember.findOne({ email });
-
-    if (!data) {
+    const user = new UserService();
+    const userData = await user.getUserByEmail(email);
+    if (!userData) {
       return {
         ...prevState,
         status: false,
-        message: "Email or Password is invalid.",
+        message: "Invalid email or password.",
       };
     }
-
-    let isValidPassword = await compareHashPassword(
-      password,
-      data.passwordHash
+    const jwtService = new JwtTokenService();
+    const isPasswordValid = await jwtService.comparePassword(
+      userData.passwordHash,
+      password
     );
-    if (!isValidPassword) {
+
+    if (!isPasswordValid) {
       return {
         ...prevState,
         status: false,
-        message: "Email or Password is invalid.",
+        message: "Invalid email or password.",
       };
     }
-    if (data?.status !== "approved") {
-      return {
-        ...prevState,
-        status: false,
-        message: "Your account is not active.",
-      };
-    }
-    let token = jwtGenerateToken({
-      date: Date.now(),
-      verifiedToken: data.verificationToken,
-    });
-    cookies().set(JSESSIONID, token, { secure: true });
-    return { ...prevState, status: true, message: "Successfully Login", token };
+
+    let cookie = await cookies();
+    cookie.set("isLogi", "true");
+    return {
+      ...prevState,
+      status: true,
+      message: "Login successful.",
+    };
   } catch (e) {
-    console.log(e);
+    console.error("Error while signin", e?.message);
     return {
       ...prevState,
       status: false,
-      message: "Something went wrong please try again later.",
+      message: "Something went wrong, please try again later.",
     };
   }
 };
@@ -384,8 +372,9 @@ export const getUserName = async (token: any) => {
     console.log(e);
   }
 };
-export const deleteCookiesAction = (key: any) => {
-  cookies().delete(key);
+export const deleteCookiesAction = async (key: any) => {
+  let cookie = await cookies();
+  cookie.delete(key);
 };
 
 export const getUserDetails = async (token: any) => {
@@ -425,7 +414,8 @@ export const updateMyAccountDetails = async (prevState: any, formData: any) => {
     console.log(e);
     return { ...prevState, status: false, message: "All Field is required..." };
   }
-  let token: RequestCookie | string | undefined = cookies()!.get(JSESSIONID);
+  let cookie = await cookies();
+  let token: RequestCookie | string | undefined = cookie!.get(JSESSIONID);
 
   token = token?.value || "";
 

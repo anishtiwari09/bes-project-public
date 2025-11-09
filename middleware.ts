@@ -5,7 +5,7 @@ import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adap
 
 // import { updateVisitorCounter } from "./app/backend/helper/visitor_helper/visitor_counter_helper";
 export async function middleware(request: any) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   let besSessionCookies = cookieStore.get("besSessionCookies");
   let response = NextResponse.next();
   const cookieOptions = {

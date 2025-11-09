@@ -8,14 +8,17 @@ import UserProfile from "../UserProfile/UserProfile";
 import { getUserName } from "@/app/backend/action/action";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import LoginButton from "../LoginButton/LoginButton";
+import JwtTokenService from "@/app/backend/lib/services/jwt-service";
 
 export default async function Navbar() {
-  let token: RequestCookie | string | undefined = cookies().get(JSESSIONID);
+  const cookieStore = await cookies();
+  let token: RequestCookie | string | undefined = cookieStore.get(JSESSIONID);
   token = token?.value || "";
   let isValid = false;
   if (token) {
     try {
-      let valid = verifyJsonToken(token);
+      const jswonService = new JwtTokenService();
+      let valid = await jswonService.verifyToken(token);
       isValid = valid;
     } catch (e) {
       console.log(e);

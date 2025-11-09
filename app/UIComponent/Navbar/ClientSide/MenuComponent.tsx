@@ -112,7 +112,7 @@ export default function MenuCompoenent({ data, index, open, setOpen }: any) {
                       let newPath = sub_item?.isSeprateParentPath
                         ? sub_item?.parentPath
                         : parentPath + item.path;
-                      if (!sub_item?.isActive) return null;
+                      if (!sub_item?.isActive) null;
                       return (
                         <li key={sub_item.id}>
                           <MenuItem
