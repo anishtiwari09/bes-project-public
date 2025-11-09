@@ -29,7 +29,7 @@ export default function Notification() {
         Theme: Broadcast Intelligence Innovation: Make in India for the World
       </div>
 
- <a
+      <a
         className="flex"
         href="/event_conference/bes_expo/exibition/participation_fee"
       >
@@ -40,18 +40,32 @@ export default function Notification() {
           Book Your Space
         </Button>
       </a>
-      <a
-        className="flex"
-        href="/document/besexpo/brochure2026.pdf"
-        target="_blank"
-      >
-        <Button
-          variant="contained"
-          className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+      <div className="flex gap-2 justify-center">
+        <a
+          className="flex"
+          href="/pdf/others/sponsorship_opportunity.pdf"
+          target="_blank"
         >
-          Brochure 
-        </Button>
-      </a>
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+            Sponsorship Opportunities
+          </Button>
+        </a>
+        <a
+          className="flex"
+          href="/document/besexpo/brochure2026.pdf"
+          target="_blank"
+        >
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+            Brochure
+          </Button>
+        </a>
+      </div>
 
       <div className="flex gap-2 justify-center mt-4 registration_btn_container">
         <Link href={"/registrationform/visitor"} target="_self">
