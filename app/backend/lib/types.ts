@@ -15,3 +15,15 @@ export interface SignupData extends UserData {
 }
 
 export type UserObject = FlattenMaps<IUser> & { _id: string };
+export interface ILoginDetails {
+  refreshToken?: string;
+  accessToken?: string;
+  isLogin: boolean;
+  verifyUsingOtp: boolean;
+  payloadToken?: string;
+}
+
+export interface IAuthToken {
+  accessToken: string;
+  refreshToken: string;
+}

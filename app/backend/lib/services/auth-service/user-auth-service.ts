@@ -1,5 +1,6 @@
+import mongoConnection from "../../db/db-config";
 import AuthSessionModel from "../../db/models/auth_session";
-import { UserObject } from "../../types";
+import { IAuthToken, ILoginDetails, UserObject } from "../../types";
 import JwtTokenService from "../jwt-service";
 import { CryptoToken } from "../jwt-service/crypto-token";
 import { UserService } from "../user-services";
@@ -14,12 +15,13 @@ export default class UserAuthService {
 
     isAdmin: boolean,
     sessionData: Record<string, string | number | boolean>
-  ) {
+  ): Promise<IAuthToken> {
+    await mongoConnection.connect();
     const refreshTokenService = new CryptoToken();
     const jwtTokenService = new JwtTokenService();
     const refreshToken = refreshTokenService.generateToken(user.id, user.email);
     let day = isAdmin ? 1 : 7;
-    const jwtToken = jwtTokenService.createTokenUsingRefresh(
+    const jwtToken = await jwtTokenService.createTokenUsingRefresh(
       JSON.stringify({ name: user?.first_name, email: user?.email }),
       refreshToken,
       "30Minutes"
@@ -36,11 +38,12 @@ export default class UserAuthService {
     await session.save();
     return {
       refreshToken,
-      jwtToken,
+      accessToken: jwtToken,
     };
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<ILoginDetails | null> {
+    await mongoConnection.connect();
     const user = await this.user.getUserByEmail(email);
     if (!user) {
       return null;
@@ -60,16 +63,21 @@ export default class UserAuthService {
         password
       );
       return {
-        user,
         verifyUsingOtp: false,
         payloadToken,
+        isLogin: false,
       };
     }
     let tokens = await this.createAuthSession(user, false, {});
 
-    return tokens;
+    return {
+      ...tokens,
+      isLogin: true,
+      verifyUsingOtp: false,
+    };
   }
   async otpLogin(otp: string, payload: string) {
+    await mongoConnection.connect();
     // verify otp
     const cryptoTokenService = new CryptoToken();
     const { email, password } =

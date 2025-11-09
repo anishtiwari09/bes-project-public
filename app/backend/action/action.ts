@@ -34,6 +34,8 @@ import { SignupData, UserData } from "../lib/types";
 import { expiryDate } from "../helper/util";
 import EmailNotification from "../lib/services/notification/email-notification";
 import JwtTokenService from "../lib/services/jwt-service";
+import UserAuthService from "../lib/services/auth-service/user-auth-service";
+import { CookiesService } from "../lib/services/cookies-service";
 // connect();
 export const signUpAction = async (prevState: any, formData: any) => {
   const data = formData || {};
@@ -320,35 +322,36 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     };
   }
   try {
-    const user = new UserService();
-    const userData = await user.getUserByEmail(email);
-    if (!userData) {
+    const authService = new UserAuthService();
+    const authSession = await authService.login(email, password);
+
+    if (!authSession) {
       return {
         ...prevState,
         status: false,
         message: "Invalid email or password.",
       };
     }
-    const jwtService = new JwtTokenService();
-    const isPasswordValid = await jwtService.comparePassword(
-      userData.passwordHash,
-      password
+    if (authSession.verifyUsingOtp)
+      return {
+        ...prevState,
+        status: false,
+        verifyUsingOtp: true,
+        payload: authSession.payloadToken,
+        message: "",
+        isLogin: false,
+      };
+    CookiesService.setLoginCookies(
+      authSession.accessToken,
+      authSession.refreshToken
     );
-
-    if (!isPasswordValid) {
-      return {
-        ...prevState,
-        status: false,
-        message: "Invalid email or password.",
-      };
-    }
-
-    let cookie = await cookies();
-    cookie.set("isLogi", "true");
     return {
       ...prevState,
+      message: "Login Successfull",
       status: true,
-      message: "Login successful.",
+      verifyUsingOtp: false,
+      payload: "",
+      isLogin: true,
     };
   } catch (e) {
     console.error("Error while signin", e?.message);
