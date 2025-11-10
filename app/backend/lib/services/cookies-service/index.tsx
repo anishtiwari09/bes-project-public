@@ -38,6 +38,9 @@ export class CookiesService {
       { key: "__z9x7k2m", value: refreshToken },
     ]);
   }
+  static async deleteLoginCookies() {
+    this.deleteCoookies(["_hdr", "_pld", "_sig", "__z9x7k2m"]);
+  }
   static async getLoginCookies(): Promise<IAuthToken> {
     let cookie = await cookies();
     const refreshToken = cookie.get("__z9x7k2m");

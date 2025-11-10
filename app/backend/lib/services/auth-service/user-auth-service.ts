@@ -1,6 +1,11 @@
 import mongoConnection from "../../db/db-config";
 import AuthSessionModel from "../../db/models/auth_session";
-import { IAuthToken, ILoginDetails, UserObject } from "../../types";
+import {
+  IAuthSession,
+  IAuthToken,
+  ILoginDetails,
+  UserObject,
+} from "../../types";
 import JwtTokenService from "../jwt-service";
 import { CryptoToken } from "../jwt-service/crypto-token";
 import { UserService } from "../user-services";
@@ -10,6 +15,21 @@ export default class UserAuthService {
   constructor() {
     this.user = new UserService();
   }
+  createLoginAccessToken;
+  async loginAccessToken(
+    name: string,
+    email: string,
+    role: string,
+    refreshToken: string
+  ): Promise<string> {
+    const jwtTokenService = new JwtTokenService();
+    const jwtToken = await jwtTokenService.createTokenUsingRefresh(
+      JSON.stringify({ name: name, email: email }),
+      refreshToken,
+      "30Minutes"
+    );
+    return jwtToken;
+  }
   async createAuthSession(
     user: UserObject,
 
@@ -18,14 +38,10 @@ export default class UserAuthService {
   ): Promise<IAuthToken> {
     await mongoConnection.connect();
     const refreshTokenService = new CryptoToken();
-    const jwtTokenService = new JwtTokenService();
+
     const refreshToken = refreshTokenService.generateToken(user.id, user.email);
     let day = isAdmin ? 1 : 7;
-    const jwtToken = await jwtTokenService.createTokenUsingRefresh(
-      JSON.stringify({ name: user?.first_name, email: user?.email }),
-      refreshToken,
-      "30Minutes"
-    );
+
     const session = new AuthSessionModel({
       userId: user.id,
       refreshToken,
@@ -38,7 +54,12 @@ export default class UserAuthService {
     await session.save();
     return {
       refreshToken,
-      accessToken: jwtToken,
+      accessToken: await this.loginAccessToken(
+        user.first_name,
+        user.email,
+        user.role,
+        refreshToken
+      ),
     };
   }
 
@@ -95,5 +116,29 @@ export default class UserAuthService {
       login: true,
       tokens,
     };
+  }
+  async regenerateAccessToken(
+    refreshToken: string
+  ): Promise<IAuthSession | null> {
+    await mongoConnection.connect();
+
+    const session = await AuthSessionModel.findOne({
+      token: refreshToken,
+    })
+      .populate("userId")
+      .exec();
+    if (!session) return null;
+    const currentDate = new Date();
+    if (session.expiresAt < currentDate) {
+      return null;
+    }
+    const userDetails = session.userId as any as UserObject;
+    const newAccessToken = await this.loginAccessToken(
+      userDetails.first_name,
+      userDetails.email,
+      userDetails.role,
+      refreshToken
+    );
+    return { accessToken: newAccessToken };
   }
 }

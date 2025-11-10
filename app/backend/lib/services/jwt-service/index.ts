@@ -26,13 +26,20 @@ export default class JwtTokenService {
       expiresIn: duration,
     });
   }
-  async decodeTokenUsingRefresh(token: string, refreshToken: string) {
+
+  async verifyLoginTokenWithExpiry(token: string, refreshToken: string) {
     try {
-      return !!jwt.verify(token, this.secretKey + refreshToken);
+      !!jwt.verify(token, this.secretKey + refreshToken);
+      return { valid: true, expired: false };
     } catch (e) {
-      return false;
+      if (e.name === "TokenExpiredError") {
+        return { valid: false, expired: true };
+      }
+    } finally {
+      return { valid: false, expired: false };
     }
   }
+
   async verifyToken(token: string): Promise<boolean> {
     try {
       return !!jwt.verify(token, this.secretKey);
@@ -40,6 +47,7 @@ export default class JwtTokenService {
       return false;
     }
   }
+  async createLoginAccessToken(name: string, email: string) {}
   async comparePassword(
     passwordHash: string,
     password: string

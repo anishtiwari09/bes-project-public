@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ISession extends Document {
   userId: mongoose.Types.ObjectId;
@@ -75,6 +75,6 @@ const sessionSchema = new Schema<ISession>(
   { timestamps: true }
 );
 
-const AuthSessionModel =
+const AuthSessionModel: Model<ISession> =
   mongoose.models.Session || mongoose.model<ISession>("Session", sessionSchema);
 export default AuthSessionModel;

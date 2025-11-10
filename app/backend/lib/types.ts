@@ -27,3 +27,7 @@ export interface IAuthToken {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IAuthSession {
+  accessToken: string;
+}
