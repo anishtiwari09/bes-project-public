@@ -18,7 +18,7 @@ export default function FeeDetails() {
       <h2 className="text-[26px] font-bold">Participation Fee </h2>
       <br />
       <h4 className="font-bold text-xl">
-        Participation fee for space in BES EXPO 2025 in the shell, raw-space &
+        Participation fee for space in BES EXPO 2026 in the shell, raw-space &
         open-space schemes is as follows
       </h4>
       <br />
