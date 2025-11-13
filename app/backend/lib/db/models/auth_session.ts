@@ -25,7 +25,7 @@ export interface ISession extends Document {
   lastActivityAt: Date;
   expiresAt: Date;
   isValid: boolean;
-  status: "active" | "expired" | "revoked" | "verification_pending";
+  status: "active" | "expired" | "revoked" | "verification_pending" | "signout";
 }
 
 const sessionSchema = new Schema<ISession>(
@@ -67,7 +67,7 @@ const sessionSchema = new Schema<ISession>(
     expiresAt: { type: Date, required: true },
     status: {
       type: String,
-      enum: ["active", "expired", "revoked", "verification_pending"],
+      enum: ["active", "expired", "revoked", "verification_pending", "signout"],
       default: "active",
     },
     isValid: { type: Boolean, default: true },

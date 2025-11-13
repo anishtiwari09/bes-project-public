@@ -3,9 +3,12 @@ import AuthSessionModel from "../../db/models/auth_session";
 import {
   IAuthSession,
   IAuthToken,
+  IAuthUser,
   ILoginDetails,
+  PlainUserObject,
   UserObject,
 } from "../../types";
+import { CookiesService } from "../cookies-service";
 import JwtTokenService from "../jwt-service";
 import { CryptoToken } from "../jwt-service/crypto-token";
 import { UserService } from "../user-services";
@@ -17,34 +20,38 @@ export default class UserAuthService {
   }
   createLoginAccessToken;
   async loginAccessToken(
-    name: string,
-    email: string,
-    role: string,
+    userDetails: IAuthUser,
     refreshToken: string
   ): Promise<string> {
+    const { firstName, lastName, email, role, status } = userDetails;
     const jwtTokenService = new JwtTokenService();
     const jwtToken = await jwtTokenService.createTokenUsingRefresh(
-      JSON.stringify({ name: name, email: email }),
+      {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        role: role,
+        status: status,
+      },
       refreshToken,
-      "30Minutes"
+      "30m"
     );
     return jwtToken;
   }
   async createAuthSession(
-    user: UserObject,
+    user: PlainUserObject,
 
     isAdmin: boolean,
     sessionData: Record<string, string | number | boolean>
   ): Promise<IAuthToken> {
     await mongoConnection.connect();
     const refreshTokenService = new CryptoToken();
-
     const refreshToken = refreshTokenService.generateToken(user.id, user.email);
     let day = isAdmin ? 1 : 7;
 
     const session = new AuthSessionModel({
       userId: user.id,
-      refreshToken,
+      token: refreshToken,
       loginMethod: "password",
 
       expiresAt: new Date(Date.now() + day * 24 * 60 * 60 * 1000), // 7 days
@@ -55,9 +62,13 @@ export default class UserAuthService {
     return {
       refreshToken,
       accessToken: await this.loginAccessToken(
-        user.first_name,
-        user.email,
-        user.role,
+        {
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+        },
         refreshToken
       ),
     };
@@ -90,12 +101,33 @@ export default class UserAuthService {
       };
     }
     let tokens = await this.createAuthSession(user, false, {});
-
     return {
       ...tokens,
       isLogin: true,
       verifyUsingOtp: false,
     };
+  }
+  async logout() {
+    try {
+      const token = await CookiesService.getLoginCookies();
+      await mongoConnection.connect();
+      await AuthSessionModel.updateOne(
+        { token: token?.refreshToken },
+        {
+          status: "signout",
+          expiresAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        }
+      );
+    } catch (e) {
+      console.log("Signout error -1 ", e?.message);
+    }
+    try {
+      let cookieManager = await CookiesService.deleteLoginCookies();
+    } catch (e) {
+      console.log("Signout error -2 ", e?.message);
+    } finally {
+      return true;
+    }
   }
   async otpLogin(otp: string, payload: string) {
     await mongoConnection.connect();
@@ -129,14 +161,18 @@ export default class UserAuthService {
       .exec();
     if (!session) return null;
     const currentDate = new Date();
-    if (session.expiresAt < currentDate) {
+    if (session.expiresAt < currentDate || session.status !== "active") {
       return null;
     }
     const userDetails = session.userId as any as UserObject;
     const newAccessToken = await this.loginAccessToken(
-      userDetails.first_name,
-      userDetails.email,
-      userDetails.role,
+      {
+        firstName: userDetails.first_name,
+        lastName: userDetails.last_name,
+        email: userDetails.email,
+        role: userDetails.role,
+        status: userDetails.status,
+      },
       refreshToken
     );
     return { accessToken: newAccessToken };

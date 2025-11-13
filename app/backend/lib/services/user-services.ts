@@ -2,8 +2,9 @@ import { expiryDate, sleep } from "../../helper/util";
 
 import mongoConnection from "../db/db-config";
 import UserModel, { UserStatus, IUser } from "../db/models/user-schema";
-import { SignupData, UserData, UserObject } from "../types";
+import { PlainUserObject, SignupData, UserData, UserObject } from "../types";
 import bcrypt from "bcryptjs";
+import { userToUser } from "./utils/user";
 export class UserService {
   private saltRounds: number = 5;
   async createUser(userData: SignupData) {
@@ -39,10 +40,10 @@ export class UserService {
 
     return { ...result };
   }
-  async getUserByEmail(email: string): Promise<UserObject | null> {
+  async getUserByEmail(email: string): Promise<PlainUserObject | null> {
     await mongoConnection.connect();
     const result = await UserModel.findOne({ email }).lean();
-    return result as unknown as UserObject;
+    return userToUser(result as unknown as UserObject);
   }
   async validateAndUpdateToken(token: string): Promise<boolean> {
     await mongoConnection.connect();

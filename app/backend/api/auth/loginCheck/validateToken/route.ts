@@ -7,7 +7,6 @@ export async function POST(request: Request) {
     const loginCookies = await CookiesService.getLoginCookies();
     const accessToken = loginCookies?.accessToken;
     const refreshToken = loginCookies?.refreshToken;
-
     if (!accessToken || !refreshToken) {
       throw new Error("Missing credentials");
     }
@@ -18,9 +17,14 @@ export async function POST(request: Request) {
       refreshToken
     );
 
+    const userDetails = await CookiesService.getUserDetailsFromAccessToken();
     if (tokenValidation.valid && !tokenValidation.expired) {
       return new Response(
-        JSON.stringify({ message: "Valid Credential", loginStatus: true }),
+        JSON.stringify({
+          message: "Valid Credential",
+          loginStatus: true,
+          data: { ...userDetails },
+        }),
         { status: 200 }
       );
     }
@@ -34,8 +38,15 @@ export async function POST(request: Request) {
           authDetails.accessToken,
           refreshToken
         );
+
+        const userDetails =
+          await CookiesService.getUserDetailsFromAccessToken();
         return new Response(
-          JSON.stringify({ message: "Valid Credential", loginStatus: true }),
+          JSON.stringify({
+            message: "Valid Credential",
+            loginStatus: true,
+            data: { ...userDetails },
+          }),
           { status: 200 }
         );
       }
@@ -43,7 +54,7 @@ export async function POST(request: Request) {
 
     throw new Error("Invalid credentials");
   } catch (e) {
-    await CookiesService.deleteLoginCookies();
+    //await CookiesService.deleteLoginCookies();
     return new Response(
       JSON.stringify({ message: "Not Valid Credential", loginStatus: false }),
       { status: 401 }

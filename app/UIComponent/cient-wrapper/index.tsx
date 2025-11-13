@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import AuthProvider from "../context-provider/auth-provider";
 
 export default function ClientWrapper({
   children,
@@ -16,5 +17,5 @@ export default function ClientWrapper({
     }
   }, [action]);
 
-  return <>{children}</>;
+  return <AuthProvider>{children}</AuthProvider>;
 }

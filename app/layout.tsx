@@ -26,14 +26,14 @@ export default async function RootLayout({ children }: any) {
   return (
     <html lang="en" className="h-full">
       <body className="h-full overflow-hidden flex flex-col">
-        <Navbar />
-
-        <div className="overflow-auto inner_page scroll-smooth">
-          <ClientWrapper>
+        <ClientWrapper>
+          <Navbar />
+          <div className="overflow-auto inner_page scroll-smooth">
             <div className="body_page">{children}</div>
-          </ClientWrapper>
-          <Footer initialCount={0} />
-        </div>
+
+            <Footer initialCount={0} />
+          </div>
+        </ClientWrapper>
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
       </body>

@@ -1,5 +1,9 @@
 import { cookies } from "next/headers";
-import { IAuthToken } from "../../types";
+import { IAuthToken, IAuthUser } from "../../types";
+import { CookieTokenName } from "./types";
+import { isDeveopment } from "@/app/backend/constant";
+import JwtTokenService from "../jwt-service";
+import { mapAuthUserToAuthUser, userToUser } from "../utils/user";
 
 export class CookiesService {
   constructor() {}
@@ -30,26 +34,55 @@ export class CookiesService {
     });
   }
   static async setLoginCookies(accessToken: string, refreshToken: string) {
-    const [header, payload, signature] = accessToken.split(".");
+    let [header, payload, signature] = accessToken.split(".");
+    if (!isDeveopment) {
+    }
     this.setSecureCookies([
-      { key: "_hdr", value: header },
-      { key: "_pld", value: payload },
-      { key: "_sig", value: signature },
-      { key: "__z9x7k2m", value: refreshToken },
+      { key: CookieTokenName.header, value: header },
+      { key: CookieTokenName.payload, value: payload },
+      { key: CookieTokenName.signature, value: signature },
+      { key: CookieTokenName.refreshToken, value: refreshToken },
     ]);
   }
   static async deleteLoginCookies() {
-    this.deleteCoookies(["_hdr", "_pld", "_sig", "__z9x7k2m"]);
+    this.deleteCoookies([
+      CookieTokenName.header,
+      CookieTokenName.payload,
+      CookieTokenName.signature,
+      CookieTokenName.refreshToken,
+    ]);
   }
   static async getLoginCookies(): Promise<IAuthToken> {
     let cookie = await cookies();
-    const refreshToken = cookie.get("__z9x7k2m");
-    const header = cookie.get("_hdr");
-    const payload = cookie.get("_pld");
-    const signature = cookie.get("_sig");
+    if (!isDeveopment) {
+    }
+    const refreshToken = cookie.get(CookieTokenName.refreshToken);
+    const header = cookie.get(CookieTokenName.header)?.value;
+    const payload = cookie.get(CookieTokenName.payload)?.value;
+    const signature = cookie.get(CookieTokenName.signature)?.value;
     return {
       accessToken: `${header}.${payload}.${signature}`,
       refreshToken: refreshToken?.value || "",
+    };
+  }
+
+  static async getUserDetailsFromAccessToken(): Promise<IAuthUser | null> {
+    const token = await this.getLoginCookies();
+    const jwtService = new JwtTokenService();
+
+    const user = await jwtService.decodeToken(token?.accessToken);
+    console.log("this is user", user);
+    let parseUser: IAuthUser;
+    if (!user) {
+      return null;
+    }
+    parseUser = mapAuthUserToAuthUser(user as IAuthUser);
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: "",
+      ...parseUser,
     };
   }
 }

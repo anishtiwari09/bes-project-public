@@ -1,6 +1,7 @@
 import { JWT_SECRET_KEY } from "@/app/backend/config/constant";
 import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { IAuthUser } from "../../types";
 export default class JwtTokenService {
   private secretKey: string;
   constructor() {
@@ -18,7 +19,7 @@ export default class JwtTokenService {
     return jwt.sign(payload, this.secretKey, { expiresIn: duration });
   }
   async createTokenUsingRefresh(
-    payload: string,
+    payload: IAuthUser,
     refreshToken: string,
     duration: SignOptions["expiresIn"]
   ) {
@@ -29,13 +30,11 @@ export default class JwtTokenService {
 
   async verifyLoginTokenWithExpiry(token: string, refreshToken: string) {
     try {
-      !!jwt.verify(token, this.secretKey + refreshToken);
       return { valid: true, expired: false };
     } catch (e) {
       if (e.name === "TokenExpiredError") {
         return { valid: false, expired: true };
       }
-    } finally {
       return { valid: false, expired: false };
     }
   }
@@ -46,6 +45,9 @@ export default class JwtTokenService {
     } catch (e) {
       return false;
     }
+  }
+  async decodeToken(token: string) {
+    return jwt.decode(token);
   }
   async createLoginAccessToken(name: string, email: string) {}
   async comparePassword(

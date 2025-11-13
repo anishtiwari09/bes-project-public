@@ -23,6 +23,7 @@ export interface IUser extends Document {
   updatedAt: Date;
   verificationToken: string;
   verificationTokenExpires: Date;
+  id: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -31,6 +32,7 @@ const UserSchema = new Schema<IUser>(
     last_name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String },
+
     role: {
       type: String,
       enum: ["regular", "admin"],
@@ -47,6 +49,7 @@ const UserSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+
 const UserModel: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 

@@ -322,9 +322,10 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     };
   }
   try {
+    console.log("tyring", email, password);
     const authService = new UserAuthService();
     const authSession = await authService.login(email, password);
-
+    console.log({ authSession });
     if (!authSession) {
       return {
         ...prevState,
@@ -345,6 +346,7 @@ export const userLoginAction = async (prevState: any, formData: any) => {
       authSession.accessToken,
       authSession.refreshToken
     );
+    const userData = await CookiesService.getUserDetailsFromAccessToken();
     return {
       ...prevState,
       message: "Login Successfull",
@@ -352,8 +354,10 @@ export const userLoginAction = async (prevState: any, formData: any) => {
       verifyUsingOtp: false,
       payload: "",
       isLogin: true,
+      userData: { ...userData },
     };
   } catch (e) {
+    console.log(e);
     console.error("Error while signin", e?.message);
     return {
       ...prevState,

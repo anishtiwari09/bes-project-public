@@ -107,26 +107,25 @@ export default function MenuCompoenent({ data, index, open, setOpen }: any) {
                   <h3 className="font-bold" style={{ padding: "6px 16px" }}>
                     {item?.name}
                   </h3>
-                  <ul className="flex-col gap-1 flex">
+                  <div className="flex-col gap-1 flex">
                     {item.subChildren?.map((sub_item: any, sub_key: any) => {
                       let newPath = sub_item?.isSeprateParentPath
                         ? sub_item?.parentPath
                         : parentPath + item.path;
-                      if (!sub_item?.isActive) null;
+                      if (!sub_item?.isActive) return null;
                       return (
-                        <li key={sub_item.id}>
-                          <MenuItem
-                            onClick={handleClose}
-                            style={{ padding: "6px 30px" }}
-                          >
-                            <Link href={newPath + sub_item.path}>
-                              {sub_item.name}
-                            </Link>
-                          </MenuItem>
-                        </li>
+                        <MenuItem
+                          key={sub_item.id}
+                          onClick={handleClose}
+                          style={{ padding: "6px 30px" }}
+                        >
+                          <Link href={newPath + sub_item.path}>
+                            {sub_item.name}
+                          </Link>
+                        </MenuItem>
                       );
                     })}
-                  </ul>
+                  </div>
                 </div>
               ) : (
                 <MenuItem onClick={handleClose} key={key}>

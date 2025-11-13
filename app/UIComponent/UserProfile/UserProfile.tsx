@@ -1,27 +1,11 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import LoginButton from "../LoginButton/LoginButton";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import React, { useMemo, useState } from "react";
 import { Button } from "@mui/material";
 import userDb from "./user_account_db.json";
 import UserDrawer from "./UserDrawer";
-import { deleteCookiesAction, getUserName } from "@/app/backend/action/action";
-import { JSESSIONID } from "@/app/backend/constant";
-export default function UserProfile({
-  isSignIn,
-  deleteCookies,
-  userName
-}: any) {
+export default function UserProfile({ isSignIn, userName }: any) {
   const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    try {
-      if (deleteCookies) {
-        // deleteCookiesAction(JSESSIONID);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+
   const firstLastName = useMemo(() => {
     let name = userName?.split("") || [];
     return `${name[0] ?? ""}${name[1] ?? ""}`.toUpperCase();
@@ -43,7 +27,5 @@ export default function UserProfile({
         </Button>
       )}
     </>
-  ) : (
-   null
-  );
+  ) : null;
 }

@@ -9,25 +9,30 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { userLoginAction } from "@/app/backend/action/action";
 import toast from "react-hot-toast";
+import { useAuthContext } from "../context-provider/auth-provider";
 const initialState = {
   message: "",
   status: false,
   token: "",
+  userData: null,
+  isLogin: false,
 };
-export default function LoginForm({
-  onClose
-}: any) {
+export default function LoginForm({ onClose }: any) {
   const router = useRouter();
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [state, formAction] = useFormState(userLoginAction, initialState);
+  const [state, formAction] = useActionState(userLoginAction, initialState);
+  const { setUserData } = useAuthContext();
   useEffect(() => {
-    if (state.status && state.token) {
+    if (state?.isLogin && state?.userData) setUserData(state?.userData || null);
+  }, [state?.userData]);
+  useEffect(() => {
+    if (state.userData && state?.isLogin) {
       toast(
         <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
           {state.message}
@@ -46,9 +51,8 @@ export default function LoginForm({
 
           // Aria
           ariaProps: {
-          
             "aria-live": "polite",
-            role:"status"
+            role: "status",
           },
         }
       );
