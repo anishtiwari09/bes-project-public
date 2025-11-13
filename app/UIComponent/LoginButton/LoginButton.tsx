@@ -19,11 +19,31 @@ export default function LoginButton() {
     <div className="text-center">
       {openLoginBox && <LoginForm onClose={() => setOpenLoginBox(false)} />}
       <Button
-        style={{ background: "orange" }}
         variant="contained"
         onClick={() => setOpenLoginBox(!openLoginBox)}
+        sx={{
+          bgcolor: "white",
+          color: "#101130",
+          px: 3,
+          py: 1.2,
+          fontSize: "0.875rem",
+          fontWeight: "600",
+          textTransform: "none",
+          borderRadius: "8px",
+          boxShadow: "0 1px 3px rgba(16,17,48,0.1)",
+          transition: "all 0.2s ease-in-out",
+          "&:hover": {
+            bgcolor: "#f8fafc",
+            boxShadow: "0 4px 12px rgba(16,17,48,0.15)",
+            transform: "translateY(-1px)",
+          },
+          "&:active": {
+            transform: "translateY(0)",
+            boxShadow: "0 1px 3px rgba(16,17,48,0.1)",
+          },
+        }}
       >
-        Login
+        Sign In
       </Button>
     </div>
   );

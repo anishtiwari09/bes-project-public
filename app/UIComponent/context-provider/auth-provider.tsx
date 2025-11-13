@@ -1,6 +1,7 @@
-import { checkUserLoginStatus } from "@/app/frontend/actions/login";
+import { checkUserLoginStatus, logout } from "@/app/frontend/actions/login";
 import React, { useEffect, useState } from "react";
 import { AuthContextReturn, IUserData } from "./types";
+import { redirect } from "next/navigation";
 
 const AuthContext = React.createContext<AuthContextReturn>(null);
 
@@ -30,6 +31,11 @@ export default function AuthProvider({
 
     setUserData(userData);
   };
+  const onLogout = async () => {
+    await logout();
+    setUserData(null);
+    redirect("/");
+  };
   useEffect(() => {
     if (true) {
       checkUserLoginStatus()
@@ -43,7 +49,9 @@ export default function AuthProvider({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userData, setUserData: updateUserState }}>
+    <AuthContext.Provider
+      value={{ userData, setUserData: updateUserState, onLogout }}
+    >
       {children}
     </AuthContext.Provider>
   );

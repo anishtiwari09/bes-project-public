@@ -7,4 +7,5 @@ export interface IUserData extends IAuthUser {
 export interface AuthContextReturn {
   userData: IUserData;
   setUserData: (userData: IAuthUser) => void;
+  onLogout: () => void;
 }
