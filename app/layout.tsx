@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { ENVIROMENT } from "./backend/constant";
 import { useEffect } from "react";
 import ClientWrapper from "./UIComponent/cient-wrapper";
+import DownloadBrochureButton from "./UIComponent/buttons/download-brochure";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -25,14 +26,14 @@ export default async function RootLayout({ children }: any) {
 
   return (
     <html lang="en" className="h-full">
-      <body className="h-full overflow-hidden flex flex-col">
+      <body className="h-full overflow-hidden">
         <ClientWrapper>
-          <Navbar />
-          <div className="overflow-auto inner_page scroll-smooth">
-            <div className="body_page">{children}</div>
-
-            <Footer initialCount={0} />
-          </div>
+        <Navbar />
+        <div className="overflow-auto inner_page scroll-smooth">
+          <div className="body_page">{children}</div>
+          <DownloadBrochureButton />
+          <Footer initialCount={0} />
+        </div>
         </ClientWrapper>
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}

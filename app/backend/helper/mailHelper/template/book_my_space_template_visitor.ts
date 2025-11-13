@@ -34,8 +34,8 @@ export function bookMySpaceTemplateVisitor(
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
   <div style="max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="${logoUrl}" alt="Logo" style="max-width: 180px;" />
+    <div style="text-align: center; margin-bottom: 30px;width: calc(100% + 60px);margin-left: -30px;margin-top: -30px;">
+      <img src="${logoUrl}" alt="Logo" style="width: 100%;" />
     </div>
     <h2 style="color: #c75b12; text-align: center;">${title}</h2>
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">

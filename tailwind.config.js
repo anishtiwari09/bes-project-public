@@ -15,4 +15,5 @@ module.exports = {
     },
   },
   plugins: [],
+  important: false, // ensures Tailwind utilities don't override MUI
 };
