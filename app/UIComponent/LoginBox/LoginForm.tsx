@@ -70,6 +70,29 @@ const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
   };
 
   const handleOtpChange = (index: number, value: string) => {
+    // Handle paste - if more than 1 character, treat as paste
+    if (value.length > 1) {
+      const pastedValue = value.replace(/\D/g, '').slice(0, 4);
+      const newOtp = [...otp];
+      
+      for (let i = 0; i < 4; i++) {
+        newOtp[i] = pastedValue[i] || '';
+      }
+      
+      setOtp(newOtp);
+      
+      // Focus the last filled input or the next empty one
+      const nextEmptyIndex = newOtp.findIndex(digit => digit === '');
+      const focusIndex = nextEmptyIndex === -1 ? 3 : Math.max(0, nextEmptyIndex - 1);
+      setTimeout(() => {
+        const targetInput = document.getElementById(`otp-${focusIndex}`);
+        targetInput?.focus();
+      }, 0);
+      
+      return;
+    }
+
+    // Handle single character input
     if (value.length <= 1 && /^\d*$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
@@ -87,6 +110,27 @@ const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       const prevInput = document.getElementById(`otp-${index - 1}`);
       prevInput?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text');
+    const digits = pastedData.replace(/\D/g, '').slice(0, 4);
+    
+    if (digits.length > 0) {
+      const newOtp = ['', '', '', ''];
+      for (let i = 0; i < Math.min(digits.length, 4); i++) {
+        newOtp[i] = digits[i];
+      }
+      setOtp(newOtp);
+      
+      // Focus the last filled input
+      const lastFilledIndex = Math.min(digits.length - 1, 3);
+      setTimeout(() => {
+        const targetInput = document.getElementById(`otp-${lastFilledIndex}`);
+        targetInput?.focus();
+      }, 0);
     }
   };
 
@@ -124,7 +168,7 @@ const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
             {state.message}
           </Alert>
         )}
-        Enter the 4-digit OTP sent to your email
+        Enter the 4-digit OTP sent to your email (you can paste the OTP)
       </Typography>
       <form action={formAction}>
         <Box display="flex" gap={1}>
@@ -135,8 +179,9 @@ const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
               value={digit}
               onChange={(e) => handleOtpChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
+              onPaste={handlePaste}
               inputProps={{
-                maxLength: 1,
+                maxLength: 4, // Allow paste of multiple digits
                 style: { textAlign: "center", fontSize: "1.5rem" },
               }}
               sx={{ width: 60 }}

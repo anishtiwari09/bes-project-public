@@ -229,6 +229,10 @@ export default class UserAuthService {
       if (tokenValidation.valid) {
         if (tokenValidation.expired) {
           const session = await this.regenerateAccessToken(token.refreshToken);
+          if (!session) {
+            await this.logout();
+            return null;
+          }
           await CookiesService.setLoginCookies(
             session.accessToken,
             token.accessToken
@@ -241,10 +245,7 @@ export default class UserAuthService {
         return userDetails;
       }
     } catch (e) {
-      console.log(
-        "error in validateAndRegenerateTokenAndSetCookie",
-        e?.message
-      );
+      console.log("error in validateAndRegenerateTokenAndSetCookie", e);
       return null;
     }
   }

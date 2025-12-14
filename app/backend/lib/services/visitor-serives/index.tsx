@@ -20,7 +20,6 @@ export default class VisitorServices {
       )
         .sort({ createdAt: -1 })
         .lean();
-      console.log("visitors", visitors);
       return visitors;
     } catch (e: any) {
       console.log("Something went wrong while getting visitor", e?.message);

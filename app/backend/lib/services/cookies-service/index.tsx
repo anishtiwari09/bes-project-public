@@ -60,6 +60,14 @@ export class CookiesService {
     const header = cookie.get(CookieTokenName.header)?.value;
     const payload = cookie.get(CookieTokenName.payload)?.value;
     const signature = cookie.get(CookieTokenName.signature)?.value;
+
+    if (!header || !payload || !signature || !refreshToken?.value) {
+      return {
+        accessToken: "",
+        refreshToken: "",
+      };
+    }
+
     return {
       accessToken: `${header}.${payload}.${signature}`,
       refreshToken: refreshToken?.value || "",

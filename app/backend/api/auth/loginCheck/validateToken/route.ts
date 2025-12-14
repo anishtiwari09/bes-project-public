@@ -11,45 +11,17 @@ export async function POST(request: Request) {
       throw new Error("Missing credentials");
     }
 
-    const jwtService = new JwtTokenService();
-    const tokenValidation = await jwtService.verifyLoginTokenWithExpiry(
-      accessToken,
-      refreshToken
-    );
-
-    const userDetails = await CookiesService.getUserDetailsFromAccessToken();
-    if (tokenValidation.valid && !tokenValidation.expired) {
+    const authService = new UserAuthService();
+    const user = await authService.validateAndRegenerateTokenAndSetCookie();
+    if (user) {
       return new Response(
         JSON.stringify({
           message: "Valid Credential",
           loginStatus: true,
-          data: { ...userDetails },
+          data: { ...user },
         }),
         { status: 200 }
       );
-    }
-
-    if (tokenValidation.valid && tokenValidation.expired) {
-      const authService = new UserAuthService();
-      const authDetails = await authService.regenerateAccessToken(refreshToken);
-
-      if (authDetails?.accessToken) {
-        await CookiesService.setLoginCookies(
-          authDetails.accessToken,
-          refreshToken
-        );
-
-        const userDetails =
-          await CookiesService.getUserDetailsFromAccessToken();
-        return new Response(
-          JSON.stringify({
-            message: "Valid Credential",
-            loginStatus: true,
-            data: { ...userDetails },
-          }),
-          { status: 200 }
-        );
-      }
     }
 
     throw new Error("Invalid credentials");

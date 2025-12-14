@@ -15,22 +15,28 @@ import {
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
 
-interface Visitor {
+interface Delegate {
   _id: string;
   name: string;
   organisation: string;
   email: string;
   mobile: string;
-  area_of_work: string;
-  unique_reference_number: string;
+  department: string;
+  session_type: string;
+  payment_type: string;
+  transaction_no: string;
+  amount: number;
+  postal_address: string;
+  other_details: string;
   createdAt: string;
+  tracking_id: string;
 }
 
-interface AllVisitorsProps {
-  db: Visitor[];
+interface AllRegistrationsProps {
+  db: Delegate[];
 }
 
-export default function AllVisitors({ db }: AllVisitorsProps) {
+export default function AllRegistrations({ db }: AllRegistrationsProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const formatDateIST = (dateString: string) => {
@@ -45,12 +51,12 @@ export default function AllVisitors({ db }: AllVisitorsProps) {
     });
   };
 
-  const filteredVisitors = useMemo(() => {
+  const filteredDelegates = useMemo(() => {
     if (!searchTerm) return db;
     return db.filter(
-      (visitor) =>
-        visitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        visitor.email.toLowerCase().includes(searchTerm.toLowerCase())
+      (delegate) =>
+        delegate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        delegate.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [db, searchTerm]);
 
@@ -60,19 +66,25 @@ export default function AllVisitors({ db }: AllVisitorsProps) {
       "Organisation",
       "Email",
       "Mobile",
-      "Area of Work",
-      "Reference No.",
+      "Department",
+      "Session Type",
+      "Payment Type",
+      "Transaction No.",
+      "Amount",
       "Registration Date",
     ];
 
-    const csvData = db.map((visitor) => [
-      visitor.name,
-      visitor.organisation,
-      visitor.email,
-      visitor.mobile,
-      visitor.area_of_work,
-      visitor.unique_reference_number,
-      formatDateIST(visitor.createdAt),
+    const csvData = db.map((delegate) => [
+      delegate.name,
+      delegate.organisation,
+      delegate.email,
+      delegate.mobile,
+      delegate.department,
+      delegate.session_type,
+      delegate.payment_type,
+      delegate.transaction_no,
+      delegate.amount,
+      formatDateIST(delegate.createdAt),
     ]);
 
     const csvContent = [headers, ...csvData]
@@ -85,13 +97,14 @@ export default function AllVisitors({ db }: AllVisitorsProps) {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `visitors_${new Date().toISOString().split("T")[0]}.csv`
+      `delegates_${new Date().toISOString().split("T")[0]}.csv`
     );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
+
   return (
     <Box sx={{ p: 2 }}>
       <Box
@@ -103,7 +116,7 @@ export default function AllVisitors({ db }: AllVisitorsProps) {
         }}
       >
         <Typography variant="h5">
-          All Visitors ({filteredVisitors.length})
+          All Delegates ({filteredDelegates.length})
         </Typography>
         <Button
           variant="contained"
@@ -141,10 +154,19 @@ export default function AllVisitors({ db }: AllVisitorsProps) {
                 <strong>Mobile</strong>
               </TableCell>
               <TableCell>
-                <strong>Area of Work</strong>
+                <strong>Department</strong>
               </TableCell>
               <TableCell>
-                <strong>Reference No.</strong>
+                <strong>Session Type</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Payment Type</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Transaction No.</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Amount</strong>
               </TableCell>
               <TableCell>
                 <strong>Registration Date</strong>
@@ -152,24 +174,24 @@ export default function AllVisitors({ db }: AllVisitorsProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredVisitors.map((visitor) => (
-              <TableRow
-                key={visitor.unique_reference_number || visitor.email}
-                hover
-              >
-                <TableCell>{visitor.name}</TableCell>
-                <TableCell>{visitor.organisation}</TableCell>
-                <TableCell>{visitor.email}</TableCell>
-                <TableCell>{visitor.mobile}</TableCell>
-                <TableCell>{visitor.area_of_work}</TableCell>
-                <TableCell>{visitor.unique_reference_number}</TableCell>
-                <TableCell>{formatDateIST(visitor.createdAt)}</TableCell>
+            {filteredDelegates.map((delegate) => (
+              <TableRow key={delegate.tracking_id} hover>
+                <TableCell>{delegate.name}</TableCell>
+                <TableCell>{delegate.organisation}</TableCell>
+                <TableCell>{delegate.email}</TableCell>
+                <TableCell>{delegate.mobile}</TableCell>
+                <TableCell>{delegate.department}</TableCell>
+                <TableCell>{delegate.session_type}</TableCell>
+                <TableCell>{delegate.payment_type}</TableCell>
+                <TableCell>{delegate.transaction_no}</TableCell>
+                <TableCell>₹{delegate.amount}</TableCell>
+                <TableCell>{formatDateIST(delegate.createdAt)}</TableCell>
               </TableRow>
             ))}
-            {filteredVisitors.length === 0 && (
+            {filteredDelegates.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} align="center">
-                  No visitors found
+                <TableCell colSpan={10} align="center">
+                  No delegates found
                 </TableCell>
               </TableRow>
             )}

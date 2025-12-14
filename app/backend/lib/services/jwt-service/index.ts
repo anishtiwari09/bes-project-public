@@ -30,10 +30,11 @@ export default class JwtTokenService {
 
   async verifyLoginTokenWithExpiry(token: string, refreshToken: string) {
     try {
+      jwt.verify(token, this.secretKey + refreshToken);
       return { valid: true, expired: false };
     } catch (e) {
       if (e.name === "TokenExpiredError") {
-        return { valid: false, expired: true };
+        return { valid: true, expired: true };
       }
       return { valid: false, expired: false };
     }
