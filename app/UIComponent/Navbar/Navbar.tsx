@@ -7,16 +7,15 @@ import LoginButton from "../LoginButton/LoginButton";
 import { useAuthContext } from "../context-provider/auth-provider";
 
 export default function Navbar() {
-  const { userData } = useAuthContext();
+  const { userData, isSignIn } = useAuthContext();
+
   return (
     <div className="flex flex-row gap-1 items-stretch bg-[#101130]">
       <Header1 />
       <div className="flex flex-col items-end justify-end flex-1">
-        <UserProfile
-          isSignIn={!!userData}
-          deleteCookies={""}
-          userName={userData?.name}
-        />
+        {isSignIn && (
+          <UserProfile userName={userData?.name} role={userData?.role} />
+        )}
         <Header2 />
       </div>
       {!!userData ? null : (

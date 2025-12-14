@@ -304,8 +304,59 @@ export const feedbackFormAction = async (prevState: any, formData: any) => {
   }
 };
 
+export const userOtpLoginAction = async (prevState: any, formData: any) => {
+  const payload = formData.get("cookie-payload");
+  const otp = formData.get("user-otp");
+
+  if (!payload?.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "Please enter valid email address.",
+    };
+  }
+  if (!otp?.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "OTP field can not be empty.",
+    };
+  }
+  try {
+    const authService = new UserAuthService();
+    const authSession = await authService.otpLogin(otp, payload);
+    if (!authSession) {
+      return {
+        ...prevState,
+        status: false,
+        message: "Invalid or expired otp, please try again.",
+      };
+    }
+    CookiesService.setLoginCookies(
+      authSession.accessToken,
+      authSession.refreshToken
+    );
+    const userData = await CookiesService.getUserDetailsFromAccessToken();
+    return {
+      ...prevState,
+      message: "Login Successfull",
+      status: true,
+      isLogin: true,
+      userData: { ...userData },
+    };
+  } catch (e) {
+    console.log(e);
+    console.error("Error while otp login", e?.message);
+    return {
+      ...prevState,
+      status: false,
+      message: "Something went wrong, please try again later.",
+    };
+  }
+};
 export const userLoginAction = async (prevState: any, formData: any) => {
   const email = formData.get("email");
+
   const password = formData.get("password");
   if (!email?.trim()) {
     return {
@@ -325,7 +376,6 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     console.log("tyring", email, password);
     const authService = new UserAuthService();
     const authSession = await authService.login(email, password);
-    console.log({ authSession });
     if (!authSession) {
       return {
         ...prevState,
@@ -333,11 +383,11 @@ export const userLoginAction = async (prevState: any, formData: any) => {
         message: "Invalid email or password.",
       };
     }
-    if (authSession.verifyUsingOtp)
+    if (authSession.needToVerifyUsingOtp)
       return {
         ...prevState,
         status: false,
-        verifyUsingOtp: true,
+        needToVerifyUsingOtp: true,
         payload: authSession.payloadToken,
         message: "",
         isLogin: false,

@@ -1,30 +1,18 @@
 import { MONGODB_DB, MONGODB_URI } from "@/app/backend/config/constant";
-import { MongoClient, Db, MongoClientOptions } from "mongodb";
+import mongoose from "mongoose";
 
 class MongoDBConnection {
   private static instance: MongoDBConnection;
-  private client: MongoClient | null = null;
-  private db: Db | null = null;
 
   private readonly uri: string;
   private readonly dbName: string;
-  private readonly options: MongoClientOptions;
 
   private constructor() {
     this.uri = MONGODB_URI;
     this.dbName = MONGODB_DB;
-
-    this.options = {
-      // Recommended options for modern MongoDB drivers
-      maxPoolSize: 10,
-      connectTimeoutMS: 10000,
-      serverSelectionTimeoutMS: 5000,
-    };
+    console.log("MongoDB connection initiated");
   }
 
-  /**
-   * Singleton instance getter
-   */
   public static getInstance(): MongoDBConnection {
     if (!MongoDBConnection.instance) {
       MongoDBConnection.instance = new MongoDBConnection();
@@ -32,34 +20,45 @@ class MongoDBConnection {
     return MongoDBConnection.instance;
   }
 
-  /**
-   * Connect to MongoDB (reuses connection in serverless environments)
-   */
-  public async connect(): Promise<Db> {
-    if (this.db) return this.db;
-
-    if (!this.client) {
-      this.client = new MongoClient(this.uri, this.options);
-      await this.client.connect();
+  public async connect(): Promise<typeof mongoose> {
+    // Check if already connected
+    if (mongoose.connection.readyState === 1) {
+      return mongoose;
     }
 
-    this.db = this.client.db(this.dbName);
-    return this.db;
+    // Check if connecting
+    if (mongoose.connection.readyState === 2) {
+      return new Promise((resolve, reject) => {
+        mongoose.connection.once("connected", () => resolve(mongoose));
+        mongoose.connection.once("error", reject);
+      });
+    }
+
+    try {
+      console.log("Connecting to MongoDB...");
+      await mongoose.connect(this.uri, {
+        dbName: this.dbName,
+        maxPoolSize: 10,
+        connectTimeoutMS: 30000,
+        serverSelectionTimeoutMS: 30000,
+        bufferCommands: false,
+      });
+
+      console.log("MongoDB connected successfully");
+      return mongoose;
+    } catch (error) {
+      console.error("MongoDB connection error:", error);
+      throw error;
+    }
   }
 
-  /**
-   * Close connection (optional, usually not used in serverless)
-   */
   public async close(): Promise<void> {
-    if (this.client) {
-      await this.client.close();
-      this.client = null;
-      this.db = null;
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
     }
   }
 }
 
-// ✅ Cache the instance globally to persist across hot reloads and Vercel invocations
 const globalForMongo = globalThis as unknown as {
   _mongoConnection?: MongoDBConnection;
 };

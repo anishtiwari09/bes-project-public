@@ -1,12 +1,10 @@
+import mongoConnection from "@/app/backend/lib/db/db-config";
 import emailVerification from "@/app/backend/models/email_verification.model";
 import { NextResponse } from "next/server";
 
-const { connect } = require("@/app/backend/dbConfig/dbConfig");
-
-connect();
-
 export async function POST(req: any) {
   try {
+    await mongoConnection.connect();
     let json = await req.json();
     let { email, otp } = json;
     if (email && otp) {

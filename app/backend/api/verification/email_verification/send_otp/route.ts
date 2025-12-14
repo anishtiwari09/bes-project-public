@@ -3,12 +3,11 @@ import { NextResponse } from "next/server";
 import { sendMail } from "../../../sendMail/mail";
 import { generateOtp } from "@/app/backend/helper/mailHelper/otpGenerator";
 import { generateOtpTemplate } from "@/app/backend/helper/mailHelper/template/otpTemplate";
+import mongoConnection from "@/app/backend/lib/db/db-config";
 
-const { connect } = require("@/app/backend/dbConfig/dbConfig");
-
-connect();
 export async function POST(req: any) {
   try {
+    await mongoConnection.connect();
     let json = await req.json();
     const { email, from } = json;
     const options = {

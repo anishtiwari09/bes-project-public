@@ -4,7 +4,14 @@ import { Avatar, IconButton, Tooltip } from "@mui/material";
 import { Person } from "@mui/icons-material";
 import UserDrawer from "./UserDrawer";
 import { useAuthContext } from "../context-provider/auth-provider";
-export default function UserProfile({ isSignIn, userName }: any) {
+import AdminDrawer from "./admin-drawer";
+export default function UserProfile({
+  userName,
+  role,
+}: {
+  userName: string;
+  role: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { onLogout } = useAuthContext();
   const firstLastName = useMemo(() => {
@@ -15,14 +22,23 @@ export default function UserProfile({ isSignIn, userName }: any) {
     }
     return userName.substring(0, 2).toUpperCase();
   }, [userName]);
-  return isSignIn ? (
+  return (
     <>
-      <UserDrawer
-        onLogout={onLogout}
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        userName={userName}
-      />
+      {role === "admin" ? (
+        <AdminDrawer
+          onLogout={onLogout}
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          userName={userName}
+        />
+      ) : (
+        <UserDrawer
+          onLogout={onLogout}
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          userName={userName}
+        />
+      )}
       {!isOpen && (
         <Tooltip title={`${userName} - Click to open menu`} arrow>
           <IconButton
@@ -61,5 +77,5 @@ export default function UserProfile({ isSignIn, userName }: any) {
         </Tooltip>
       )}
     </>
-  ) : null;
+  );
 }

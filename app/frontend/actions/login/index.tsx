@@ -7,3 +7,9 @@ export const checkUserLoginStatus = () => {
 export const logout = () => {
   return fetchApiHub("/backend/api/auth/logout", "POST");
 };
+
+export const resendOtpAction = (payload: string) => {
+  return fetchApiHub("/backend/api/auth/resend-otp", "POST", {
+    payload,
+  });
+};

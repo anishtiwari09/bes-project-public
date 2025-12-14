@@ -65,9 +65,7 @@ function isLogin(cookies: ReadonlyRequestCookies) {
 }
 function isProtectedRoute(pathname: string) {
   pathname = pathname || "";
-  for (let item of protectedRoute) {
-    if (pathname.startsWith(item)) return true;
-  }
+
   return false;
 }
 

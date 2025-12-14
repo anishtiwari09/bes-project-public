@@ -1,7 +1,6 @@
 import { IAuthUser, PlainUserObject, UserObject } from "../../types";
 
 export const userToUser = (user: UserObject): PlainUserObject => {
-  console.log(user);
   return {
     email: user.email,
     first_name: user.first_name,

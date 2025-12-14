@@ -1,15 +1,15 @@
 import { ADMIN_RECEIVER_MAIL } from "@/app/backend/constant";
 import { NextResponse } from "next/server";
 import { sendMail } from "../../sendMail/mail";
-import { connect } from "@/app/backend/dbConfig/dbConfig";
 import BookMySpace from "@/app/backend/models/book_my_space.model";
 import SpaceTypeScheme from "@/app/backend/models/space_type_scheme";
 import { v4 as uuidv4 } from "uuid";
 import { bookMySpaceTemplate } from "@/app/backend/helper/mailHelper/template/book_my_space_template";
 import emailVerification from "@/app/backend/models/email_verification.model";
 import { bookMySpaceTemplateVisitor } from "@/app/backend/helper/mailHelper/template/book_my_space_template_visitor";
+import mongoConnection from "@/app/backend/lib/db/db-config";
 
-connect();
+mongoConnection.connect();
 
 interface BookMySpaceRequestBody {
   name: string;

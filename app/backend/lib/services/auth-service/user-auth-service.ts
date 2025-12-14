@@ -9,9 +9,11 @@ import {
   UserObject,
 } from "../../types";
 import { CookiesService } from "../cookies-service";
+import EmailVerificationService from "../email-verification-service";
 import JwtTokenService from "../jwt-service";
-import { CryptoToken } from "../jwt-service/crypto-token";
+import { CryptoToken } from "../crypto-token";
 import { UserService } from "../user-services";
+import { ServiceType } from "../../db/models/email-verification";
 
 export default class UserAuthService {
   private user: UserService;
@@ -34,7 +36,7 @@ export default class UserAuthService {
         status: status,
       },
       refreshToken,
-      "30m"
+      role === "admin" ? "5m" : "30m"
     );
     return jwtToken;
   }
@@ -94,8 +96,12 @@ export default class UserAuthService {
         user.email,
         password
       );
+      await EmailVerificationService.sendOrResendOtp(
+        email,
+        ServiceType.ADMIN_LOGIN
+      );
       return {
-        verifyUsingOtp: false,
+        needToVerifyUsingOtp: true,
         payloadToken,
         isLogin: false,
       };
@@ -104,7 +110,7 @@ export default class UserAuthService {
     return {
       ...tokens,
       isLogin: true,
-      verifyUsingOtp: false,
+      needToVerifyUsingOtp: false,
     };
   }
   async logout() {
@@ -143,11 +149,39 @@ export default class UserAuthService {
     if (!isPasswordValid) {
       return null;
     }
+
+    const isOtpValid = await EmailVerificationService.verifyOtp(
+      email,
+      otp,
+      ServiceType.ADMIN_LOGIN
+    );
+    if (!isOtpValid) {
+      return null;
+    }
+
     let tokens = await this.createAuthSession(user, user.role === "admin", {});
     return {
       login: true,
-      tokens,
+      ...tokens,
     };
+  }
+
+  async sendOtpForAdminLogin(payload: string): Promise<string> {
+    await mongoConnection.connect();
+
+    // Generate and send OTP
+
+    const cryptoTokenService = new CryptoToken();
+    const { email } = cryptoTokenService.decryptEmailPasswordPayload(payload);
+    const user = await this.user.getUserByEmail(email);
+    if (!user || user.role !== "admin") {
+      throw new Error("User not found or not an admin");
+    }
+    const otpCode = EmailVerificationService.sendOrResendOtp(
+      email,
+      ServiceType.ADMIN_LOGIN
+    );
+    return otpCode;
   }
   async regenerateAccessToken(
     refreshToken: string
@@ -176,5 +210,48 @@ export default class UserAuthService {
       refreshToken
     );
     return { accessToken: newAccessToken };
+  }
+
+  async validateAndRegenerateTokenAndSetCookie(): Promise<IAuthUser | null> {
+    try {
+      const token = await CookiesService.getLoginCookies();
+
+      if (!token?.refreshToken || !token.accessToken) {
+        return null;
+      }
+      const accessToken = token.accessToken;
+      const refreshToken = token.refreshToken;
+      const jwtService = new JwtTokenService();
+      const tokenValidation = await jwtService.verifyLoginTokenWithExpiry(
+        accessToken,
+        refreshToken
+      );
+      if (tokenValidation.valid) {
+        if (tokenValidation.expired) {
+          const session = await this.regenerateAccessToken(token.refreshToken);
+          await CookiesService.setLoginCookies(
+            session.accessToken,
+            token.accessToken
+          );
+        }
+
+        const userDetails =
+          await CookiesService.getUserDetailsFromAccessToken();
+
+        return userDetails;
+      }
+    } catch (e) {
+      console.log(
+        "error in validateAndRegenerateTokenAndSetCookie",
+        e?.message
+      );
+      return null;
+    }
+  }
+
+  async isAdmin() {
+    const userDetails = await this.validateAndRegenerateTokenAndSetCookie();
+
+    return userDetails?.role === "admin";
   }
 }

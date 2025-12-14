@@ -71,7 +71,6 @@ export class CookiesService {
     const jwtService = new JwtTokenService();
 
     const user = await jwtService.decodeToken(token?.accessToken);
-    console.log("this is user", user);
     let parseUser: IAuthUser;
     if (!user) {
       return null;

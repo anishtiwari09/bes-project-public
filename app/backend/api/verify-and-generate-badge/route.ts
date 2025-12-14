@@ -4,11 +4,11 @@ import emailVerification from "../../models/email_verification.model";
 import { getUserDetailFromUrn } from "../../action/getUserDetails";
 import { generateQrCodeBase64 } from "../../helper/generate-qrcode";
 import { updateEmailOtpWithCustomAttribute } from "../../action/updateDb";
-import { connect } from "../../dbConfig/dbConfig";
+import mongoConnection from "../../lib/db/db-config";
 
-connect();
 export async function POST(req: any) {
   try {
+    await mongoConnection.connect();
     let payload = await req.json();
     const otp = Number(payload?.otp || "");
     let userDetails;

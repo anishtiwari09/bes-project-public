@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 export default function LoginButton() {
   const [openLoginBox, setOpenLoginBox] = useState(false);
   const searchParams = useSearchParams();
-  const action = searchParams.get("action")?.[0];
+  const action = searchParams.get("action");
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {

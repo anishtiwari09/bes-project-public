@@ -2,10 +2,14 @@ type RequestMethod = "GET" | "POST";
 export const fetchApiHub = async (
   endpoint: string,
   method?: RequestMethod,
-  payload = null
+  payload = {}
 ) => {
   return handleApiResponse(
-    fetch(endpoint, { method: method || "GET", credentials: "include" })
+    fetch(endpoint, {
+      method: method || "GET",
+      credentials: "include",
+      body: JSON.stringify(payload),
+    })
   );
 };
 

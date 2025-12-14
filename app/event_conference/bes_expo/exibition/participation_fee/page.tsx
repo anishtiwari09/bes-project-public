@@ -3,13 +3,15 @@ import React from "react";
 import FeeDetails from "./FeeDetails";
 import BookYourSpace from "./BookYourSpace";
 import { CountryDataApiReponse } from "./types";
-import { connect } from "@/app/backend/dbConfig/dbConfig";
+
 import SpaceTypeScheme from "@/app/backend/models/space_type_scheme";
-connect();
+import mongoConnection from "@/app/backend/lib/db/db-config";
+
 export default async function page() {
   let countryData: string[] = [];
   let spaceTypesData = [];
   try {
+    await mongoConnection.connect();
     let data: Response = await fetch("https://restcountries.com/v3.1/all");
 
     const responseData: CountryDataApiReponse[] = await data.json();

@@ -16,9 +16,6 @@ const nextConfig = {
     });
     return config;
   },
-  experimental: {
-    serverComponentsExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
-  },
 
   // 👇 Custom caching headers
   async headers() {

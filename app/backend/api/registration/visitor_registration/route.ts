@@ -3,16 +3,16 @@ import emailVerification from "@/app/backend/models/email_verification.model";
 import VisitorRegistration from "@/app/backend/models/visitor_registration.model";
 import { NextResponse } from "next/server";
 import { sendMail } from "../../sendMail/mail";
-import { ADMIN_RECEIVER_MAIL, EVENT_YEAR, PREFIX_REFERENCE_NUMBER } from "@/app/backend/constant";
+import {
+  ADMIN_RECEIVER_MAIL,
+  PREFIX_REFERENCE_NUMBER,
+} from "@/app/backend/constant";
 import uniqueIdGenerator from "@/app/backend/helper/unique-id-generator";
-import { userEventTemplate } from "@/app/backend/helper/mailHelper/template/user-event-email-template";
-import {  generateQrCodeBuffer } from "@/app/backend/helper/generate-qrcode";
+import mongoConnection from "@/app/backend/lib/db/db-config";
 
-const { connect } = require("@/app/backend/dbConfig/dbConfig");
-
-connect();
 export async function POST(req: any) {
   try {
+    await mongoConnection.connect();
     let json = await req.json();
     const { name, organisation, city, mobile, email, area_of_work, otp } = json;
     let user = await VisitorRegistration.findOne({
@@ -41,7 +41,7 @@ export async function POST(req: any) {
         { status: 401 }
       );
     }
-    let urnNumber=PREFIX_REFERENCE_NUMBER+uniqueIdGenerator(7)
+    let urnNumber = PREFIX_REFERENCE_NUMBER + uniqueIdGenerator(7);
     await emailVerification.findOneAndUpdate(
       { email },
       { hasOtpExpired: true }
@@ -53,10 +53,18 @@ export async function POST(req: any) {
       mobile,
       email,
       area_of_work,
-      unique_reference_number:urnNumber
+      unique_reference_number: urnNumber,
     });
     await newUser.save();
-await handleSuccess(name,organisation,city,mobile,email,area_of_work,urnNumber)
+    await handleSuccess(
+      name,
+      organisation,
+      city,
+      mobile,
+      email,
+      area_of_work,
+      urnNumber
+    );
     return NextResponse.json(
       { message: "User is created", status: true },
       { status: 201 }
@@ -70,8 +78,15 @@ await handleSuccess(name,organisation,city,mobile,email,area_of_work,urnNumber)
   }
 }
 
-
-const handleSuccess=async(name: any,organisation: any,city: any,mobile: any,email: any,area_of_work: any,urn: any)=>{
+const handleSuccess = async (
+  name: any,
+  organisation: any,
+  city: any,
+  mobile: any,
+  email: any,
+  area_of_work: any,
+  urn: any
+) => {
   let visitorTemplate = visitorUserDetailsTemplate({
     Name: name,
     organisation: organisation,
@@ -80,11 +95,11 @@ const handleSuccess=async(name: any,organisation: any,city: any,mobile: any,emai
     Email: email,
     "Area Of Work": area_of_work,
   });
-  let adminMail=sendMail({
+  let adminMail = sendMail({
     email: ADMIN_RECEIVER_MAIL,
     subject: `New User (Visitor) Registered`,
     html: visitorTemplate,
-  })
+  });
   // let qrcodeUrl=await generateQrCodeBuffer(`http://localhost:3000/registrationform/e-badges/download-badge/visitor/${urn}`)
   // let userMail=sendMail({
   //   email: email,
@@ -93,10 +108,9 @@ const handleSuccess=async(name: any,organisation: any,city: any,mobile: any,emai
   //     href:'http://localhost:3000/registrationform/e-badges/download-badge',
   //     'fullName':name,
   //     'urn':urn,
-    
+
   //   }),
   //   attachments:[{filname:'qrcode.png',content:qrcodeUrl,cid:'qr-code',encoding: "base64"}]
   // })
-  return Promise.all([adminMail ]);
-  
-}
+  return Promise.all([adminMail]);
+};

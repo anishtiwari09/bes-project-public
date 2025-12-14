@@ -1,6 +1,19 @@
-const mongoose = require("mongoose");
+import mongoose, { Document, Schema, Model } from "mongoose";
 
-const Schema = new mongoose.Schema(
+export interface IVisitorRegistration extends Document {
+  name: string;
+  organisation: string;
+  city: string;
+  mobile: string;
+  email: string;
+  area_of_work: string;
+  tracking_id: number;
+  unique_reference_number: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const visitorSchema = new Schema<IVisitorRegistration>(
   {
     name: {
       type: String,
@@ -17,12 +30,12 @@ const Schema = new mongoose.Schema(
     mobile: {
       type: String,
       required: true,
-      unique: [true, "This mobile number is already exist"],
+      unique: true,
     },
     email: {
       type: String,
       required: true,
-      unique: [true, "This email is aready exist"],
+      unique: true,
     },
     area_of_work: {
       type: String,
@@ -34,16 +47,20 @@ const Schema = new mongoose.Schema(
       unique: true,
       default: Date.now(),
     },
-    unique_reference_number:{
-      type:String,
-      required:true,
-      unique:true,
-    
-    }
-    
+    unique_reference_number: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   { timestamps: true }
 );
-const VisitorRegistration = mongoose.models?.visitorRegistrationUser || mongoose.model("visitorRegistrationUser", Schema);
+
+const VisitorRegistration: Model<IVisitorRegistration> =
+  mongoose.models?.visitorRegistrationUser ||
+  mongoose.model<IVisitorRegistration>(
+    "visitorRegistrationUser",
+    visitorSchema
+  );
 
 export default VisitorRegistration;

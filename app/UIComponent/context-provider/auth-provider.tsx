@@ -2,8 +2,17 @@ import { checkUserLoginStatus, logout } from "@/app/frontend/actions/login";
 import React, { useEffect, useState } from "react";
 import { AuthContextReturn, IUserData } from "./types";
 import { redirect } from "next/navigation";
+import { ProtectedRoutes } from "../protected-pages";
 
 const AuthContext = React.createContext<AuthContextReturn>(null);
+const isProtectedRoute = (path: string) => {
+  return ProtectedRoutes.some((route) => {
+    if (route.endsWith("/*")) {
+      return path.startsWith(route.slice(0, -2));
+    }
+    return path === route;
+  });
+};
 
 export default function AuthProvider({
   children,
@@ -11,6 +20,7 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const [userData, setUserData] = useState<IUserData | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const updateUserState = (userData: IUserData) => {
     if (userData) {
       let firstName = userData?.firstName || "";
@@ -44,13 +54,25 @@ export default function AuthProvider({
         })
         .catch((e) => {
           console.log(e);
+        })
+        .finally(() => {
+          setLoaded(true);
         });
     }
   }, []);
-
+  useEffect(() => {
+    if (loaded && !userData && isProtectedRoute(window.location.pathname)) {
+      redirect("/?action=login");
+    }
+  }, [loaded, userData]);
   return (
     <AuthContext.Provider
-      value={{ userData, setUserData: updateUserState, onLogout }}
+      value={{
+        userData,
+        setUserData: updateUserState,
+        onLogout,
+        isSignIn: !!userData,
+      }}
     >
       {children}
     </AuthContext.Provider>

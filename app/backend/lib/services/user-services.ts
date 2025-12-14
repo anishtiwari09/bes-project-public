@@ -73,16 +73,6 @@ export class UserService {
       return false;
     }
   }
-  async updateUser(email: string, updateData: Partial<UserData>) {
-    const db = await mongoConnection.connect();
-    const result = await db
-      .collection("users")
-      .updateOne({ email }, { $set: updateData });
-    if (result.matchedCount === 0) {
-      throw new Error("User not found");
-    }
-    return this.getUserByEmail(email);
-  }
 
   async comparePassword(
     passwordHash: string,

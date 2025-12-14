@@ -31,7 +31,7 @@ export interface ILoginDetails {
   refreshToken?: string;
   accessToken?: string;
   isLogin: boolean;
-  verifyUsingOtp: boolean;
+  needToVerifyUsingOtp: boolean;
   payloadToken?: string;
 }
 
