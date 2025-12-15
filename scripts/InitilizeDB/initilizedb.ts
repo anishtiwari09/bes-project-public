@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 import { createSpaceTypeSchemeIfNotExist } from "../../app/backend/models/space_type_scheme";
-import mongoConnection from "@/app/backend/lib/db/db-config";
+import mongoConnection from "../..//app/backend/lib/db/db-config";
 
 export async function seed() {
   try {

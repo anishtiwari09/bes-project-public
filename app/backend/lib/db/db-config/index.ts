@@ -1,4 +1,5 @@
-import { MONGODB_DB, MONGODB_URI } from "@/app/backend/config/constant";
+// import { MONGODB_DB, MONGODB_URI } from "@/app/backend/config/constant";
+import { MONGODB_DB, MONGODB_URI } from "../../../config/constant";
 import mongoose from "mongoose";
 
 class MongoDBConnection {
