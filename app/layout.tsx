@@ -5,7 +5,7 @@ import Footer from "./UIComponent/Footer/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { ENVIROMENT } from "./backend/constant";
-import { useEffect } from "react";
+import { Suspense } from "react";
 import ClientWrapper from "./UIComponent/cient-wrapper";
 import DownloadBrochureButton from "./UIComponent/buttons/download-brochure";
 
@@ -108,15 +108,17 @@ export default async function RootLayout({ children }: any) {
   return (
     <html lang="en" className="h-full">
       <body className="h-full overflow-hidden">
-        <ClientWrapper>
-          <Navbar />
+        <Suspense>
+          <ClientWrapper>
+            <Navbar />
 
-          <div className="overflow-auto inner_page scroll-smooth">
-            <div className="body_page">{children}</div>
-            <DownloadBrochureButton />
-            <Footer initialCount={0} />
-          </div>
-        </ClientWrapper>
+            <div className="overflow-auto inner_page scroll-smooth">
+              <div className="body_page">{children}</div>
+              <DownloadBrochureButton />
+              <Footer initialCount={0} />
+            </div>
+          </ClientWrapper>
+        </Suspense>
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
       </body>
