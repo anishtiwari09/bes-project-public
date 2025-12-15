@@ -1,19 +1,9 @@
 import AdminServices from "@/app/backend/lib/services/admin-services";
 import React from "react";
 import AllRegistrations from "./ui/all-registrations";
-async function getCookieData() {
-  const admin = new AdminServices();
-  return new Promise(async (resolve) => {
-    try {
-      const db = await admin.getAllDelegateUsers();
-      resolve(db);
-    } catch (e) {
-      console.log("error while fetching cookies", e?.message);
-      resolve(null);
-    }
-  });
-}
+export const dynamic = "force-dynamic";
 export default async function page() {
-  const db = await getCookieData();
+  const admin = new AdminServices();
+  const db = await admin.getAllDelegateUsers();
   return <AllRegistrations db={(db || []) as any} />;
 }
