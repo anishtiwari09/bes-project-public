@@ -61,8 +61,9 @@ export async function middleware(request: NextRequest) {
         ts: Date.now(),
       }),
     });
-  } catch {
+  } catch (e) {
     // never block request
+    console.log("error in edge method", e?.message);
   }
 
   /* ---------------------------------------------
