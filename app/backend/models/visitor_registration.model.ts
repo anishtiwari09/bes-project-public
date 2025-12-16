@@ -79,7 +79,7 @@ const visitorSchema = new Schema<IVisitorRegistration>(
 );
 
 // Add index for better query performance
-visitorSchema.index({ tracking_id: 1 });
+// visitorSchema.index({ tracking_id: 1 });
 
 // Pre-validate hook to generate tracking_id BEFORE validation runs
 visitorSchema.pre("validate", async function (next) {

@@ -115,7 +115,7 @@ const delegateUserSchema = new mongoose.Schema<IDelegateUser>(
 );
 
 // Add index for better query performance
-delegateUserSchema.index({ tracking_id: 1 });
+// delegateUserSchema.index({ tracking_id: 1 });
 
 // Pre-validate hook to generate tracking_id BEFORE validation runs
 delegateUserSchema.pre("validate", async function (next) {
