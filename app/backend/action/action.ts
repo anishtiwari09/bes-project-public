@@ -566,8 +566,8 @@ export async function trackVisitor() {
     const hasSessionCookie = await CookiesService.getSessionCookie();
 
     if (!hasSessionCookie) {
-      await updateVisitorCounter();
       await CookiesService.setSessionCookie();
+      await updateVisitorCounter();
     }
 
     return await getVisitorCounter();

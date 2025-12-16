@@ -7,7 +7,12 @@ import SocialMediaFooter from "../social-media/social-media-footer";
 import { trackVisitor } from "@/app/backend/action/action";
 export const dynamic = "force-dynamic";
 export default async function Footer() {
-  const initialCounter = await trackVisitor();
+  let initialCounter = 0;
+  try {
+    initialCounter = await trackVisitor();
+  } catch (error) {
+    console.error("Failed to get visitor count:", error);
+  }
   return (
     <>
       <Toaster
