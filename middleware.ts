@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 const VISITOR_COOKIE = "besSessionCookies";
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   /* =====================================================
@@ -95,40 +95,33 @@ export async function middleware(request: NextRequest) {
 
   try {
     // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
-    console.log(`started log on edge method: ${request.nextUrl.origin}`);
+
     const cookieHeader = request.headers.get("cookie");
 
-    let res = await fetch(
-      `${request.nextUrl.origin}/backend/api/track-visitor`,
-      {
-        method: "POST",
-        headers: {
-          "x-internal-secret": process.env.INTERNAL_SECRET!,
-          "content-type": "application/json",
-          ...(cookieHeader ? { cookie: cookieHeader } : {}),
-        },
+    fetch(`${request.nextUrl.origin}/backend/api/track-visitor`, {
+      method: "POST",
+      headers: {
+        "x-internal-secret": process.env.INTERNAL_SECRET!,
+        "content-type": "application/json",
+        ...(cookieHeader ? { cookie: cookieHeader } : {}),
+      },
 
-        body: JSON.stringify({
-          // Landing page
-          path: request.nextUrl.pathname,
+      body: JSON.stringify({
+        // Landing page
+        path: request.nextUrl.pathname,
 
-          // Traffic source
-          referrer: request.headers.get("referer") || "direct",
+        // Traffic source
+        referrer: request.headers.get("referer") || "direct",
 
-          // Timestamp
-          timestamp: timestamp,
+        // Timestamp
+        timestamp: timestamp,
 
-          // Optional: Add more context
-          userAgent: request.headers.get("user-agent"),
-          country: (request as any)?.geo?.country || "unknown",
-          city: (request as any).geo?.city || "unknown",
-        }),
-      }
-    );
-    console.log(
-      `ended log on edge method: ${process.env.INTERNAL_SECRET}`,
-      res
-    );
+        // Optional: Add more context
+        userAgent: request.headers.get("user-agent"),
+        country: (request as any)?.geo?.country || "unknown",
+        city: (request as any).geo?.city || "unknown",
+      }),
+    });
   } catch (error) {
     // Never block user experience on tracking failure
     console.error("Tracking failed:", error);
