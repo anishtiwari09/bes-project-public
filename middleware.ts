@@ -93,6 +93,7 @@ export async function middleware(request: NextRequest) {
 
   try {
     // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
+    console.log(`started log on edge method: ${request.nextUrl.origin}`);
     await fetch(`${request.nextUrl.origin}/backend/api/track-visitor`, {
       method: "POST",
       headers: {
@@ -115,6 +116,7 @@ export async function middleware(request: NextRequest) {
         city: (request as any).geo?.city || "unknown",
       }),
     });
+    console.log(`ended log on edge method: ${process.env.INTERNAL_SECRET}`);
   } catch (error) {
     // Never block user experience on tracking failure
     console.error("Tracking failed:", error);
