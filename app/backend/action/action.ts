@@ -562,12 +562,16 @@ export const sendMailToUser = async (email: any) => {
 };
 
 export async function trackVisitor() {
-  const hasSessionCookie = await CookiesService.getSessionCookie();
+  try {
+    const hasSessionCookie = await CookiesService.getSessionCookie();
 
-  if (!hasSessionCookie) {
-    await updateVisitorCounter();
-    await CookiesService.setSessionCookie();
+    if (!hasSessionCookie) {
+      await updateVisitorCounter();
+      await CookiesService.setSessionCookie();
+    }
+
+    return await getVisitorCounter();
+  } catch (e) {
+    return 1;
   }
-
-  return await getVisitorCounter();
 }
