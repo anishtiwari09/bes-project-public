@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ status: 201 });
   } catch (e) {
-    console.log(e?.message);
+    console.log("error in tracker page", e?.message);
     return NextResponse.json({
       status: 500,
     });
