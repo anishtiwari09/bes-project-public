@@ -139,7 +139,7 @@ delegateUserSchema.pre("validate", async function (next) {
 
       // Format: timestamp * 10000 + sequence
       // Example: 17342592000000001, 17342592000000002, etc.
-      this.tracking_id = timestamp * 10000 + seq;
+      this.tracking_id = timestamp + seq;
 
       next();
     } catch (error) {
