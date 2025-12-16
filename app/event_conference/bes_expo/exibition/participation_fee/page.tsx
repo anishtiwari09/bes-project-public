@@ -13,9 +13,9 @@ export default async function page() {
   let spaceTypesData = [];
   try {
     await mongoConnection.connect();
-    let data = countryData || [];
+    let data: any = countryData || [];
 
-    const responseData: CountryDataApiReponse[] = await data.json();
+    const responseData: CountryDataApiReponse[] = data;
     responseData?.forEach((element: CountryDataApiReponse) => {
       if (element?.name?.common) countryData.push(element?.name?.common);
     });
