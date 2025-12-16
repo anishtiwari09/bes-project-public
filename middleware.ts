@@ -94,29 +94,35 @@ export async function middleware(request: NextRequest) {
   try {
     // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
     console.log(`started log on edge method: ${request.nextUrl.origin}`);
-    await fetch(`${request.nextUrl.origin}/backend/api/track-visitor`, {
-      method: "POST",
-      headers: {
-        "x-internal-secret": process.env.INTERNAL_SECRET!,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        // Landing page
-        path: request.nextUrl.pathname,
+    let res = await fetch(
+      `${request.nextUrl.origin}/backend/api/track-visitor`,
+      {
+        method: "POST",
+        headers: {
+          "x-internal-secret": process.env.INTERNAL_SECRET!,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          // Landing page
+          path: request.nextUrl.pathname,
 
-        // Traffic source
-        referrer: request.headers.get("referer") || "direct",
+          // Traffic source
+          referrer: request.headers.get("referer") || "direct",
 
-        // Timestamp
-        timestamp: timestamp,
+          // Timestamp
+          timestamp: timestamp,
 
-        // Optional: Add more context
-        userAgent: request.headers.get("user-agent"),
-        country: (request as any)?.geo?.country || "unknown",
-        city: (request as any).geo?.city || "unknown",
-      }),
-    });
-    console.log(`ended log on edge method: ${process.env.INTERNAL_SECRET}`);
+          // Optional: Add more context
+          userAgent: request.headers.get("user-agent"),
+          country: (request as any)?.geo?.country || "unknown",
+          city: (request as any).geo?.city || "unknown",
+        }),
+      }
+    );
+    console.log(
+      `ended log on edge method: ${process.env.INTERNAL_SECRET}`,
+      res
+    );
   } catch (error) {
     // Never block user experience on tracking failure
     console.error("Tracking failed:", error);
