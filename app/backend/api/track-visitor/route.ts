@@ -5,7 +5,7 @@ import { getVisitor, updateVisitor } from "../../action/action";
 export async function POST(req: Request) {
   try {
     const secret = req.headers.get("x-internal-secret");
-    console.info("tracker got called");
+    console.log("tracker got called");
     if (secret !== process.env.INTERNAL_SECRET) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
