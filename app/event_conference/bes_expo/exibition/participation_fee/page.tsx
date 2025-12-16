@@ -6,14 +6,14 @@ import { CountryDataApiReponse } from "./types";
 
 import SpaceTypeScheme from "@/app/backend/models/space_type_scheme";
 import mongoConnection from "@/app/backend/lib/db/db-config";
-import countryData from "@/app/country/country.json";
+import countryData from "@/app/country/db.json";
 export const revalidate = 14400; // 4 hours in seconds (4 * 60 * 60)
 export default async function page() {
   let countryData: string[] = [];
   let spaceTypesData = [];
   try {
     await mongoConnection.connect();
-    let data: Response = countryData || [];
+    let data = countryData || [];
 
     const responseData: CountryDataApiReponse[] = await data.json();
     responseData?.forEach((element: CountryDataApiReponse) => {
