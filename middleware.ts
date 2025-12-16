@@ -103,8 +103,9 @@ export async function middleware(request: NextRequest) {
         headers: {
           "x-internal-secret": process.env.INTERNAL_SECRET!,
           "content-type": "application/json",
+          ...(cookieHeader ? { cookie: cookieHeader } : {}),
         },
-        ...(cookieHeader ? { cookie: cookieHeader } : {}),
+
         body: JSON.stringify({
           // Landing page
           path: request.nextUrl.pathname,
