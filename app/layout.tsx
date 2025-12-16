@@ -97,14 +97,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: any) {
-  // let intitalCounter = await getVisitorCounter();
-  // const cookieStore = cookies();
-  // let besSessionCookies = cookieStore.get("updateCounter")?.value;
-
-  // if (besSessionCookies) {
-  //   updateVisitorCounter();
-  // }
-
   return (
     <html lang="en" className="h-full">
       <body className="h-full overflow-hidden">
@@ -115,7 +107,7 @@ export default async function RootLayout({ children }: any) {
             <div className="overflow-auto inner_page scroll-smooth">
               <div className="body_page">{children}</div>
               <DownloadBrochureButton />
-              <Footer initialCount={0} />
+              <Footer />
             </div>
           </ClientWrapper>
         </Suspense>

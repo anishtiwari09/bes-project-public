@@ -92,4 +92,20 @@ export class CookiesService {
       ...parseUser,
     };
   }
+  static async getValueFromCookie(key: string): Promise<string | null> {
+    let cookie = await cookies();
+    return cookie.get(key)?.value || null;
+  }
+
+  static async getAccessToken(): Promise<string> {
+    const token = await this.getLoginCookies();
+    return token?.accessToken || "";
+  }
+
+  static async getSessionCookie(): Promise<string> {
+    return await this.getValueFromCookie("besSessionCookies");
+  }
+  static async setSessionCookie() {
+    await this.setSecureCookie("besSessionCookies", Date.now().toString());
+  }
 }

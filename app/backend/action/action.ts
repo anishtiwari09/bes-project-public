@@ -36,6 +36,10 @@ import EmailNotification from "../lib/services/notification/email-notification";
 import JwtTokenService from "../lib/services/jwt-service";
 import UserAuthService from "../lib/services/auth-service/user-auth-service";
 import { CookiesService } from "../lib/services/cookies-service";
+import {
+  getVisitorCounter,
+  updateVisitorCounter,
+} from "../helper/visitor_helper/visitor_counter_helper";
 // connect();
 export const signUpAction = async (prevState: any, formData: any) => {
   const data = formData || {};
@@ -556,3 +560,14 @@ export const sendMailToUser = async (email: any) => {
   });
   await updateEmailOtpOnDb({ email, otp });
 };
+
+export async function trackVisitor() {
+  const hasSessionCookie = await CookiesService.getSessionCookie();
+
+  if (!hasSessionCookie) {
+    await updateVisitorCounter();
+    await CookiesService.setSessionCookie();
+  }
+
+  return await getVisitorCounter();
+}

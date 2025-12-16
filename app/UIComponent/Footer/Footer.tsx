@@ -4,8 +4,10 @@ import React from "react";
 import { handleGetDynamicLink } from "@/app/Utility/helper/helper";
 import { Toaster } from "react-hot-toast";
 import SocialMediaFooter from "../social-media/social-media-footer";
-
-export default function Footer({ initialCount = 0 }) {
+import { trackVisitor } from "@/app/backend/action/action";
+export const dynamic = "force-dynamic";
+export default async function Footer() {
+  const initialCounter = await trackVisitor();
   return (
     <>
       <Toaster
@@ -27,7 +29,7 @@ export default function Footer({ initialCount = 0 }) {
       <div className="bg-black opacity-80 py-4 footer-main-class">
         <div className="w-[96%] m-auto">
           <h3 className="text-[#adff2f] text-lg min-w-[150px] text-center">
-            Total Visitors: {initialCount}
+            Total Visitors: {initialCounter}
           </h3>
           {footerData.map((item, key) => (
             <React.Fragment key={item.id}>
