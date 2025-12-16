@@ -67,7 +67,9 @@ export async function middleware(request: NextRequest) {
   ===================================================== */
 
   const existingCookie = request.cookies.get(VISITOR_COOKIE);
-
+  if (request.nextUrl.pathname.startsWith("/backend/api")) {
+    return response;
+  }
   if (existingCookie) {
     // User already tracked - do nothing
     return response;

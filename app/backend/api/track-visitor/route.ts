@@ -6,10 +6,10 @@ export async function POST(req: Request) {
   const secret = req.headers.get("x-internal-secret");
   console.log("Tracker endpoint called");
 
-  // if (!secret || secret !== process.env.INTERNAL_SECRET) {
-  //   console.log("Server un authrized");
-  //   return NextResponse.json({ error: "authorised" }, { status: 401 });
-  // }
+  if (!secret || secret !== process.env.INTERNAL_SECRET) {
+    console.log("Server un authrized");
+    return NextResponse.json({ error: "authorised" }, { status: 401 });
+  }
 
   try {
     await updateVisitor();
