@@ -26,6 +26,24 @@ export async function POST(req: any) {
       otp,
       address,
     } = json;
+
+    let emailResult = await emailVerification.findOne({
+      email,
+      otpCode: otp,
+    });
+    if (
+      !emailResult ||
+      !emailResult?.isVerified ||
+      emailResult?.hasOtpExpired
+    ) {
+      return NextResponse.json(
+        {
+          message: "Otp has been expired please try again after sometime",
+          status: false,
+        },
+        { status: 401 }
+      );
+    }
     let user = await DelegateUser.findOne({
       $or: [{ email: email }, { mobile: mobile }],
     });
@@ -38,23 +56,6 @@ export async function POST(req: any) {
         { status: 409 }
       );
     } else {
-      let emailResult = await emailVerification.findOne({
-        email,
-        otpCode: otp,
-      });
-      if (
-        !emailResult ||
-        !emailResult?.isVerified ||
-        emailResult?.hasOtpExpired
-      ) {
-        return NextResponse.json(
-          {
-            message: "Otp has been expired please try again after sometime",
-            status: false,
-          },
-          { status: 401 }
-        );
-      }
       let newUser = new DelegateUser({
         name,
         organisation,
@@ -71,6 +72,14 @@ export async function POST(req: any) {
         postal_address: address,
       });
       await newUser.save();
+      try {
+        await emailVerification.findOneAndUpdate(
+          { email },
+          { hasOtpExpired: true }
+        );
+      } catch (e) {
+        console.error("while updating otp", e?.message);
+      }
       let visitorTemplate = visitorUserDetailsTemplate(
         {
           name,

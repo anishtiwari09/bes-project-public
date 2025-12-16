@@ -15,18 +15,6 @@ export async function POST(req: any) {
     await mongoConnection.connect();
     let json = await req.json();
     const { name, organisation, city, mobile, email, area_of_work, otp } = json;
-    let user = await VisitorRegistration.findOne({
-      $or: [{ email: email }, { mobile: mobile }],
-    });
-    if (user) {
-      return NextResponse.json(
-        {
-          message: "Email or mobile is already register with us",
-          status: false,
-        },
-        { status: 409 }
-      );
-    }
     let emailResult = await emailVerification.findOne({ email, otpCode: otp });
     if (
       !emailResult ||
@@ -41,11 +29,21 @@ export async function POST(req: any) {
         { status: 401 }
       );
     }
+    let user = await VisitorRegistration.findOne({
+      $or: [{ email: email }, { mobile: mobile }],
+    });
+    if (user) {
+      return NextResponse.json(
+        {
+          message: "Email or mobile is already register with us",
+          status: false,
+        },
+        { status: 409 }
+      );
+    }
+
     let urnNumber = PREFIX_REFERENCE_NUMBER + uniqueIdGenerator(7);
-    await emailVerification.findOneAndUpdate(
-      { email },
-      { hasOtpExpired: true }
-    );
+
     let newUser = new VisitorRegistration({
       name,
       organisation,
@@ -55,7 +53,16 @@ export async function POST(req: any) {
       area_of_work,
       unique_reference_number: urnNumber,
     });
+
     await newUser.save();
+    try {
+      await emailVerification.findOneAndUpdate(
+        { email },
+        { hasOtpExpired: true }
+      );
+    } catch (e) {
+      console.error("while updating otp", e?.message);
+    }
     await handleSuccess(
       name,
       organisation,
