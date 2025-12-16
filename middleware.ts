@@ -111,7 +111,7 @@ export async function middleware(request: NextRequest) {
 
         // Optional: Add more context
         userAgent: request.headers.get("user-agent"),
-        country: (request as any).geo?.country || "unknown",
+        country: (request as any)?.geo?.country || "unknown",
         city: (request as any).geo?.city || "unknown",
       }),
     });
@@ -134,9 +134,9 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization)
      * - favicon.ico, robots.txt, etc.
-     * - API routes
+     * - API routes (backend/api)
      * - File extensions (images, fonts, etc.)
      */
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|json)).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|backend/api|api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|json)).*)",
   ],
 };
