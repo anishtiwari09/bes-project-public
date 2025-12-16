@@ -1,44 +1,87 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { JSESSIONID } from "./app/backend/constant";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import type { NextRequest } from "next/server";
 
-// import { updateVisitorCounter } from "./app/backend/helper/visitor_helper/visitor_counter_helper";
-export async function middleware(request: any) {
-  let response = NextResponse.next();
+const VISITOR_COOKIE = "besSessionCookies";
+
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+
+  /* ---------------------------------------------
+     1️⃣ Ignore prefetch requests
+  --------------------------------------------- */
+  if (request.headers.get("purpose") === "prefetch") {
+    return response;
+  }
+
+  /* ---------------------------------------------
+     2️⃣ Bot detection
+  --------------------------------------------- */
+  const ua = request.headers.get("user-agent")?.toLowerCase() || "";
+  const isBot =
+    ua.includes("bot") ||
+    ua.includes("crawler") ||
+    ua.includes("spider") ||
+    ua.includes("google") ||
+    ua.includes("bing") ||
+    ua.includes("yandex") ||
+    ua.includes("duckduckbot") ||
+    ua.includes("baidu") ||
+    ua.includes("facebookexternalhit");
+
+  if (isBot) {
+    return response;
+  }
+
+  /* ---------------------------------------------
+     3️⃣ Cookie guard (IMPORTANT)
+     If cookie exists → DO NOTHING
+  --------------------------------------------- */
+  const hasVisited = request.cookies.get(VISITOR_COOKIE);
+
+  if (hasVisited) {
+    return response;
+  }
+
+  /* ---------------------------------------------
+     4️⃣ Fire tracking ONLY ONCE
+  --------------------------------------------- */
+  try {
+    const origin = request.nextUrl.origin;
+
+    fetch(`${origin}/backend/api/track-visitor`, {
+      method: "POST",
+      headers: {
+        "x-internal-secret": process.env.INTERNAL_SECRET!,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        path: request.nextUrl.pathname,
+        ts: Date.now(),
+      }),
+    });
+  } catch {
+    // never block request
+  }
+
+  /* ---------------------------------------------
+     5️⃣ Set cookie to prevent future calls
+  --------------------------------------------- */
+  response.cookies.set(VISITOR_COOKIE, "1", {
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    path: "/",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
 
   return response;
 }
+
+/* ---------------------------------------------
+   6️⃣ Apply only to real pages
+--------------------------------------------- */
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!backend/api/|_next/static|_next/image|favicon.ico|Images/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api|backend/api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|zip|rar|mp4|mp3)).*)",
   ],
 };
-
-function handleSignOut(request: Request) {
-  let response = handleHomePageRedirect(request);
-  response.cookies.delete(JSESSIONID);
-  return response;
-}
-function isLogin(cookies: ReadonlyRequestCookies) {
-  let token = cookies.get(JSESSIONID)?.value;
-
-  return !!token;
-}
-function isProtectedRoute(pathname: string) {
-  pathname = pathname || "";
-
-  return false;
-}
-
-function handleHomePageRedirect(request: Request) {
-  return NextResponse.redirect(new URL("/", request.url));
-}
-const protectedRoute = ["/user/"];

@@ -4,15 +4,10 @@ import React from "react";
 import { handleGetDynamicLink } from "@/app/Utility/helper/helper";
 import { Toaster } from "react-hot-toast";
 import SocialMediaFooter from "../social-media/social-media-footer";
-import { trackVisitor } from "@/app/backend/action/action";
-export const dynamic = "force-dynamic";
+
+import TotalVisitor from "./total-visitor";
+
 export default async function Footer() {
-  let initialCounter = 0;
-  try {
-    initialCounter = await trackVisitor();
-  } catch (error) {
-    console.error("Failed to get visitor count:", error);
-  }
   return (
     <>
       <Toaster
@@ -33,9 +28,7 @@ export default async function Footer() {
       />
       <div className="bg-black opacity-80 py-4 footer-main-class">
         <div className="w-[96%] m-auto">
-          <h3 className="text-[#adff2f] text-lg min-w-[150px] text-center">
-            Total Visitors: {initialCounter}
-          </h3>
+          <TotalVisitor />
           {footerData.map((item, key) => (
             <React.Fragment key={item.id}>
               <div className="flex gap-4 mt-2">

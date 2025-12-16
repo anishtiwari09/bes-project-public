@@ -20,7 +20,7 @@ import {
 } from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
 import VisitorRegistration from "../models/visitor_registration.model";
 import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
@@ -561,17 +561,24 @@ export const sendMailToUser = async (email: any) => {
   await updateEmailOtpOnDb({ email, otp });
 };
 
-export async function trackVisitor() {
+export async function updateVisitor() {
   try {
     const hasSessionCookie = await CookiesService.getSessionCookie();
-
     if (!hasSessionCookie) {
       await CookiesService.setSessionCookie();
-      await updateVisitorCounter();
+      return await updateVisitorCounter();
     }
 
-    return await getVisitorCounter();
+    return null;
   } catch (e) {
+    console.error("this is errro", e?.message);
     return 1;
   }
 }
+
+export const getVisitor = async () => {
+  const hasSessionCookie = await CookiesService.getSessionCookie();
+  if (hasSessionCookie) {
+    return await getVisitorCounter();
+  }
+};

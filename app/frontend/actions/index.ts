@@ -8,7 +8,7 @@ export const fetchApiHub = async (
     fetch(endpoint, {
       method: method || "GET",
       credentials: "include",
-      body: JSON.stringify(payload),
+      body: method == "GET" ? null : JSON.stringify(payload),
     })
   );
 };
