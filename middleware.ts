@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const VISITOR_COOKIE = "besSessionCookies";
-
+const EDGE_GUARD_HEADER = "x-edge-visitor-guard";
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
@@ -67,6 +67,10 @@ export function middleware(request: NextRequest) {
   ===================================================== */
 
   const existingCookie = request.cookies.get(VISITOR_COOKIE);
+  if (request.headers.get(EDGE_GUARD_HEADER)) {
+    return response;
+  }
+
   if (request.nextUrl.pathname.startsWith("/backend/api")) {
     return response;
   }
@@ -104,6 +108,7 @@ export function middleware(request: NextRequest) {
         "x-internal-secret": process.env.INTERNAL_SECRET!,
         "content-type": "application/json",
         ...(cookieHeader ? { cookie: cookieHeader } : {}),
+        [EDGE_GUARD_HEADER]: "1",
       },
 
       body: JSON.stringify({
