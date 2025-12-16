@@ -94,6 +94,8 @@ export async function middleware(request: NextRequest) {
   try {
     // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
     console.log(`started log on edge method: ${request.nextUrl.origin}`);
+    const cookieHeader = request.headers.get("cookie");
+
     let res = await fetch(
       `${request.nextUrl.origin}/backend/api/track-visitor`,
       {
@@ -102,6 +104,7 @@ export async function middleware(request: NextRequest) {
           "x-internal-secret": process.env.INTERNAL_SECRET!,
           "content-type": "application/json",
         },
+        ...(cookieHeader ? { cookie: cookieHeader } : {}),
         body: JSON.stringify({
           // Landing page
           path: request.nextUrl.pathname,
