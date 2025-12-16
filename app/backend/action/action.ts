@@ -563,13 +563,7 @@ export const sendMailToUser = async (email: any) => {
 
 export async function updateVisitor() {
   try {
-    const hasSessionCookie = await CookiesService.getSessionCookie();
-    if (!hasSessionCookie) {
-      await CookiesService.setSessionCookie();
-      return await updateVisitorCounter();
-    }
-
-    return null;
+    return await updateVisitorCounter();
   } catch (e) {
     console.error("this is errro", e?.message);
     return 1;

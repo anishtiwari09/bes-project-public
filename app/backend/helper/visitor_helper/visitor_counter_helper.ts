@@ -17,12 +17,12 @@ export const getVisitorCounter = async () => {
 };
 
 export const updateVisitorCounter = async () => {
-  await mongoConnection.connect();
   const options = {
     upsert: true, // Create the document if it doesn't exist
     setDefaultsOnInsert: true, // Apply schema defaults on insert
   };
   try {
+    await mongoConnection.connect();
     return await VisitorCounter.findOneAndUpdate(
       { numberOfVisitor: { $gte: 0 } },
       {

@@ -3,22 +3,21 @@ import { NextResponse } from "next/server";
 import { getVisitor, updateVisitor } from "../../action/action";
 
 export async function POST(req: Request) {
+  const secret = req.headers.get("x-internal-secret");
+  console.log("🔵 Tracker endpoint called");
+
+  if (!secret || secret !== process.env.INTERNAL_SECRET) {
+    console.log("❌ Unauthorized");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    const secret = req.headers.get("x-internal-secret");
-    console.log("tracker got called");
-    if (secret !== process.env.INTERNAL_SECRET) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    // 👉 DB update here
     await updateVisitor();
-
-    return NextResponse.json({ status: 201 });
-  } catch (e) {
-    console.log("error in tracker page", e?.message);
-    return NextResponse.json({
-      status: 500,
-    });
+    console.log("✅ Visitor tracked");
+    return NextResponse.json({ success: true }, { status: 201 });
+  } catch (error: any) {
+    console.error("❌ Error:", error?.message);
+    return NextResponse.json({ error: error?.message }, { status: 500 });
   }
 }
 

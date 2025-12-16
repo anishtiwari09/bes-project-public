@@ -6,85 +6,137 @@ const VISITOR_COOKIE = "besSessionCookies";
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  /* ---------------------------------------------
-     1️⃣ Ignore prefetch requests
-  --------------------------------------------- */
+  /* =====================================================
+     STEP 1: Filter Out Non-Real Users
+  ===================================================== */
 
-  console.log("inside ege method", process.env.INTERNAL_SECRET);
+  // 1a. Skip prefetch requests (Next.js optimization)
   if (request.headers.get("purpose") === "prefetch") {
     return response;
   }
 
-  /* ---------------------------------------------
-     2️⃣ Bot detection
-  --------------------------------------------- */
+  // 1b. Skip Next.js internal requests
+  if (request.headers.get("x-middleware-prefetch")) {
+    return response;
+  }
+
+  // 1c. Comprehensive bot detection
   const ua = request.headers.get("user-agent")?.toLowerCase() || "";
-  const isBot =
-    ua.includes("bot") ||
-    ua.includes("crawler") ||
-    ua.includes("spider") ||
-    ua.includes("google") ||
-    ua.includes("bing") ||
-    ua.includes("yandex") ||
-    ua.includes("duckduckbot") ||
-    ua.includes("baidu") ||
-    ua.includes("facebookexternalhit");
 
-  if (isBot) {
+  const botPatterns = [
+    "bot",
+    "crawler",
+    "spider",
+    "scraper",
+    "googlebot",
+    "bingbot",
+    "yandexbot",
+    "duckduckbot",
+    "baiduspider",
+    "facebookexternalhit",
+    "twitterbot",
+    "linkedinbot",
+    "whatsapp",
+    "slackbot",
+    "telegrambot",
+    "discordbot",
+    "headless",
+    "phantom",
+    "selenium",
+    "webdriver",
+    "curl",
+    "wget",
+    "python-requests",
+    "go-http-client",
+    "java/",
+    "apache-httpclient",
+    "okhttp",
+  ];
+
+  if (botPatterns.some((pattern) => ua.includes(pattern))) {
     return response;
   }
 
-  /* ---------------------------------------------
-     3️⃣ Cookie guard (IMPORTANT)
-     If cookie exists → DO NOTHING
-  --------------------------------------------- */
-  const hasVisited = request.cookies.get(VISITOR_COOKIE);
-
-  if (hasVisited) {
+  // 1d. Detect headless browsers (common in scrapers)
+  if (!ua || ua === "mozilla/5.0") {
     return response;
   }
 
-  /* ---------------------------------------------
-     4️⃣ Fire tracking ONLY ONCE
-  --------------------------------------------- */
+  /* =====================================================
+     STEP 2: Check if Already Tracked (ONE TIME ONLY)
+  ===================================================== */
+
+  const existingCookie = request.cookies.get(VISITOR_COOKIE);
+
+  if (existingCookie) {
+    // User already tracked - do nothing
+    return response;
+  }
+
+  /* =====================================================
+     STEP 3: New Real User Detected - Track NOW
+  ===================================================== */
+
+  // Set cookie FIRST (prevents race conditions)
+  const timestamp = Date.now();
+  response.cookies.set(VISITOR_COOKIE, timestamp.toString(), {
+    httpOnly: true, // Cannot be accessed by JavaScript
+    secure: true, // HTTPS only (always true on Vercel)
+    sameSite: "lax", // CSRF protection
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    path: "/", // Available site-wide
+  });
+
+  /* =====================================================
+     STEP 4: Fire Tracking Request (Secure)
+  ===================================================== */
+
   try {
-    const origin = request.nextUrl.origin;
-    console.log("inside ege method2", origin);
-    await fetch(`${origin}/backend/api/track-visitor`, {
+    // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
+    await fetch(`${request.nextUrl.origin}/backend/api/track-visitor`, {
       method: "POST",
       headers: {
         "x-internal-secret": process.env.INTERNAL_SECRET!,
         "content-type": "application/json",
       },
       body: JSON.stringify({
+        // Landing page
         path: request.nextUrl.pathname,
-        ts: Date.now(),
+
+        // Traffic source
+        referrer: request.headers.get("referer") || "direct",
+
+        // Timestamp
+        timestamp: timestamp,
+
+        // Optional: Add more context
+        userAgent: request.headers.get("user-agent"),
+        country: (request as any).geo?.country || "unknown",
+        city: (request as any).geo?.city || "unknown",
       }),
     });
-  } catch (e) {
-    // never block request
-    console.log("error in edge method", e?.message);
+  } catch (error) {
+    // Never block user experience on tracking failure
+    console.error("Tracking failed:", error);
   }
-
-  /* ---------------------------------------------
-     5️⃣ Set cookie to prevent future calls
-  --------------------------------------------- */
-  response.cookies.set(VISITOR_COOKIE, Date.now().toString(), {
-    httpOnly: true,
-    maxAge: 60 * 60 * 24 * 365, // 1 year
-    path: "/",
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
 
   return response;
 }
 
-/* ---------------------------------------------
-   6️⃣ Apply only to real pages
---------------------------------------------- */
+/* =====================================================
+   STEP 5: Apply Only to Real Pages
+===================================================== */
+
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api|backend/api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|zip|rar|mp4|mp3)).*)",
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization)
+     * - favicon.ico, robots.txt, etc.
+     * - API routes
+     * - File extensions (images, fonts, etc.)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|json)).*)",
   ],
 };
