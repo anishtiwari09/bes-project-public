@@ -9,6 +9,8 @@ export async function middleware(request: NextRequest) {
   /* ---------------------------------------------
      1️⃣ Ignore prefetch requests
   --------------------------------------------- */
+
+  console.log("inside ege method", process.env.INTERNAL_SECRET);
   if (request.headers.get("purpose") === "prefetch") {
     return response;
   }
@@ -47,7 +49,7 @@ export async function middleware(request: NextRequest) {
   --------------------------------------------- */
   try {
     const origin = request.nextUrl.origin;
-
+    console.log("inside ege method2", origin);
     await fetch(`${origin}/backend/api/track-visitor`, {
       method: "POST",
       headers: {
