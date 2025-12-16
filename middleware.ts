@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 const VISITOR_COOKIE = "besSessionCookies";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   /* ---------------------------------------------
@@ -48,7 +48,7 @@ export function middleware(request: NextRequest) {
   try {
     const origin = request.nextUrl.origin;
 
-    fetch(`${origin}/backend/api/track-visitor`, {
+    await fetch(`${origin}/backend/api/track-visitor`, {
       method: "POST",
       headers: {
         "x-internal-secret": process.env.INTERNAL_SECRET!,
@@ -66,7 +66,7 @@ export function middleware(request: NextRequest) {
   /* ---------------------------------------------
      5️⃣ Set cookie to prevent future calls
   --------------------------------------------- */
-  response.cookies.set(VISITOR_COOKIE, "1", {
+  response.cookies.set(VISITOR_COOKIE, Date.now().toString(), {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 365, // 1 year
     path: "/",

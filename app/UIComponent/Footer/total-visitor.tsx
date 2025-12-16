@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 export default function TotalVisitor() {
   const [counter, setCounter] = useState(null);
   useEffect(() => {
-    console.log("working");
     getVisitorCount().then((res) => {
       setCounter(res?.data?.count || 1);
     });
