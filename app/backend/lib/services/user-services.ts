@@ -14,7 +14,6 @@ export class UserService {
     if (existingUser) {
       throw new Error("User with this email already exists");
     }
-    await sleep(10000);
     const userObject = {
       email: userData.email,
       first_name: userData.first_name,
