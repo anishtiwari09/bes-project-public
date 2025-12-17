@@ -33,7 +33,7 @@
     "jsonwebtoken": "^9.0.2",
     "maskemail": "^1.0.0",
     "mongoose": "^8.4.0",
-    "next": "^14.2.5",
+    "next": "14.2.35",
     "nodemailer": "^6.9.13",
     "otp-generator": "^4.0.1",
     "primereact": "^10.8.2",
