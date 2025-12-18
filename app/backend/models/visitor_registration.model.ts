@@ -14,7 +14,7 @@ export interface IVisitorRegistration extends Document {
 }
 
 // Counter schema for auto-increment
-interface ICounter extends Document {
+interface ICounter {
   _id: string;
   seq: number;
 }

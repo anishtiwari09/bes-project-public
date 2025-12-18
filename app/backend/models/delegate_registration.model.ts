@@ -21,7 +21,7 @@ interface IDelegateUser extends Document {
 }
 
 // Counter schema for auto-increment (shared with visitor model)
-interface ICounter extends Document {
+interface ICounter {
   _id: string;
   seq: number;
 }
