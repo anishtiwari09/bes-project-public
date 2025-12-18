@@ -12,17 +12,17 @@ export default class ErrorWithStatusCode {
     const newMessage = msg || "Payment Required";
     return new CustomError(newMessage, 402);
   }
-  static error403(msg: string) {
+  static error403(msg: string, rediret: boolean, debugMessage: string) {
     const newMessage = msg || "Forbidden Request";
-    return new CustomError(newMessage, 403);
+    return new CustomError(newMessage, 403, rediret, debugMessage);
   }
   static error404(msg: string) {
     const newMessage = msg || "Request Not found";
     return new CustomError(newMessage, 404);
   }
-  static error422(msg: string) {
+  static error422(msg: string, redirect: boolean, debugMessage: string) {
     const newMessage = msg || "Unprocessable Entity";
-    return new CustomError(newMessage, 422);
+    return new CustomError(newMessage, 422, redirect || false, debugMessage);
   }
   static error429(msg: string) {
     const newMessage = msg || "Too many requests";

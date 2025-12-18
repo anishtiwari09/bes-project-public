@@ -11,9 +11,27 @@ export class UserService {
   async createUser(userData: SignupData) {
     await mongoConnection.connect();
     const existingUser = await UserModel.findOne({ email: userData.email });
-    console.log({ existingUser, email: userData?.email });
+
     if (existingUser) {
-      throw new Error("User with this email already exists");
+      if (existingUser.status === UserStatus.Active)
+        throw ErrorWithStatusCode.error422(
+          "User already exists",
+          false,
+          "User is already exit and in active state" + existingUser.email
+        );
+
+      if (
+        existingUser.status === UserStatus.Deleted ||
+        existingUser.status === UserStatus.Inactive
+      )
+        throw ErrorWithStatusCode.error403(
+          "Your account has been blocked or is inactive. Please contact the administrator.",
+          false,
+          "User is already exit and status is" +
+            existingUser.status +
+            " account " +
+            existingUser.email
+        );
     }
     const userObject = {
       email: userData.email,

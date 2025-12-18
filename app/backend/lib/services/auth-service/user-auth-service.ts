@@ -283,7 +283,11 @@ export default class UserAuthService {
   ) {
     try {
       if (password1 !== password2 || !password1 || !password2) {
-        throw ErrorWithStatusCode.error422("Password does not match");
+        throw ErrorWithStatusCode.error422(
+          "Password does not match",
+          false,
+          ""
+        );
       }
 
       if (!token || !jwtToken) {
