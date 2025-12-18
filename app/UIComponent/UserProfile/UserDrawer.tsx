@@ -85,7 +85,7 @@ export default function UserDrawer({
 
         {/* Menu Items */}
         <List sx={{ pt: 1 }}>
-          {menuItems.map((item) => {
+          {/* {menuItems.map((item) => {
             const IconComponent = item.icon;
             return (
               <Link
@@ -101,7 +101,7 @@ export default function UserDrawer({
                 </ListItemButton>
               </Link>
             );
-          })}
+          })} */}
 
           <Divider sx={{ my: 1 }} />
 
