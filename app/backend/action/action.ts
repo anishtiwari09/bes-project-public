@@ -59,6 +59,8 @@ export const signUpAction = async (prevState: any, formData: any) => {
       message: "Account created successfully, please check your email",
     };
   } catch (e) {
+    console.log("error while creating user", e?.message);
+    console.log(e);
     return {
       ...prevState,
       status: false,
