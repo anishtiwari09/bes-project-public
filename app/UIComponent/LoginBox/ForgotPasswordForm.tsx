@@ -7,22 +7,26 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import React, { useActionState, useEffect, useState } from "react";
+
 const initialState = {
   message: "",
   status: false,
 };
-export default function ForgotPasswordForm({
-  onClose
-}: any) {
-  const [state, formAction] = useFormState(forgotPasswordAction, initialState);
+
+export default function ForgotPasswordForm({ onClose }) {
+  const [state, formAction, isPending] = useActionState(
+    forgotPasswordAction,
+    initialState
+  );
   const [email, setEmail] = useState("");
+
   useEffect(() => {
     if (state.status) {
       setEmail("");
     }
   }, [state]);
+
   return (
     <form action={formAction}>
       <Stack gap={2} justifyContent={"center"} margin={"auto"}>
@@ -44,33 +48,23 @@ export default function ForgotPasswordForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <SubmitButton />
+        <Button
+          variant="contained"
+          style={
+            isPending
+              ? { color: "white" }
+              : {
+                  background: "blue",
+                  width: "fit-content",
+                  margin: "auto",
+                }
+          }
+          type="submit"
+          disabled={isPending}
+        >
+          {isPending ? "Submitting" : "Submit"}
+        </Button>
       </Stack>
     </form>
   );
 }
-
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-
-  return (
-    <>
-      <Button
-        variant="contained"
-        style={
-          pending
-            ? { color: "white" }
-            : {
-                background: "blue",
-                width: "fit-content",
-                margin: "auto",
-              }
-        }
-        type="submit"
-        disabled={pending}
-      >
-        {pending ? "Submiting" : "Submit"}
-      </Button>
-    </>
-  );
-};

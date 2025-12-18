@@ -4,6 +4,7 @@ import EmailVerificationModel, {
 } from "../../db/models/email-verification";
 import { EmailService } from "../email-services";
 import { generateOtpTemplate } from "@/app/backend/helper/mailHelper/template/otpTemplate";
+import { generateSignupTemplate } from "@/app/backend/helper/mailHelper/template/signup_template";
 
 class EmailVerificationService {
   static createOrUpdateOtp = async (
@@ -78,6 +79,14 @@ class EmailVerificationService {
     );
     return otpCode;
   };
+  static async sendMailForResendPassword(url: string, email: string) {
+    const emailTemplate = generateSignupTemplate(url);
+    await EmailService.sendMail(
+      email,
+      "(Action Required) Reset Password",
+      emailTemplate
+    );
+  }
 }
 
 export default EmailVerificationService;

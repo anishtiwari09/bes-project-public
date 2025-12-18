@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 export enum ServiceType {
   SIGNUP = "signup",
   ADMIN_LOGIN = "admin_login",
+
+  FORGOT_PASSWORD = "Reset Password",
 }
 
 const Schema = new mongoose.Schema(

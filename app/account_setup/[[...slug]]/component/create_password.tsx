@@ -1,35 +1,31 @@
 "use client";
-import {
-  createNewPasswordAction,
-  signUpAction,
-} from "@/app/backend/action/action";
-import { emailValidator, numberValidator } from "@/app/Utility/validator";
+import { createNewPasswordAction } from "@/app/backend/action/action";
 import { Alert, Box, Button, Card, Stack, Typography } from "@mui/material";
 import { Password } from "primereact/password";
-import { useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useState, useActionState, useEffect } from "react";
 import { Divider } from "primereact/divider";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { isValidPassword } from "@/app/helper/helper";
+import { redirect } from "next/navigation";
+import ErrorAlertToast from "@/app/UIComponent/common-ui/error-alert/error-alert-toast";
+import SuccessToast from "@/app/UIComponent/common-ui/success-alert/success-toast";
 
 const initialState = {
   message: "",
   status: false,
 };
 
-export default function CreateNewPassword({
-  slug1,
-  slug2
-}: any) {
-  const [state, formAction] = useFormState(
-    (data1: any, data2: any) => createNewPasswordAction(data1, data2, slug1, slug2),
+export default function CreateNewPassword({ slug1, slug2 }) {
+  const [state, formAction, isPending] = useActionState(
+    (prevState, formData) =>
+      createNewPasswordAction(prevState, formData, slug1, slug2),
     initialState
   );
   const [errorMsg, setErrorMsg] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
 
-  const onSubmit = (e: any) => {
+  const onSubmit = (e) => {
     setErrorMsg("");
     if (!isValidPassword(password1)) {
       setErrorMsg("Your password is week, please use strong password");
@@ -44,6 +40,19 @@ export default function CreateNewPassword({
     }
   };
 
+  if (!state?.status && state?.message && state?.hasToRedirect) {
+    return <ErrorAlertToast redirectTo="/" msg={state?.message} />;
+  }
+
+  if (state?.status) {
+    return (
+      <SuccessToast
+        show={true}
+        msg={state?.message}
+        redirect={"/?action=login"}
+      />
+    );
+  }
   return (
     <div className="w-full h-full flex-1 py-20 bg-[#f2f2f2]">
       <Card
@@ -100,8 +109,22 @@ export default function CreateNewPassword({
                 invalid={password2.trim() ? password1 !== password2 : false}
               />
 
-            
-              <SubmitButton />
+              <Button
+                variant="contained"
+                style={
+                  isPending
+                    ? { color: "white" }
+                    : {
+                        background: "blue",
+                        width: "fit-content",
+                        margin: "auto",
+                      }
+                }
+                type="submit"
+                disabled={isPending}
+              >
+                {isPending ? "Submiting" : "Submit"}
+              </Button>
             </Stack>
           </form>
         )}
@@ -110,34 +133,7 @@ export default function CreateNewPassword({
   );
 }
 
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-
-  return (
-    <>
-      <Button
-        variant="contained"
-        style={
-          pending
-            ? { color: "white" }
-            : {
-                background: "blue",
-                width: "fit-content",
-                margin: "auto",
-              }
-        }
-        type="submit"
-        disabled={pending}
-      >
-        {pending ? "Submiting" : "Submit"}
-      </Button>
-    </>
-  );
-};
-const NewPassword = ({
-  state,
-  setState
-}: any) => {
+const NewPassword = ({ state, setState }) => {
   const header = <div className="font-bold mb-3">Pick a password</div>;
   let lowerCaseRegex = /(?=.*[a-z])/;
   let upperCaseRegex = /(?=.*[A-Z])/;

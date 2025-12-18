@@ -5,6 +5,7 @@ import UserModel, { UserStatus, IUser } from "../db/models/user-schema";
 import { PlainUserObject, SignupData, UserData, UserObject } from "../types";
 import bcrypt from "bcryptjs";
 import { userToUser } from "./utils/user";
+import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
 export class UserService {
   private saltRounds: number = 5;
   async createUser(userData: SignupData) {
@@ -42,6 +43,7 @@ export class UserService {
   async getUserByEmail(email: string): Promise<PlainUserObject | null> {
     await mongoConnection.connect();
     const result = await UserModel.findOne({ email }).lean();
+    if (!result) return null;
     return userToUser(result as unknown as UserObject);
   }
   async validateAndUpdateToken(token: string): Promise<boolean> {
@@ -72,7 +74,34 @@ export class UserService {
       return false;
     }
   }
+  async resetPassword(
+    email: string,
+    verificationToken: string,
+    expireInHour: number
+  ) {
+    await mongoConnection.connect();
 
+    const result = await UserModel.findOneAndUpdate(
+      { email },
+      {
+        verificationToken: verificationToken,
+        verificationTokenExpires: expiryDate(expireInHour || 1), // expired for one hour
+      }
+    );
+
+    return result;
+  }
+  async updatePassword(email: string, password: string, isHash = false) {
+    let passwordHash = password;
+    if (!isHash) {
+      passwordHash = await bcrypt.hash(password, this.saltRounds);
+    }
+    return await UserModel.findOne({ email }).updateOne({
+      passwordHash: passwordHash,
+      verificationToken: null,
+      verificationTokenExpires: null,
+    });
+  }
   async comparePassword(
     passwordHash: string,
     password: string
@@ -82,5 +111,15 @@ export class UserService {
     } catch (e) {
       return false;
     }
+  }
+
+  async getUserToken(token: string) {
+    await mongoConnection.connect();
+
+    if (!token) return null;
+    const result = await UserModel.findOne({ verificationToken: token }).lean();
+
+    if (!result) return null;
+    return result;
   }
 }

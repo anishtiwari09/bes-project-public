@@ -2,35 +2,22 @@
 
 import { emailValidator, numberValidator } from "@/app/Utility/validator";
 
-import UserMember from "../models/user_member.model";
 import { generateUniqueLink } from "../helper/helper";
 import { sendMail } from "../api/sendMail/mail";
-import { generateSignupTemplate } from "../helper/mailHelper/template/signup_template";
-import {
-  decodeJsonToken,
-  generateBcryptPassword,
-  jwtGenerateToken,
-} from "@/app/helper/helper";
-import {
-  LOCAL_URL,
-  PRODUCTION_URL,
-  ADMIN_RECEIVER_MAIL,
-  JSESSIONID,
-  PREFIX_REFERENCE_NUMBER,
-} from "../constant";
+import { generateBcryptPassword } from "@/app/helper/helper";
+import { ADMIN_RECEIVER_MAIL, PREFIX_REFERENCE_NUMBER } from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
-import { cookies, headers } from "next/headers";
-import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
+import { cookies } from "next/headers";
+import { emailSchema } from "@/app/helper/accountSchema";
 import VisitorRegistration from "../models/visitor_registration.model";
 import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
 import { generateOtp } from "../helper/mailHelper/otpGenerator";
 import { updateEmailOtpOnDb } from "./updateDb";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import uniqueIdGenerator from "../helper/unique-id-generator";
 import { signupSchema } from "@/app/_shared/validation-schema";
 import { UserService } from "../lib/services/user-services";
-import { SignupData, UserData } from "../lib/types";
+import { SignupData } from "../lib/types";
 import { expiryDate } from "../helper/util";
 import EmailNotification from "../lib/services/notification/email-notification";
 import JwtTokenService from "../lib/services/jwt-service";
@@ -76,7 +63,7 @@ export const signUpAction = async (prevState: any, formData: any) => {
       ...prevState,
       status: false,
 
-      message: e?.message || "Something went wrong please try again later",
+      message: "Something went wrong please try again later",
     };
   }
 };
@@ -87,102 +74,71 @@ export const createNewPasswordAction = async (
   slug1: any,
   slug2: any
 ) => {
-  let password = formData.get("password");
-  if (!slug1) {
-    return {
-      ...prevState,
-      status: false,
-      message: "Invalid url please try again with valid url",
-    };
-  }
-  if (!password.trim()) {
-    return {
-      ...prevState,
-      status: false,
-      message: "please add valid password",
-    };
-  }
-  let hashPassword = "";
   try {
-    hashPassword = await generateBcryptPassword(password, 4);
-  } catch (e) {
-    console.log(e);
-    return {
-      ...prevState,
-      status: false,
-      message: "Something went wrong please try agian later",
-    };
-  }
-  try {
-    const user = await UserMember.findOne({ token: slug1 });
-    if (!user) {
+    const password1 = formData.get("password");
+    const password2 = formData.get("password2");
+    const authService = new UserAuthService();
+    const isValidate = await authService.setUpNewPassword(
+      slug1,
+      slug2,
+      password1,
+      password2
+    );
+    if (isValidate) {
       return {
         ...prevState,
-        status: false,
-        message: "Invalid url please try again with valid url",
+        status: true,
+        message: "Password has been successfully Reset...",
+        hasToRedirect: false,
       };
     }
-    let data = await UserMember.findOneAndUpdate(
-      { token: slug1 },
-      {
-        isEmailVerified: true,
-        password: hashPassword,
-        isLinkExpired: true,
-        verifiedToken: slug1,
-      }
+    throw new Error("Something went wrong");
+  } catch (e) {
+    return {
+      ...prevState,
+      status: false,
+      hasToRedirect: e?.redirect || false,
+      message: e?.newMessage || "Something went wrong",
+    };
+  }
+};
+
+export const checkAndUpdateToken = async (obj: {
+  token: string;
+  jwtToken: string;
+}) => {
+  try {
+    let authService = new UserAuthService();
+    const isValid = await authService.validateForgotPasswordToken(
+      obj?.jwtToken,
+      obj?.token
     );
+
+    return isValid;
+  } catch (e) {
+    console.log("error in checkAndUpdateToken", e?.message);
+    return false;
+  }
+};
+export const forgotPasswordAction = async (prevState: any, formData: any) => {
+  try {
+    const email = formData?.get("email");
+    const authService = new UserAuthService();
+    await authService.forgetPassword(email);
     return {
       ...prevState,
       status: true,
-      message: "Password has been successfully reset, please login",
+      message:
+        "Reset link has been sent to your email address, if it is registered with us",
     };
   } catch (e) {
-    console.log(e);
-  }
-};
-
-export const checkAndUpdateToken = async (obj: { token: string }) => {
-  let user = new UserService();
-  const isValid = await user.validateAndUpdateToken(obj?.token);
-
-  return isValid;
-};
-export const forgotPasswordAction = async (prevState: any, formData: any) => {
-  let email = formData.get("email");
-  let isValidEmail = emailValidator(email);
-  let uniqueId = generateUniqueLink();
-  if (!isValidEmail) {
+    console.log("error in forgotpasswordAction", e?.message);
     return {
       ...prevState,
-      message: "Please enter valid email address",
       status: false,
+      message: e?.newMessage || "Something went wrong",
     };
   }
-  try {
-    let data = await UserMember.findOneAndUpdate(
-      { email },
-      { token: uniqueId, isLinkExpired: false }
-    );
-    if (data) {
-      let jwtToken = jwtGenerateToken({ email: email });
-      let url =
-        process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
-      url += "/account_setup/" + uniqueId + "/" + jwtToken;
-      sendMail({
-        email: email,
-        subject: "(Action Required) Reset Password",
-        html: generateSignupTemplate(url),
-      });
-    }
-  } catch (e) {
-    console.log(e);
-  }
-  return {
-    ...prevState,
-    status: true,
-    message:
-      "Reset link has been sent to your email address, if it is registered with us",
-  };
 };
 
 export const contactUsAction = async (prevState: any, formData: any) => {
@@ -377,7 +333,6 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     };
   }
   try {
-    console.log("tyring", email, password);
     const authService = new UserAuthService();
     const authSession = await authService.login(email, password);
     if (!authSession) {
@@ -421,84 +376,9 @@ export const userLoginAction = async (prevState: any, formData: any) => {
   }
 };
 
-export const getUserName = async (token: any) => {
-  const verifiedToken = decodeJsonToken(token);
-  if (!verifiedToken) return null;
-  try {
-    let data = await UserMember.findOne({ verifiedToken });
-    if (!data) return null;
-
-    return data?.name;
-  } catch (e) {
-    console.log(e);
-  }
-};
 export const deleteCookiesAction = async (key: any) => {
   let cookie = await cookies();
   cookie.delete(key);
-};
-
-export const getUserDetails = async (token: any) => {
-  const verifiedToken = decodeJsonToken(token);
-  if (!verifiedToken) return null;
-  try {
-    let data = await UserMember.findOne({ verifiedToken }, null, {
-      lean: true,
-    });
-
-    if (!data) return null;
-
-    return JSON.parse(JSON.stringify(data));
-  } catch (e) {
-    console.log(e);
-  }
-  return null;
-};
-
-export const updateMyAccountDetails = async (prevState: any, formData: any) => {
-  let user: { [key: string]: string } = {};
-  let arr = [
-    "name",
-    "mobile",
-    "organisation",
-    "designation",
-    "city",
-    "country",
-  ];
-  for (let key of arr) {
-    user[key] = formData.get(key) || "";
-  }
-  let validate = accountSchema;
-  try {
-    validate.parse(user);
-  } catch (e) {
-    console.log(e);
-    return { ...prevState, status: false, message: "All Field is required..." };
-  }
-  let cookie = await cookies();
-  let token: RequestCookie | string | undefined = cookie!.get(JSESSIONID);
-
-  token = token?.value || "";
-
-  let verifiedToken = decodeJsonToken(token);
-  if (verifiedToken) {
-    try {
-      await UserMember.findOneAndUpdate({ verifiedToken }, user);
-      return {
-        ...prevState,
-        status: true,
-        message: "Account has been Successfully updated",
-      };
-    } catch (e: any) {
-      return {
-        ...prevState,
-        status: false,
-        message: e?.message || "Something went wrong...",
-      };
-    }
-  }
-
-  return { ...prevState, status: false, message: "Something went wrong..." };
 };
 
 export const getVisitorDetails = async (prevState: any, formData: any) => {

@@ -14,6 +14,11 @@ import JwtTokenService from "../jwt-service";
 import { CryptoToken } from "../crypto-token";
 import { UserService } from "../user-services";
 import { ServiceType } from "../../db/models/email-verification";
+import { emailValidator } from "@/app/Utility/validator";
+import { generateUniqueLink } from "@/app/backend/helper/helper";
+import { LOCAL_URL, PRODUCTION_URL } from "@/app/backend/constant";
+import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
+import { LoginError } from "@/app/_shared/custom-error/login-error";
 
 export default class UserAuthService {
   private user: UserService;
@@ -249,6 +254,134 @@ export default class UserAuthService {
       return null;
     }
   }
+  async forgetPassword(email: string) {
+    let isValidEmail = emailValidator(email);
+    let uniqueId = generateUniqueLink();
+    if (!isValidEmail) return false;
+    try {
+      const jwtService = new JwtTokenService();
+      let jwtToken = await jwtService.createToken({ email }, "1h");
+      let url =
+        process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
+      url += "/account_setup/" + uniqueId + "/" + jwtToken;
+
+      let result = await this.user.resetPassword(email, uniqueId, 1);
+      if (!result) throw ErrorWithStatusCode.error404("User not found");
+      await EmailVerificationService.sendMailForResendPassword(url, email);
+    } catch (e) {
+      console.log("error in forgot password", e?.message);
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async setUpNewPassword(
+    token: string,
+    jwtToken: string,
+    password1: string,
+    password2: string
+  ) {
+    try {
+      if (password1 !== password2 || !password1 || !password2) {
+        throw ErrorWithStatusCode.error422("Password does not match");
+      }
+
+      if (!token || !jwtToken) {
+        throw ErrorWithStatusCode.error401(
+          "Invalid Forgot Password Token",
+          true
+        );
+      }
+      const jwtService = new JwtTokenService();
+      const isValid = await jwtService.verifyTokenWithExpiry(jwtToken);
+      if (isValid.expired)
+        throw LoginError.invalidOrExpiredForgotPasswordToken(
+          true,
+          "Expired Jwt Token: " + jwtToken + " verify: " + token
+        );
+      if (!isValid.valid)
+        throw LoginError.invalidOrExpiredForgotPasswordToken(
+          true,
+          "Invalid JwtToken: " + jwtToken + " verify: " + token
+        );
+      const decodePayload: any = await jwtService.decodeToken(jwtToken);
+      console.log(decodePayload, typeof decodePayload);
+      const email = decodePayload?.email || "";
+      if (!email)
+        throw LoginError.invalidOrExpiredForgotPasswordToken(
+          true,
+          "email not Found from jwt: " +
+            " " +
+            jwtToken +
+            " " +
+            email +
+            "Verfiy : " +
+            token
+        );
+      const result = await this.user.getUserToken(token);
+      if (!result)
+        throw LoginError.invalidOrExpiredForgotPasswordToken(
+          true,
+          "Invalid Verification Token: " + jwtToken + "Verify: " + token
+        );
+      let payloadEmail = email?.toLowerCase()?.trim();
+      let resultEmail = result?.email?.toLowerCase()?.trim();
+      if (payloadEmail !== resultEmail)
+        throw LoginError.invalidOrExpiredForgotPasswordToken(
+          true,
+          "payload Email is not matched with db email" +
+            payloadEmail +
+            " 2" +
+            resultEmail +
+            "jwtToken" +
+            jwtToken
+        );
+      const verificationTokenExpires = result.verificationTokenExpires;
+      if (verificationTokenExpires < new Date()) {
+        throw LoginError.invalidOrExpiredForgotPasswordToken(
+          true,
+          "Db Token Expired: " + jwtToken + "Verify: " + token
+        );
+      }
+      let result2 = await this.user.updatePassword(email, password1);
+      if (!result2) {
+        throw ErrorWithStatusCode.error401("Something went wrong");
+      }
+      return true;
+    } catch (e) {
+      console.log(
+        "error in setUpNewPassword: ",
+        e?.message || e?.debugMessage || e?.newMessage
+      );
+      console.log(e);
+      throw e;
+    }
+  }
+  async validateForgotPasswordToken(
+    uniqueToken: string,
+    jwtToken: string
+  ): Promise<boolean> {
+    try {
+      const jwtService = new JwtTokenService();
+      let valid = await jwtService.verifyTokenWithExpiry(jwtToken);
+
+      if (valid.expired) {
+        throw ErrorWithStatusCode.error401("Token expired");
+      }
+
+      if (!valid.valid) {
+        throw ErrorWithStatusCode.error401("Invalid Token");
+      }
+      if (valid.valid && !valid.expired) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.log("error in validateAndUpdateToken", e?.message);
+
+      return false;
+    }
+  }
 
   async isAdmin() {
     const userDetails = await this.validateAndRegenerateTokenAndSetCookie();
@@ -256,3 +389,5 @@ export default class UserAuthService {
     return userDetails?.role === "admin";
   }
 }
+
+// todo to work in signup thing
