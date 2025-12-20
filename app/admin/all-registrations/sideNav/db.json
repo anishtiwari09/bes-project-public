@@ -24,5 +24,18 @@
         "isLink": true,
         "isActive": true,
         "subChildren": []
+    },
+    {
+        "id": 2,
+        "name": "Space Registrations",
+        "path": "my-space",
+        "normalLink": false,
+        "parentPath": "",
+        "isSeprateParentPath": true,
+        "haveChildren": "no",
+        "isExpandable": false,
+        "isLink": true,
+        "isActive": true,
+        "subChildren": []
     }
 ]
