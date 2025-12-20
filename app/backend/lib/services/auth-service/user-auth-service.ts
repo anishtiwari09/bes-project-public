@@ -247,7 +247,7 @@ export default class UserAuthService {
           }
           await CookiesService.setLoginCookies(
             session.accessToken,
-            token.accessToken
+            token.refreshToken
           );
         }
 
