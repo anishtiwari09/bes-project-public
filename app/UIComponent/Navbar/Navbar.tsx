@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import Header1 from "./Header1";
 import Header2 from "./Header2";
 import UserProfile from "../UserProfile/UserProfile";
@@ -16,7 +16,10 @@ export default function Navbar() {
         {isSignIn && (
           <UserProfile userName={userData?.name} role={userData?.role} />
         )}
-        <Header2 />
+
+        <div className="mr-6 md:mr-0 flex items-center">
+          <Header2 />
+        </div>
       </div>
       {!!userData ? null : (
         <div className="absolute right-1 top-1 text-white">

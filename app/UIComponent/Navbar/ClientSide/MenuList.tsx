@@ -1,38 +1,33 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+
+import React, { useState } from "react";
 import MenuCompoenent from "./MenuComponent";
-import { isMobile } from "../../../Utility/device";
 import MobileMenuList from "./MobileMenu/MobileMenuList";
 
-export default function MenuList({
-  data
-}: any) {
-  const [showNavbar, setShowNavbar] = useState(false);
-  let isMobileTest = useMemo(() => {
-    if (typeof window === "object") return isMobile(window);
-  }, []);
+export default function MenuList({ data }: any) {
   const [open, setOpen] = useState(-1);
-  useEffect(() => {
-    setShowNavbar(true);
-  }, []);
-  if (!showNavbar) return null;
-  return isMobileTest === undefined ? (
-    <div></div>
-  ) : isMobileTest ? (
-    <MobileMenuList data={data} />
-  ) : (
-    <div className="flex justify-end">
-      {data?.map((item: any, key: any) =>
-        item?.isActive ? (
-          <MenuCompoenent
-            key={item.id}
-            data={item}
-            open={key === open}
-            setOpen={setOpen}
-            index={key}
-          />
-        ) : null
-      )}
-    </div>
+
+  return (
+    <>
+      {/* Mobile + Tablet */}
+      <div className="block lg:hidden">
+        <MobileMenuList data={data} />
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden lg:flex justify-end">
+        {data?.map((item: any, key: number) =>
+          item?.isActive ? (
+            <MenuCompoenent
+              key={item.id}
+              data={item}
+              open={key === open}
+              setOpen={setOpen}
+              index={key}
+            />
+          ) : null
+        )}
+      </div>
+    </>
   );
 }
