@@ -4,8 +4,8 @@ import findObject from "../../Utility/findObject";
 import SideNavMap from "./SideNavMap";
 import styles from "./side.module.css";
 
-export default function SideNav() {
-  let aboutUs = findObject("key", db, 1);
+export default function SideNav({ data }: { data?: any }) {
+  let aboutUs = data || findObject("key", db, 1);
   return (
     <div
       className={"bg-[#faac1d] text-white p-4 sticky top-4 " + styles.sideNav}

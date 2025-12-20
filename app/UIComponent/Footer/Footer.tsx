@@ -2,10 +2,12 @@ import Link from "next/link";
 import footerData from "./Utility/footerdb.json";
 import React from "react";
 import { handleGetDynamicLink } from "@/app/Utility/helper/helper";
-import  { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import SocialMediaFooter from "../social-media/social-media-footer";
 
-export default function Footer({ initialCount = 0 }) {
+import TotalVisitor from "./total-visitor";
+
+export default async function Footer() {
   return (
     <>
       <Toaster
@@ -21,15 +23,12 @@ export default function Footer({ initialCount = 0 }) {
           // Default options for specific types
           success: {
             duration: 5000000,
-            
           },
         }}
       />
-      <div className="bg-black opacity-80 py-4">
+      <div className="bg-black opacity-80 py-4 footer-main-class">
         <div className="w-[96%] m-auto">
-          <h3 className="text-[#adff2f] text-lg min-w-[150px] text-center">
-            Total Visitors: {initialCount}
-          </h3>
+          <TotalVisitor />
           {footerData.map((item, key) => (
             <React.Fragment key={item.id}>
               <div className="flex gap-4 mt-2">

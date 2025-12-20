@@ -8,15 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "ts-migrate": "ts-migrate",
-    "seed": "ts-node scripts/initilizeDB/initilizeDB"
+    "seed": "ts-node scripts/initilizeDB/initilizeDB",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.9.0",
-    "@mui/base": "^5.0.0-beta.40",
-    "@mui/icons-material": "^7.3.2",
     "@mui/material": "^5.15.5",
+    "@next/bundle-analyzer": "^16.0.0",
     "@sparticuz/chromium": "^133.0.0",
     "@types/node": "^22.14.0",
     "@types/react": "^19.1.0",
@@ -33,14 +33,14 @@
     "jsonwebtoken": "^9.0.2",
     "maskemail": "^1.0.0",
     "mongoose": "^8.4.0",
-    "next": "14.2.35",
+    "next": "15.5.9",
     "nodemailer": "^6.9.13",
     "otp-generator": "^4.0.1",
     "primereact": "^10.8.2",
     "puppeteer-core": "19.11.1",
     "qrcode": "^1.5.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "19.2",
+    "react-dom": "19.2",
     "react-fast-marquee": "^1.6.5",
     "react-hook-form": "^7.52.2",
     "react-hot-toast": "^2.4.1",
@@ -69,5 +69,8 @@
   },
   "engines": {
     "node": "22.x"
+  },
+  "resolutions": {
+    "react-material-ui-carousel/react": "^19.2.0"
   }
 }

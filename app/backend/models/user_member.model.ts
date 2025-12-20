@@ -1,105 +1,53 @@
-import mongoose, { Document, Model } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-interface IUserMember extends Document {
+export interface IUser extends Document {
   name: string;
-  organisation?: string;
-  password?: string;
-  designation?: string;
-  city?: string;
-  country?: string;
-  mobile?: string;
   email: string;
-  token: string;
-  isEmailVerified: boolean;
-  isActive: boolean;
-  isVerified: boolean;
-  isLinkExpired: boolean;
-  tracking_id: string;
-  role: string;
-  tokenGeneratedTime: number;
-  verifiedToken?: string;
+  mobile: string;
+  passwordHash?: string;
+  role: "admin" | "regular";
+  status:
+    | "pending_email_verification"
+    | "email_verified"
+    | "profile_completed"
+    | "approved"
+    | "rejected";
+  rejectionMsg?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  verificationToken: string;
+  verificationTokenExpires: Date;
 }
-const userMember = new mongoose.Schema<IUserMember>(
+
+const UserSchema = new Schema<IUser>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    organisation: {
-      type: String,
-      required: false,
-    },
-    password: {
-      type: String,
-    },
-    designation: {
-      type: String,
-      required: false,
-    },
-    city: {
-      type: String,
-      required: false,
-    },
-    country: {
-      type: String,
-      required: false,
-    },
-    mobile: {
-      type: String,
-      sparse: true,
-      unique: [true, "This mobile number is already exist"],
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: [true, "This email is aready exist"],
-    },
-    token: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    isEmailVerified: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    isActive: {
-      type: Boolean,
-      required: true,
-      default: true,
-    },
-    isVerified: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    isLinkExpired: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    tracking_id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    mobile: { type: String, required: true, unique: true },
+    passwordHash: { type: String },
     role: {
       type: String,
-      required: true,
+      enum: ["regular", "admin"],
       default: "regular",
     },
-    tokenGeneratedTime: {
-      type: Number,
-      required: true,
-      default: Date.now(),
-    },
-    verifiedToken: {
+    status: {
       type: String,
+      enum: [
+        "pending_email_verification",
+        "email_verified",
+        "profile_completed",
+        "approved",
+        "rejected",
+      ],
+      default: "pending_email_verification",
     },
+    verificationToken: { type: String },
+    verificationTokenExpires: { type: Date },
+    rejectionMsg: { type: String }, // optional, only set if rejected
   },
   { timestamps: true }
 );
-const UserMember:Model<IUserMember> =
-  mongoose.models.userMember || mongoose.model("userMember", userMember);
-export default UserMember;
+const User: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+
+export default User;

@@ -1,49 +1,81 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import LoginButton from "../LoginButton/LoginButton";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Button } from "@mui/material";
-import userDb from "./user_account_db.json";
+import React, { useMemo, useState } from "react";
+import { Avatar, IconButton, Tooltip } from "@mui/material";
+import { Person } from "@mui/icons-material";
 import UserDrawer from "./UserDrawer";
-import { deleteCookiesAction, getUserName } from "@/app/backend/action/action";
-import { JSESSIONID } from "@/app/backend/constant";
+import { useAuthContext } from "../context-provider/auth-provider";
+import AdminDrawer from "./admin-drawer";
 export default function UserProfile({
-  isSignIn,
-  deleteCookies,
-  userName
-}: any) {
+  userName,
+  role,
+}: {
+  userName: string;
+  role: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    try {
-      if (deleteCookies) {
-        // deleteCookiesAction(JSESSIONID);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+  const { onLogout } = useAuthContext();
   const firstLastName = useMemo(() => {
-    let name = userName?.split("") || [];
-    return `${name[0] ?? ""}${name[1] ?? ""}`.toUpperCase();
+    if (!userName) return "";
+    const names = userName.split(" ");
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[1][0]}`.toUpperCase();
+    }
+    return userName.substring(0, 2).toUpperCase();
   }, [userName]);
-  return isSignIn ? (
+  return (
     <>
-      <UserDrawer
-        data={userDb}
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        userName={userName}
-      />
+      {role === "admin" ? (
+        <AdminDrawer
+          onLogout={onLogout}
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          userName={userName}
+        />
+      ) : (
+        <UserDrawer
+          onLogout={onLogout}
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          userName={userName}
+        />
+      )}
       {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="bg-white justify-center items-center rounded-full &hover:bg-red w-fit min-w-fit border border-spacing-1 mt-1 mr-1"
-        >
-          {firstLastName}
-        </Button>
+        <Tooltip title={`${userName} - Click to open menu`} arrow>
+          <IconButton
+            onClick={() => setIsOpen(true)}
+            sx={{
+              p: 0,
+              ml: 1,
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "transform 0.2s ease-in-out",
+              },
+            }}
+          >
+            <Avatar
+              sx={{
+                width: 36,
+                height: 36,
+                bgcolor: "#6b7280",
+                color: "white",
+                fontSize: "0.8rem",
+                fontWeight: "600",
+                cursor: "pointer",
+                border: "2px solid transparent",
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  bgcolor: "#4b5563",
+                  borderColor: "#e5e7eb",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  transform: "translateY(-1px)",
+                },
+              }}
+            >
+              {firstLastName || <Person />}
+            </Avatar>
+          </IconButton>
+        </Tooltip>
       )}
     </>
-  ) : (
-   null
   );
 }

@@ -1,10 +1,11 @@
-const { connect } = require("../dbConfig/dbConfig");
+import mongoConnection from "../lib/db/db-config";
+
 const {
   default: VisitorRegistration,
 } = require("../models/visitor_registration.model");
 
-connect();
 export const getUserDetailFromUrn = async (urn: any) => {
+  await mongoConnection.connect();
   const data = await VisitorRegistration.findOne({
     unique_reference_number: urn,
   });

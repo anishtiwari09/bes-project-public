@@ -5,12 +5,8 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 import styles from "./side.module.css";
-export default function SideNavMap({
-  db,
-  parentPath
-}: any) {
+export default function SideNavMap({ db, parentPath }: any) {
   const pathname = usePathname();
-
   return (
     <ul className="pl-2">
       {db.map((item: any, key: any) => (

@@ -1,13 +1,11 @@
-const { connect } = require("../dbConfig/dbConfig");
+import mongoConnection from "../lib/db/db-config";
+
 const {
   default: emailVerification,
 } = require("../models/email_verification.model");
 
-connect();
-export const updateEmailOtpOnDb = async ({
-  email,
-  otp
-}: any) => {
+export const updateEmailOtpOnDb = async ({ email, otp }: any) => {
+  await mongoConnection.connect();
   const options = {
     new: true, // Return the updated document
     upsert: true, // Create the document if it doesn't exist
@@ -26,6 +24,9 @@ export const updateEmailOtpOnDb = async ({
   );
 };
 
-export const updateEmailOtpWithCustomAttribute = async (email: any, attribute: any) => {
+export const updateEmailOtpWithCustomAttribute = async (
+  email: any,
+  attribute: any
+) => {
   await emailVerification.find({ email }, attribute);
 };

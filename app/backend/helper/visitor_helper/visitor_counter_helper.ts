@@ -1,10 +1,10 @@
-import { connect } from "../../dbConfig/dbConfig";
+import mongoConnection from "../../lib/db/db-config";
 import VisitorCounter from "../../models/visitor_counter.model";
 import { InitialCounterValue } from "../types";
-connect();
 export const getVisitorCounter = async () => {
   let initialCounterValue: InitialCounterValue | null = { numberOfVisitor: 0 };
   try {
+    await mongoConnection.connect();
     initialCounterValue = await VisitorCounter.findOne(
       {},
       { numberOfVisitor: 1, _id: 0 }
@@ -22,6 +22,7 @@ export const updateVisitorCounter = async () => {
     setDefaultsOnInsert: true, // Apply schema defaults on insert
   };
   try {
+    await mongoConnection.connect();
     return await VisitorCounter.findOneAndUpdate(
       { numberOfVisitor: { $gte: 0 } },
       {

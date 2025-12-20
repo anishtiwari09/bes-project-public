@@ -3,16 +3,19 @@ import React from "react";
 import FeeDetails from "./FeeDetails";
 import BookYourSpace from "./BookYourSpace";
 import { CountryDataApiReponse } from "./types";
-import { connect } from "@/app/backend/dbConfig/dbConfig";
+
 import SpaceTypeScheme from "@/app/backend/models/space_type_scheme";
-connect();
+import mongoConnection from "@/app/backend/lib/db/db-config";
+import db from "@/app/country/db.json";
+export const revalidate = 14400; // 4 hours in seconds (4 * 60 * 60)
 export default async function page() {
   let countryData: string[] = [];
   let spaceTypesData = [];
   try {
-    let data: Response = await fetch("https://restcountries.com/v3.1/all");
+    await mongoConnection.connect();
+    let data: any = db || [];
 
-    const responseData: CountryDataApiReponse[] = await data.json();
+    const responseData: CountryDataApiReponse[] = data;
     responseData?.forEach((element: CountryDataApiReponse) => {
       if (element?.name?.common) countryData.push(element?.name?.common);
     });

@@ -10,22 +10,19 @@ export default function page() {
 
       <div>
         <p>
-          <strong>BES EXPO 2026  </strong>is being organized at Pragati Maidan,
+          <strong>BES EXPO 2026 </strong>is being organized at Pragati Maidan,
           New Delhi.
         </p>
       </div>
-      
-      <div style={{ position: 'relative', width: '100%',height:500 }}>
-  <Image
-    src="/Images/common/floor-plan.jpg"
-    alt="Sample"
-fill
-style={{ objectFit: 'contain' }} 
-  />
-</div>
 
-
-
+      <div style={{ position: "relative", width: "100%", height: 500 }}>
+        <Image
+          src="/Images/common/floor-plan.jpg"
+          alt="Sample"
+          fill
+          style={{ objectFit: "contain" }}
+        />
+      </div>
     </div>
   );
 }

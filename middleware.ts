@@ -1,77 +1,154 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { JSESSIONID } from "./app/backend/constant";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import type { NextRequest } from "next/server";
 
-// import { updateVisitorCounter } from "./app/backend/helper/visitor_helper/visitor_counter_helper";
-export async function middleware(request: any) {
-  const cookieStore = cookies();
-  let besSessionCookies = cookieStore.get("besSessionCookies");
-  let response = NextResponse.next();
-  const cookieOptions = {
-    httpOnly: true,
-    maxAge: 60 * 60 * 24 * 365 * 10, // 10 years in seconds
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict" as const, // ✅ Fix TypeScript error
-  };
-  response.cookies.delete("updateCounter");
-  if (!besSessionCookies) {
-    response.cookies.set(
-      "besSessionCookies",
-      Date.now().toString(),
-      cookieOptions
-    );
-    response.cookies.set("updateCounter", "true", cookieOptions);
-    // updateVisitorCounter();
-    // cookieStore.set("besSessionCookies", Date.now());
+const VISITOR_COOKIE = "besSessionCookies";
+const EDGE_GUARD_HEADER = "x-edge-visitor-guard";
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+
+  /* =====================================================
+     STEP 1: Filter Out Non-Real Users
+  ===================================================== */
+
+  // 1a. Skip prefetch requests (Next.js optimization)
+  if (request.headers.get("purpose") === "prefetch") {
+    return response;
   }
-  let pathname = request.nextUrl.pathname;
-  if (request.nextUrl.pathname.startsWith("/user/signout")) {
-    return handleSignOut(request);
+
+  // 1b. Skip Next.js internal requests
+  if (request.headers.get("x-middleware-prefetch")) {
+    return response;
   }
-  if (isProtectedRoute(pathname)) {
-    if (!isLogin(cookieStore)) return handleHomePageRedirect(request);
+
+  // 1c. Comprehensive bot detection
+  const ua = request.headers.get("user-agent")?.toLowerCase() || "";
+
+  const botPatterns = [
+    "bot",
+    "crawler",
+    "spider",
+    "scraper",
+    "googlebot",
+    "bingbot",
+    "yandexbot",
+    "duckduckbot",
+    "baiduspider",
+    "facebookexternalhit",
+    "twitterbot",
+    "linkedinbot",
+    "whatsapp",
+    "slackbot",
+    "telegrambot",
+    "discordbot",
+    "headless",
+    "phantom",
+    "selenium",
+    "webdriver",
+    "curl",
+    "wget",
+    "python-requests",
+    "go-http-client",
+    "java/",
+    "apache-httpclient",
+    "okhttp",
+  ];
+
+  if (botPatterns.some((pattern) => ua.includes(pattern))) {
+    return response;
   }
-  if (
-    isLogin(cookieStore) &&
-    pathname.startsWith("/error_page/invalid_token")
-  ) {
-    return handleHomePageRedirect(request);
+
+  // 1d. Detect headless browsers (common in scrapers)
+  if (!ua || ua === "mozilla/5.0") {
+    return response;
   }
+
+  /* =====================================================
+     STEP 2: Check if Already Tracked (ONE TIME ONLY)
+  ===================================================== */
+
+  const existingCookie = request.cookies.get(VISITOR_COOKIE);
+  if (request.headers.get(EDGE_GUARD_HEADER)) {
+    return response;
+  }
+
+  if (request.nextUrl.pathname.startsWith("/backend/api")) {
+    return response;
+  }
+  if (existingCookie) {
+    // User already tracked - do nothing
+    return response;
+  }
+
+  /* =====================================================
+     STEP 3: New Real User Detected - Track NOW
+  ===================================================== */
+
+  // Set cookie FIRST (prevents race conditions)
+  const timestamp = Date.now();
+  response.cookies.set(VISITOR_COOKIE, timestamp.toString(), {
+    httpOnly: true, // Cannot be accessed by JavaScript
+    secure: true, // HTTPS only (always true on Vercel)
+    sameSite: "lax", // CSRF protection
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    path: "/", // Available site-wide
+  });
+
+  /* =====================================================
+     STEP 4: Fire Tracking Request (Secure)
+  ===================================================== */
+
+  try {
+    // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
+
+    const cookieHeader = request.headers.get("cookie");
+
+    fetch(`${request.nextUrl.origin}/backend/api/track-visitor`, {
+      method: "POST",
+      headers: {
+        "x-internal-secret": process.env.INTERNAL_SECRET!,
+        "content-type": "application/json",
+        ...(cookieHeader ? { cookie: cookieHeader } : {}),
+        [EDGE_GUARD_HEADER]: "1",
+      },
+
+      body: JSON.stringify({
+        // Landing page
+        path: request.nextUrl.pathname,
+
+        // Traffic source
+        referrer: request.headers.get("referer") || "direct",
+
+        // Timestamp
+        timestamp: timestamp,
+
+        // Optional: Add more context
+        userAgent: request.headers.get("user-agent"),
+        country: (request as any)?.geo?.country || "unknown",
+        city: (request as any).geo?.city || "unknown",
+      }),
+    });
+  } catch (error) {
+    // Never block user experience on tracking failure
+    console.error("Tracking failed:", error);
+  }
+
   return response;
 }
+
+/* =====================================================
+   STEP 5: Apply Only to Real Pages
+===================================================== */
+
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * Match all request paths except:
      * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - _next/image (image optimization)
+     * - favicon.ico, robots.txt, etc.
+     * - API routes (backend/api)
+     * - File extensions (images, fonts, etc.)
      */
-    "/((?!backend/api/|_next/static|_next/image|favicon.ico|Images/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|backend/api|api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|json)).*)",
   ],
 };
-
-function handleSignOut(request: Request) {
-  let response = handleHomePageRedirect(request);
-  response.cookies.delete(JSESSIONID);
-  return response;
-}
-function isLogin(cookies: ReadonlyRequestCookies) {
-  let token = cookies.get(JSESSIONID)?.value;
-
-  return !!token;
-}
-function isProtectedRoute(pathname: string) {
-  pathname = pathname || "";
-  for (let item of protectedRoute) {
-    if (pathname.startsWith(item)) return true;
-  }
-  return false;
-}
-
-function handleHomePageRedirect(request: Request) {
-  return NextResponse.redirect(new URL("/", request.url));
-}
-const protectedRoute = ["/user/"];

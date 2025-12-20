@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import galleryDb from "./galleriesdb.json";
 import ImageRendering from "./ImageRendering";
 import SelectBox from "./SelectBox";
@@ -20,7 +21,9 @@ export default function page(req: any) {
 
   return (
     <div>
-      <SelectBox allImagePath={galleryDb} selectedValue={selectDb} />
+      <Suspense fallback={<h1>Loading...</h1>}>
+        <SelectBox allImagePath={galleryDb} selectedValue={selectDb} />
+      </Suspense>
       <ImageRendering
         path={selectDb?.folderPath}
         allImage={allImagePath}

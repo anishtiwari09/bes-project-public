@@ -481,6 +481,7 @@ export default function BookYourSpace({
                       value={item?.type}
                       control={<Radio />}
                       label={item?.name}
+                      key={item?.type}
                     />
                   );
                 })}

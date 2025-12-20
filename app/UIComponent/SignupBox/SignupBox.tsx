@@ -1,139 +1,154 @@
 "use client";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import { signUpAction } from "@/app/backend/action/action";
-import { emailValidator, numberValidator } from "@/app/Utility/validator";
 import {
   Alert,
   Box,
   Button,
   Card,
+  InputAdornment,
   Stack,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
-import { useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import IconButton from "@mui/material/IconButton";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema } from "@/app/_shared/validation-schema";
+import { z } from "zod";
 
-const initialState = {
+type SignupFormType = z.infer<typeof signupSchema>;
+const PREV_STATE = {
   message: "",
   status: false,
 };
-const initialFormState = [
-  {
-    type: "text",
-    fieldName: "Name",
-    id: "name",
-    value: "",
-    isError: false,
-    errorMsg: "This Field is required",
-  },
-  {
-    type: "email",
-    fieldName: "Email",
-    id: "email",
-    value: "",
-    isError: false,
-    errorMsg: "This Field is required",
-  },
-  {
-    type: "text",
-    fieldName: "Organisation",
-    id: "organisation",
-    value: "",
-    isError: false,
-    errorMsg: "This Field is required",
-  },
-  {
-    type: "text",
-    fieldName: "City",
-    id: "city",
-    value: "",
-    isError: false,
-    errorMsg: "This Field is required",
-  },
-];
+
 export default function SignupBox() {
-  const [state, formAction] = useFormState(signUpAction, initialState);
-  const [formState, setFormState] = useState(
-    JSON.parse(JSON.stringify(initialFormState))
+  const [state, formAction, isPending] = useActionState(
+    signUpAction,
+    PREV_STATE
   );
-  const handleChange = (e: any, index: any) => {
-    const { value, name } = e.target;
-    if (name === "mobile") {
-      let isValid = numberValidator(value);
-      if (!isValid) return;
-    }
-    formState[index].isError = false;
-    formState[index].value = value;
-    setFormState([...formState]);
-  };
-  const onSubmit = (e: any) => {
-    let isValid = true;
-    let newForm = formState.map((item: any) => {
-      let { value, name } = item;
-      if (!value.trim()) {
-        isValid = false;
-        item.isError = true;
-        item.errorMsg = "This Field is required";
-      } else if (name === "mobile") {
-        if (!numberValidator(value)) {
-          item.errorMsg = "Please Enter valid Number";
-          isValid = false;
-        }
-      } else if (name === "email") {
-        if (!emailValidator(value)) {
-          item.errorMsg = "Please Enter valid Number";
-          isValid = false;
-        }
-      }
-      return item;
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignupFormType>({
+    resolver: zodResolver(signupSchema),
+    mode: "onChange", // validate on change
+    reValidateMode: "onSubmit", // re-validate on submit as well
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: SignupFormType) => {
+    startTransition(async () => {
+      formAction(data);
     });
-    if (!isValid) {
-      setFormState(newForm);
-      e.preventDefault();
-    } else {
-      setFormState(JSON.parse(JSON.stringify(initialFormState)));
-    }
   };
 
+  useEffect(() => {
+    if (state?.status && !isPending) {
+      reset();
+    }
+  }, [state?.status, isPending]);
   return (
-    <div className="w-full h-full flex-1 py-20 bg-[#f2f2f2]">
-      <form action={formAction} onSubmit={onSubmit}>
-        <Card
-          sx={{
-            minHeight: 200,
-            minWidth: { sm: 500, xs: "100%" },
-            maxWidth: { sm: 500, xs: "100%" },
-            padding: 2,
-            width: "fit-content",
-            margin: "auto",
-          }}
-        >
-          <Stack gap={1} justifyContent={"center"} margin={"auto"}>
-            <Box>
-              <Typography variant="h5">Create New Account</Typography>
-            </Box>
-            <Box>
-              {state?.message && (
-                <Alert severity={state?.status ? "success" : "error"}>
-                  {state.message}
-                </Alert>
-              )}
+    <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
+        <Card className="shadow-xl rounded-2xl p-8 border border-gray-200">
+          <Stack gap={3}>
+            {/* Title */}
+            <Box textAlign="center">
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+                className="text-gray-800"
+              >
+                Create Account
+              </Typography>
+              <Typography variant="body2" className="text-gray-500 mt-1">
+                Fill in your details to get started 🚀
+              </Typography>
             </Box>
 
-            {formState.map((item: any, i: any) => (
-              <TextField
-                placeholder={item.fieldName}
-                name={item?.id}
-                type={item.type}
-                key={item.id}
-                error={item.isError}
-                helperText={item.isError ? item?.errorMsg : ""}
-                required={true}
-                onChange={(e) => handleChange(e, i)}
-                value={item.value}
-              />
-            ))}
-            <SubmitButton  />
+            {/* Status Message */}
+
+            {!!state?.message && (
+              <Alert
+                severity={state?.status ? "success" : "error"}
+                className="rounded-lg"
+              >
+                {state.message}
+              </Alert>
+            )}
+
+            {/* Inputs */}
+            <TextField
+              label="First Name"
+              {...register("first_name")}
+              error={!!errors.first_name}
+              helperText={errors.first_name?.message}
+              fullWidth
+              variant="outlined"
+            />
+
+            <TextField
+              label="Last Name"
+              {...register("last_name")}
+              error={!!errors.last_name}
+              helperText={errors.last_name?.message}
+              fullWidth
+              variant="outlined"
+            />
+
+            <TextField
+              label="Email Address"
+              type="email"
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              fullWidth
+              variant="outlined"
+            />
+
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              fullWidth
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      edge="end"
+                      size="small"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <SubmitButton pending={isPending} />
           </Stack>
         </Card>
       </form>
@@ -141,27 +156,25 @@ export default function SignupBox() {
   );
 }
 
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-
+// Custom Submit Button
+const SubmitButton = ({ pending }: { pending: boolean }) => {
   return (
-    <>
-      <Button
-        variant="contained"
-        style={
-          pending
-            ? { color: "white" }
-            : {
-                background: "blue",
-                width: "fit-content",
-                margin: "auto",
-              }
-        }
-        type="submit"
-        disabled={pending}
-      >
-        {pending ? "Submiting" : "Submit"}
-      </Button>
-    </>
+    <Button
+      variant="contained"
+      type="submit"
+      disabled={pending}
+      className="w-full py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
+      sx={{
+        background: "linear-gradient(90deg, #2563eb, #1e40af)",
+        ":hover": { background: "linear-gradient(90deg, #1e40af, #1e3a8a)" },
+        opacity: pending ? 0.4 : 1,
+      }}
+    >
+      {pending ? (
+        <CircularProgress size={22} sx={{ color: "white" }} />
+      ) : (
+        "Sign Up"
+      )}
+    </Button>
   );
 };

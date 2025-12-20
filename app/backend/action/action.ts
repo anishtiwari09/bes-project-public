@@ -1,132 +1,74 @@
 "use server";
 
 import { emailValidator, numberValidator } from "@/app/Utility/validator";
-import { connect } from "../dbConfig/dbConfig";
-import UserMember from "../models/user_member.model";
+
 import { generateUniqueLink } from "../helper/helper";
 import { sendMail } from "../api/sendMail/mail";
-import { generateSignupTemplate } from "../helper/mailHelper/template/signup_template";
-import {
-  compareHashPassword,
-  decodeJsonToken,
-  generateBcryptPassword,
-  jwtGenerateToken,
-} from "@/app/helper/helper";
-import {
-  LOCAL_URL,
-  PRODUCTION_URL,
-  ADMIN_RECEIVER_MAIL,
-  JSESSIONID,
-  ENVIROMENT,
-  PREFIX_REFERENCE_NUMBER,
-} from "../constant";
+import { generateBcryptPassword } from "@/app/helper/helper";
+import { ADMIN_RECEIVER_MAIL, PREFIX_REFERENCE_NUMBER } from "../constant";
 import { visitorUserDetailsTemplate } from "../helper/mailHelper/template/visitorTemplate";
 import feedbackDb from "@/app/about_bes/feedback/db.json";
 import { cookies } from "next/headers";
-import { accountSchema, emailSchema } from "@/app/helper/accountSchema";
+import { emailSchema } from "@/app/helper/accountSchema";
 import VisitorRegistration from "../models/visitor_registration.model";
 import { generateOtpTemplate } from "../helper/mailHelper/template/otpTemplate";
 import { generateOtp } from "../helper/mailHelper/otpGenerator";
 import { updateEmailOtpOnDb } from "./updateDb";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import uniqueIdGenerator from "../helper/unique-id-generator";
-connect();
+import { signupSchema } from "@/app/_shared/validation-schema";
+import { UserService } from "../lib/services/user-services";
+import { SignupData } from "../lib/types";
+import { expiryDate } from "../helper/util";
+import EmailNotification from "../lib/services/notification/email-notification";
+import JwtTokenService from "../lib/services/jwt-service";
+import UserAuthService from "../lib/services/auth-service/user-auth-service";
+import { CookiesService } from "../lib/services/cookies-service";
+import {
+  getVisitorCounter,
+  updateVisitorCounter,
+} from "../helper/visitor_helper/visitor_counter_helper";
+// connect();
 export const signUpAction = async (prevState: any, formData: any) => {
-  let obj:{[key:string]:string} = {};
-  let retrieveParams = ["name", "email", "city", "organisation"];
-  for (let key of retrieveParams) {
-    let value = formData.get(key);
-    value = value?.trim();
-    if (!value) {
-      return {
-        ...prevState,
-        status: false,
-        message: "Please fill all the field",
-      };
-    }
-    if (key === "email" && !emailValidator(value)) {
-      return {
-        ...prevState,
-        status: false,
-        message: "Email is not valid please try again with valid email",
-      };
-    }
-    if (key === "mobile" && !numberValidator(value)) {
-      return {
-        ...prevState,
-        status: false,
-        message:
-          "Mobile number is not valid please try again with valid number",
-      };
-    }
-    obj[key] = value;
-
-    // if (value.trim()) {
-    //   if(key==='email'){
-    //     let isValid='emai'
-    //   }
-    // }
+  const data = formData || {};
+  const parsedData = signupSchema.safeParse(data);
+  if (!parsedData.success) {
+    const firstError = parsedData.error.errors[0].message;
+    return { ...prevState, status: false, message: firstError };
   }
-  try {
-    let user = await UserMember.findOne({ email: obj?.email });
-    if (user && user?.isEmailVerified) {
-      return {
-        ...prevState,
-        status: false,
-        message:
-          "This email is already registed with us please register with different email.",
-      };
-    }
-  } catch (e) {
-    console.log(e);
-    return {
-      ...prevState,
-      status: false,
-      message: "Something went wrong please try again later",
-    };
-  }
+  const obj = parsedData.data;
   try {
     let uniqueId = generateUniqueLink();
-    const options = {
-      new: true, // Return the updated document
-      upsert: true, // Create the document if it doesn't exist
-      setDefaultsOnInsert: true, // Apply schema defaults on insert
-    };
+    const user = new UserService();
+    let passwordHash = await generateBcryptPassword(obj.password);
 
-    await UserMember.findOneAndUpdate(
-      { email: obj?.email },
-      {
-        ...obj,
-        token: uniqueId,
-        tracking_id: uniqueId,
-        tokenGeneratedTime: Date.now(),
-      },
-      options
+    const jwtService = new JwtTokenService();
+    let jwtToken = await jwtService.createToken(
+      { email: obj?.email, isNewAccount: true },
+      "24h"
     );
-    let jwtToken = jwtGenerateToken({ email: obj?.email });
-    let url = ENVIROMENT === "production" ? PRODUCTION_URL : LOCAL_URL;
-    url += "/account_setup/" + uniqueId + "/" + jwtToken;
-    try {
-      await sendMail({
-        email: obj.email,
-        subject: "Action Required For New Account Creation",
-        html: generateSignupTemplate(url),
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    let url = "/account_setup/" + uniqueId + "/" + jwtToken;
+    const verificationTokenExpires = expiryDate(24); // 24 hours from now
+    await user.createUser({
+      ...obj,
+      passwordHash: passwordHash,
+      verificationToken: jwtToken,
+      unique: uniqueId,
+      verificationTokenExpires,
+    } as SignupData);
+    await EmailNotification.memberSignup(obj?.email, url);
     return {
       ...prevState,
       status: true,
-      message:
-        "Account Creation has been successfully done, a verification link has been sent to you on email.",
+      message: "Account created successfully, please check your email",
     };
   } catch (e) {
+    console.log("error while creating user", e?.debugMessage || e?.message);
     console.log(e);
     return {
       ...prevState,
       status: false,
-      message: "Something went worng",
+
+      message: e.newMessage || "Something went wrong please try again later",
     };
   }
 };
@@ -137,114 +79,76 @@ export const createNewPasswordAction = async (
   slug1: any,
   slug2: any
 ) => {
-  let password = formData.get("password");
-  if (!slug1) {
-    return {
-      ...prevState,
-      status: false,
-      message: "Invalid url please try again with valid url",
-    };
-  }
-  if (!password.trim()) {
-    return {
-      ...prevState,
-      status: false,
-      message: "please add valid password",
-    };
-  }
-  let hashPassword = "";
   try {
-    hashPassword = await generateBcryptPassword(password, 4);
-  } catch (e) {
-    console.log(e);
-    return {
-      ...prevState,
-      status: false,
-      message: "Something went wrong please try agian later",
-    };
-  }
-  try {
-    const user = await UserMember.findOne({ token: slug1 });
-    if (!user) {
+    const password1 = formData.get("password");
+    const password2 = formData.get("password2");
+    const authService = new UserAuthService();
+    const isValidate = await authService.setUpNewPassword(
+      slug1,
+      slug2,
+      password1,
+      password2
+    );
+    if (isValidate) {
       return {
         ...prevState,
-        status: false,
-        message: "Invalid url please try again with valid url",
+        status: true,
+        message: "Password has been successfully Reset...",
+        hasToRedirect: false,
       };
     }
-    let data = await UserMember.findOneAndUpdate(
-      { token: slug1 },
-      {
-        isEmailVerified: true,
-        password: hashPassword,
-        isLinkExpired: true,
-        verifiedToken: slug1,
-      }
-    );
+    throw new Error("Something went wrong");
+  } catch (e) {
     return {
       ...prevState,
-      status: true,
-      message: "Password has been successfully reset, please login",
+      status: false,
+      hasToRedirect: e?.redirect || false,
+      message: e?.newMessage || "Something went wrong",
     };
-  } catch (e) {
-    console.log(e);
   }
 };
 
-export const checkWheatherUserExist = async (obj: any) => {
-  let isValid = false;
+export const checkAndUpdateToken = async (obj: {
+  token: string;
+  jwtToken: string;
+}) => {
   try {
-    let data = await UserMember.findOne(obj);
-    isValid = !!data;
-    if (isValid) {
-      isValid = !data?.isLinkExpired;
-    }
+    let authService = new UserAuthService();
+    const isValid = await authService.validateForgotPasswordToken(
+      obj?.jwtToken,
+      obj?.token
+    );
+
+    return isValid;
   } catch (e) {
-    console.log(e);
+    console.log("error in checkAndUpdateToken", e?.message);
+    return false;
   }
-  return isValid;
 };
 export const forgotPasswordAction = async (prevState: any, formData: any) => {
-  let email = formData.get("email");
-  let isValidEmail = emailValidator(email);
-  let uniqueId = generateUniqueLink();
-  if (!isValidEmail) {
+  try {
+    const email = formData?.get("email");
+    const authService = new UserAuthService();
+    await authService.forgetPassword(email);
     return {
       ...prevState,
-      message: "Please enter valid email address",
+      status: true,
+      message:
+        "Reset link has been sent to your email address, if it is registered with us",
+    };
+  } catch (e) {
+    console.log("error in forgotpasswordAction", e?.message);
+    return {
+      ...prevState,
       status: false,
+      message: e?.newMessage || "Something went wrong",
     };
   }
-  try {
-    let data = await UserMember.findOneAndUpdate(
-      { email },
-      { token: uniqueId, isLinkExpired: false }
-    );
-    if (data) {
-      let jwtToken = jwtGenerateToken({ email: email });
-      let url =
-        process.env.enviroment === "production" ? PRODUCTION_URL : LOCAL_URL;
-      url += "/account_setup/" + uniqueId + "/" + jwtToken;
-      sendMail({
-        email: email,
-        subject: "(Action Required) Reset Password",
-        html: generateSignupTemplate(url),
-      });
-    }
-  } catch (e) {
-    console.log(e);
-  }
-  return {
-    ...prevState,
-    status: true,
-    message:
-      "Reset link has been sent to your email address, if it is registered with us",
-  };
 };
 
 export const contactUsAction = async (prevState: any, formData: any) => {
   let retrieveParams = ["name", "email", "mobile", "message"];
-  let obj:{[key:string]:string} = {};
+  let obj: { [key: string]: string } = {};
   for (let key of retrieveParams) {
     let value = formData.get(key);
     value = value?.trim();
@@ -302,7 +206,7 @@ export const contactUsAction = async (prevState: any, formData: any) => {
 };
 export const feedbackFormAction = async (prevState: any, formData: any) => {
   let retrieveParams = feedbackDb;
-  let obj:{[key:string]:string} = {};
+  let obj: { [key: string]: string } = {};
   for (let params of retrieveParams) {
     const { key } = params;
     let value = formData.get(key);
@@ -346,7 +250,7 @@ export const feedbackFormAction = async (prevState: any, formData: any) => {
     });
     await new Promise<void>((res) => {
       setTimeout(() => {
-              res();
+        res();
       }, 5000);
     });
     return {
@@ -365,8 +269,59 @@ export const feedbackFormAction = async (prevState: any, formData: any) => {
   }
 };
 
+export const userOtpLoginAction = async (prevState: any, formData: any) => {
+  const payload = formData.get("cookie-payload");
+  const otp = formData.get("user-otp");
+
+  if (!payload?.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "Please enter valid email address.",
+    };
+  }
+  if (!otp?.trim()) {
+    return {
+      ...prevState,
+      status: false,
+      message: "OTP field can not be empty.",
+    };
+  }
+  try {
+    const authService = new UserAuthService();
+    const authSession = await authService.otpLogin(otp, payload);
+    if (!authSession) {
+      return {
+        ...prevState,
+        status: false,
+        message: "Invalid or expired otp, please try again.",
+      };
+    }
+    CookiesService.setLoginCookies(
+      authSession.accessToken,
+      authSession.refreshToken
+    );
+    const userData = await CookiesService.getUserDetailsFromAccessToken();
+    return {
+      ...prevState,
+      message: "Login Successfull",
+      status: true,
+      isLogin: true,
+      userData: { ...userData },
+    };
+  } catch (e) {
+    console.log(e);
+    console.error("Error while otp login", e?.message);
+    return {
+      ...prevState,
+      status: false,
+      message: "Something went wrong, please try again later.",
+    };
+  }
+};
 export const userLoginAction = async (prevState: any, formData: any) => {
   const email = formData.get("email");
+
   const password = formData.get("password");
   if (!email?.trim()) {
     return {
@@ -383,123 +338,52 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     };
   }
   try {
-    const data = await UserMember.findOne({ email });
-
-    if (!data) {
+    const authService = new UserAuthService();
+    const authSession = await authService.login(email, password);
+    if (!authSession) {
       return {
         ...prevState,
         status: false,
-        message: "Email or Password is invalid.",
+        message: "Invalid email or password.",
       };
     }
-
-    let isValidPassword = await compareHashPassword(password, data.password);
-    if (!isValidPassword) {
+    if (authSession.needToVerifyUsingOtp)
       return {
         ...prevState,
         status: false,
-        message: "Email or Password is invalid.",
+        needToVerifyUsingOtp: true,
+        payload: authSession.payloadToken,
+        message: "",
+        isLogin: false,
       };
-    }
-    if (!data.isActive) {
-      return {
-        ...prevState,
-        status: false,
-        message: "Your account is not active.",
-      };
-    }
-    let token = jwtGenerateToken({
-      date: Date.now(),
-      verifiedToken: data.verifiedToken,
-    });
-    cookies().set(JSESSIONID, token, { secure: true });
-    return { ...prevState, status: true, message: "Successfully Login", token };
+    CookiesService.setLoginCookies(
+      authSession.accessToken,
+      authSession.refreshToken
+    );
+    const userData = await CookiesService.getUserDetailsFromAccessToken();
+    return {
+      ...prevState,
+      message: "Login Successfull",
+      status: true,
+      verifyUsingOtp: false,
+      payload: "",
+      isLogin: true,
+      userData: { ...userData },
+    };
   } catch (e) {
     console.log(e);
+    console.error("Error while signin", e?.message);
     return {
       ...prevState,
       status: false,
-      message: "Something went wrong please try again later.",
+      message: e?.newMessage || "Something went wrong, please try again later.",
     };
   }
 };
 
-export const getUserName = async (token: any) => {
-  const verifiedToken = decodeJsonToken(token);
-  if (!verifiedToken) return null;
-  try {
-    let data = await UserMember.findOne({ verifiedToken });
-    if (!data) return null;
-
-    return data?.name;
-  } catch (e) {
-    console.log(e);
-  }
-};
-export const deleteCookiesAction = (key: any) => {
-  cookies().delete(key);
-};
-
-export const getUserDetails = async (token: any) => {
-  const verifiedToken = decodeJsonToken(token);
-  if (!verifiedToken) return null;
-  try {
-    let data = await UserMember.findOne({ verifiedToken }, null, {
-      lean: true,
-    });
-
-    if (!data) return null;
-
-    return JSON.parse(JSON.stringify(data));
-  } catch (e) {
-    console.log(e);
-  }
-  return null;
-};
-
-export const updateMyAccountDetails = async (prevState: any, formData: any) => {
-  let user:{[key:string]:string} = {};
-  let arr = [
-    "name",
-    "mobile",
-    "organisation",
-    "designation",
-    "city",
-    "country",
-  ];
-  for (let key of arr) {
-    user[key] = formData.get(key) || "";
-  }
-  let validate = accountSchema;
-  try {
-    validate.parse(user);
-  } catch (e) {
-    console.log(e);
-    return { ...prevState, status: false, message: "All Field is required..." };
-  }
-  let token:RequestCookie|string|undefined = cookies()!.get(JSESSIONID);
-
-  token = token?.value || "";
-
-  let verifiedToken = decodeJsonToken(token);
-  if (verifiedToken) {
-    try {
-      await UserMember.findOneAndUpdate({ verifiedToken }, user);
-      return {
-        ...prevState,
-        status: true,
-        message: "Account has been Successfully updated",
-      };
-    } catch (e:any) {
-      return {
-        ...prevState,
-        status: false,
-        message: e?.message || "Something went wrong...",
-      };
-    }
-  }
-
-  return { ...prevState, status: false, message: "Something went wrong..." };
+export const deleteCookiesAction = async (key: any) => {
+  let cookie = await cookies();
+  cookie.delete(key);
 };
 
 export const getVisitorDetails = async (prevState: any, formData: any) => {
@@ -560,4 +444,20 @@ export const sendMailToUser = async (email: any) => {
     html: generateOtpTemplate(otp),
   });
   await updateEmailOtpOnDb({ email, otp });
+};
+
+export async function updateVisitor() {
+  try {
+    return await updateVisitorCounter();
+  } catch (e) {
+    console.error("this is errro", e?.message);
+    return 1;
+  }
+}
+
+export const getVisitor = async () => {
+  const hasSessionCookie = await CookiesService.getSessionCookie();
+  if (hasSessionCookie) {
+    return await getVisitorCounter();
+  }
 };

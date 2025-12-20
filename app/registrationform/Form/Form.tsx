@@ -19,13 +19,16 @@ import axios from "axios";
 import SuccessModal from "@/app/UIComponent/Modals/SuccessModal";
 import EmailOtpLoader from "./EmailOtpLoader";
 import OTP from "./otpinput";
-import { ApiPayload, ApiResponse } from "@/app/event_conference/bes_expo/exibition/participation_fee/types";
+import {
+  ApiPayload,
+  ApiResponse,
+} from "@/app/event_conference/bes_expo/exibition/participation_fee/types";
 export default function Form({
   db,
   onClick,
   apiLink,
   currentPath,
-  isBypassEmailValidation
+  isBypassEmailValidation,
 }: any) {
   const [visitorDb, setVisitorDb] = useState(db);
   const [showSuccessModal, setSuccessModal] = useState(false);
@@ -72,10 +75,12 @@ export default function Form({
           item.errorMsg = item.prevErrorMsg || item.errorMsg;
         }
         item.showError = true;
+        break;
       } else if (item.key === "email") {
         isValidate = emailValidator(value);
         if (!isValidate) {
           invalidEmailShowMessage(item);
+          break;
         }
       }
     }
@@ -83,9 +88,9 @@ export default function Form({
       setSubmit(isValidate);
       if (apiLink) {
         try {
-          let finalObj:ApiPayload = {};
+          let finalObj: ApiPayload = {};
           for (let item of visitorDb) finalObj[item?.key] = item?.value;
-          let res:ApiResponse = await axios({
+          let res: ApiResponse = await axios({
             method: "POST",
             url: apiLink,
             data: { ...finalObj, otp: otpInput },
@@ -96,9 +101,9 @@ export default function Form({
           } else {
             setSuccessModal(true);
           }
-        } catch (e:any) {
+        } catch (e: any) {
           console.log(e);
-      
+
           setErrorMsg(e?.response?.data?.message || "Something went wrong");
           setSubmit(false);
         }
@@ -149,7 +154,7 @@ export default function Form({
     setIsDisabled(true);
     setAlertMessage("");
     try {
-      let result:ApiResponse = await axios({
+      let result: ApiResponse = await axios({
         method: "POST",
         url: "/backend/api/verification/email_verification/verify_otp",
         data: {
@@ -163,7 +168,7 @@ export default function Form({
       } else {
         setAlertMessage(result?.message || "Invalid Otp");
       }
-    } catch (e:any) {
+    } catch (e: any) {
       setAlertMessage(e?.response?.data?.message || "Invalid Otp");
       console.log(e);
     }
@@ -291,6 +296,7 @@ export default function Form({
             onClick={handleValidate}
             variant="contained"
             className={styles.submit_btn}
+            // disabled={isDisabled}
           >
             Submit
           </Button>
@@ -309,7 +315,7 @@ export default function Form({
   );
 }
 
-const useStyles:{autoSizeTextarea:CSSProperties} = {
+const useStyles: { autoSizeTextarea: CSSProperties } = {
   autoSizeTextarea: {
     width: "100%",
     minWidth: "100px",
@@ -325,14 +331,8 @@ const useStyles:{autoSizeTextarea:CSSProperties} = {
     outline: "none",
   },
 };
-const AutoSizeTextarea = ({
-  index,
-  value,
-  dispatcher,
-  state,
-  name
-}: any) => {
-  const textareaRef = useRef<HTMLTextAreaElement|null>(null);
+const AutoSizeTextarea = ({ index, value, dispatcher, state, name }: any) => {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const handleTextareaChange = (event: any) => {
     state[index].value = event.target.value;
     if (textareaRef.current) {
@@ -348,7 +348,6 @@ const AutoSizeTextarea = ({
         style={useStyles.autoSizeTextarea}
         value={value}
         onChange={handleTextareaChange}
-      
         name={name}
       />
     </React.Fragment>
