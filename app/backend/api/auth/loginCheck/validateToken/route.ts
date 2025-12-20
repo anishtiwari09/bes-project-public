@@ -1,6 +1,5 @@
 import UserAuthService from "@/app/backend/lib/services/auth-service/user-auth-service";
 import { CookiesService } from "@/app/backend/lib/services/cookies-service";
-import JwtTokenService from "@/app/backend/lib/services/jwt-service";
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +25,8 @@ export async function POST(request: Request) {
 
     throw new Error("Invalid credentials");
   } catch (e) {
-    //await CookiesService.deleteLoginCookies();
+    // await CookiesService.deleteLoginCookies();
+    console.log("this login cookie", e);
     return new Response(
       JSON.stringify({ message: "Not Valid Credential", loginStatus: false }),
       { status: 401 }

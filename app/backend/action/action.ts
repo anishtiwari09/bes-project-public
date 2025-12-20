@@ -376,7 +376,7 @@ export const userLoginAction = async (prevState: any, formData: any) => {
     return {
       ...prevState,
       status: false,
-      message: "Something went wrong, please try again later.",
+      message: e?.newMessage || "Something went wrong, please try again later.",
     };
   }
 };

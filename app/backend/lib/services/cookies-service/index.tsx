@@ -4,6 +4,7 @@ import { CookieTokenName } from "./types";
 import { isDeveopment } from "@/app/backend/constant";
 import JwtTokenService from "../jwt-service";
 import { mapAuthUserToAuthUser, userToUser } from "../utils/user";
+import { CryptoToken } from "../crypto-token";
 
 export class CookiesService {
   constructor() {}
@@ -35,7 +36,12 @@ export class CookiesService {
   }
   static async setLoginCookies(accessToken: string, refreshToken: string) {
     let [header, payload, signature] = accessToken.split(".");
+
+    const cryptoService = new CryptoToken();
     if (!isDeveopment) {
+      header = cryptoService.encryptMessage(header);
+      payload = cryptoService.encryptMessage(payload);
+      signature = cryptoService.encryptMessage(signature);
     }
     this.setSecureCookies([
       { key: CookieTokenName.header, value: header },
@@ -54,12 +60,10 @@ export class CookiesService {
   }
   static async getLoginCookies(): Promise<IAuthToken> {
     let cookie = await cookies();
-    if (!isDeveopment) {
-    }
     const refreshToken = cookie.get(CookieTokenName.refreshToken);
-    const header = cookie.get(CookieTokenName.header)?.value;
-    const payload = cookie.get(CookieTokenName.payload)?.value;
-    const signature = cookie.get(CookieTokenName.signature)?.value;
+    let header = cookie.get(CookieTokenName.header)?.value;
+    let payload = cookie.get(CookieTokenName.payload)?.value;
+    let signature = cookie.get(CookieTokenName.signature)?.value;
 
     if (!header || !payload || !signature || !refreshToken?.value) {
       return {
@@ -67,7 +71,12 @@ export class CookiesService {
         refreshToken: "",
       };
     }
-
+    const cryptoService = new CryptoToken();
+    if (!isDeveopment) {
+      header = cryptoService.decryptMessage(header);
+      payload = cryptoService.decryptMessage(payload);
+      signature = cryptoService.decryptMessage(signature);
+    }
     return {
       accessToken: `${header}.${payload}.${signature}`,
       refreshToken: refreshToken?.value || "",

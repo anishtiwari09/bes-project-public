@@ -88,6 +88,12 @@ export default class UserAuthService {
     if (!user) {
       return null;
     }
+    if (user.status === UserStatus.PendingEmailVerification)
+      throw ErrorWithStatusCode.error401(
+        "Please verify your email",
+        false,
+        "Email is in " + user.status
+      );
     const isPasswordValid = await this.user.comparePassword(
       user.passwordHash,
       password
