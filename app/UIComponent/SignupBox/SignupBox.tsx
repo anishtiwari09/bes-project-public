@@ -62,10 +62,10 @@ export default function SignupBox() {
   };
 
   useEffect(() => {
-    if (state?.status) {
+    if (state?.status && !isPending) {
       reset();
     }
-  }, [state?.status]);
+  }, [state?.status, isPending]);
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4">
       <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">

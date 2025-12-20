@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { CSSProperties, useEffect } from "react";
 import toast from "react-hot-toast";

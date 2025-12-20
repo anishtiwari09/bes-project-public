@@ -1,8 +1,8 @@
 import { expiryDate, sleep } from "../../helper/util";
 
 import mongoConnection from "../db/db-config";
-import UserModel, { UserStatus, IUser } from "../db/models/user-schema";
-import { PlainUserObject, SignupData, UserData, UserObject } from "../types";
+import UserModel, { UserStatus } from "../db/models/user-schema";
+import { PlainUserObject, SignupData, UserObject } from "../types";
 import bcrypt from "bcryptjs";
 import { userToUser } from "./utils/user";
 import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
@@ -13,7 +13,10 @@ export class UserService {
     const existingUser = await UserModel.findOne({ email: userData.email });
 
     if (existingUser) {
-      if (existingUser.status === UserStatus.Active)
+      if (
+        existingUser.status === UserStatus.Active ||
+        existingUser.status === UserStatus.Approved
+      )
         throw ErrorWithStatusCode.error422(
           "User already exists",
           false,
@@ -32,6 +35,14 @@ export class UserService {
             " account " +
             existingUser.email
         );
+
+      if (existingUser.status !== UserStatus.PendingEmailVerification) {
+        throw ErrorWithStatusCode.error422(
+          "User already exists",
+          false,
+          "User is already exit and in active state" + existingUser.email
+        );
+      }
     }
     const userObject = {
       email: userData.email,
@@ -42,6 +53,8 @@ export class UserService {
       verificationToken: userData?.unique,
       verificationTokenExpires:
         userData?.verificationTokenExpires || expiryDate(24), // 24 hours from now
+
+      status: UserStatus.PendingEmailVerification,
     };
     const options = {
       new: true, // Return the updated document
@@ -139,5 +152,17 @@ export class UserService {
 
     if (!result) return null;
     return result;
+  }
+  async markEmailAsVerified(email: string): Promise<PlainUserObject | null> {
+    const user = await UserModel.findOneAndUpdate(
+      { email },
+      {
+        status: UserStatus.EmailVerified,
+        verificationToken: null,
+        verificationTokenExpires: null,
+      }
+    );
+    if (!user) return null;
+    return userToUser(user as unknown as UserObject);
   }
 }

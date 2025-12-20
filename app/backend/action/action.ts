@@ -42,7 +42,10 @@ export const signUpAction = async (prevState: any, formData: any) => {
     let passwordHash = await generateBcryptPassword(obj.password);
 
     const jwtService = new JwtTokenService();
-    let jwtToken = await jwtService.createToken({ email: obj?.email }, "24h");
+    let jwtToken = await jwtService.createToken(
+      { email: obj?.email, isNewAccount: true },
+      "24h"
+    );
     let url = "/account_setup/" + uniqueId + "/" + jwtToken;
     const verificationTokenExpires = expiryDate(24); // 24 hours from now
     await user.createUser({

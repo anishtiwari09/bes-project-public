@@ -19,6 +19,7 @@ import { generateUniqueLink } from "@/app/backend/helper/helper";
 import { LOCAL_URL, PRODUCTION_URL } from "@/app/backend/constant";
 import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
 import { LoginError } from "@/app/_shared/custom-error/login-error";
+import { UserStatus } from "../../db/models/user-schema";
 
 export default class UserAuthService {
   private user: UserService;
@@ -309,7 +310,6 @@ export default class UserAuthService {
           "Invalid JwtToken: " + jwtToken + " verify: " + token
         );
       const decodePayload: any = await jwtService.decodeToken(jwtToken);
-      console.log(decodePayload, typeof decodePayload);
       const email = decodePayload?.email || "";
       if (!email)
         throw LoginError.invalidOrExpiredForgotPasswordToken(
@@ -361,10 +361,7 @@ export default class UserAuthService {
       throw e;
     }
   }
-  async validateForgotPasswordToken(
-    uniqueToken: string,
-    jwtToken: string
-  ): Promise<boolean> {
+  async validateForgotPasswordToken(uniqueToken: string, jwtToken: string) {
     try {
       const jwtService = new JwtTokenService();
       let valid = await jwtService.verifyTokenWithExpiry(jwtToken);
@@ -377,13 +374,65 @@ export default class UserAuthService {
         throw ErrorWithStatusCode.error401("Invalid Token");
       }
       if (valid.valid && !valid.expired) {
-        return true;
+        const decodePayload: any = await jwtService.decodeToken(jwtToken);
+        if (!decodePayload?.email)
+          throw ErrorWithStatusCode.error401(
+            "Invalid Token",
+            false,
+            "Email not found"
+          );
+
+        return { isNewAccount: !!decodePayload?.isNewAccount, valid: true };
       }
-      return false;
+      return { isNewAccount: false, valid: false };
     } catch (e) {
       console.log("error in validateAndUpdateToken", e?.message);
 
-      return false;
+      return { isNewAccount: false, valid: false };
+    }
+  }
+
+  async signUpEmailVerification(uniqueToken: string, jwtToken: string) {
+    try {
+      const jwtService = new JwtTokenService();
+      const decodePayload: any = await jwtService.decodeToken(jwtToken);
+      if (!decodePayload || !decodePayload?.email || !uniqueToken)
+        throw ErrorWithStatusCode.error401(
+          "Invalid Token",
+          false,
+          "Invalid code"
+        );
+      const userData = await this.user.getUserToken(uniqueToken);
+      if (!userData)
+        throw ErrorWithStatusCode.error401(
+          "Invalid User or user not found",
+          false,
+          "User not found"
+        );
+      const payloadEmail = (decodePayload?.email || "").trim().toLowerCase();
+      const email = userData?.email?.trim()?.toLocaleLowerCase();
+      if (payloadEmail != email) {
+        throw ErrorWithStatusCode.error401(
+          "Invalid Token",
+          false,
+          "Invalid Token"
+        );
+      }
+      if (userData?.status != UserStatus.PendingEmailVerification)
+        throw ErrorWithStatusCode.error401(
+          "Invalid Token Or Expired Token",
+          true,
+          "Email is already verified"
+        );
+      const result = await this.user.markEmailAsVerified(userData?.email);
+      if (!result) throw new Error("Something went wrong");
+      return result;
+    } catch (e) {
+      console.log(
+        "error in signUp emailVerification",
+        e?.message || e?.debugMessage || e?.newMessage
+      );
+      throw e;
     }
   }
 

@@ -1,4 +1,3 @@
-import User from "@/app/backend/models/user_member.model";
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export enum UserStatus {
