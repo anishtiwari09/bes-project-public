@@ -42,7 +42,7 @@ export default class UserAuthService {
         status: status,
       },
       refreshToken,
-      role === "admin" ? "5m" : "30m"
+      role === "admin" ? "5m" : "5m"
     );
     return jwtToken;
   }
