@@ -184,11 +184,11 @@ export const contactUsAction = async (prevState: any, formData: any) => {
       subject: "New Enquiry (urgent Action)",
       html: template,
     });
-    await new Promise((res) => {
-      setTimeout(() => {
-        res(1);
-      }, 5000);
-    });
+    // await new Promise((res) => {
+    //   setTimeout(() => {
+    //     res(1);
+    //   }, 5000);
+    // });
     return {
       ...prevState,
       status: true,
@@ -248,11 +248,11 @@ export const feedbackFormAction = async (prevState: any, formData: any) => {
       subject: "New Feedback Recieved",
       html: template,
     });
-    await new Promise<void>((res) => {
-      setTimeout(() => {
-        res();
-      }, 5000);
-    });
+    // await new Promise<void>((res) => {
+    //   setTimeout(() => {
+    //     res();
+    //   }, 5000);
+    // });
     return {
       ...prevState,
       status: true,
