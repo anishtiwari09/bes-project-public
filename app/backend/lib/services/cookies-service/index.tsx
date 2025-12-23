@@ -3,14 +3,13 @@ import { IAuthToken, IAuthUser } from "../../types";
 import { CookieTokenName } from "./types";
 import { isDeveopment } from "@/app/backend/constant";
 import JwtTokenService from "../jwt-service";
-import { mapAuthUserToAuthUser, userToUser } from "../utils/user";
 import { CryptoToken } from "../crypto-token";
+import { deleteCookie, setCookie } from "./actions";
 
 export class CookiesService {
   constructor() {}
   static async setSecureCookie(key: string, value: string) {
-    let cookie = await cookies();
-    cookie.set(key, value, {
+    await setCookie(key, value, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
@@ -18,20 +17,13 @@ export class CookiesService {
     });
   }
   static async setSecureCookies(cookiesData: { key: string; value: string }[]) {
-    let cookie = await cookies();
-    cookiesData.forEach((co) => {
-      cookie.set(co.key, co.value, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-      });
+    cookiesData.forEach(async (co) => {
+      await this.setSecureCookie(co.key, co.value);
     });
   }
   static async deleteCoookies(keys: string[]) {
-    let cookie = await cookies();
-    keys.forEach((key) => {
-      cookie.delete(key);
+    keys.forEach(async (key) => {
+      await deleteCookie(key);
     });
   }
   static async setLoginCookies(accessToken: string, refreshToken: string) {
@@ -87,19 +79,7 @@ export class CookiesService {
     const token = await this.getLoginCookies();
     const jwtService = new JwtTokenService();
 
-    const user = await jwtService.decodeToken(token?.accessToken);
-    let parseUser: IAuthUser;
-    if (!user) {
-      return null;
-    }
-    parseUser = mapAuthUserToAuthUser(user as IAuthUser);
-    return {
-      firstName: "",
-      lastName: "",
-      email: "",
-      role: "",
-      ...parseUser,
-    };
+    return await jwtService.getUserDetailsFromAccessToken(token.accessToken);
   }
   static async getValueFromCookie(key: string): Promise<string | null> {
     let cookie = await cookies();

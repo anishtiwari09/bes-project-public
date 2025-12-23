@@ -2,6 +2,7 @@ import { JWT_SECRET_KEY } from "@/app/backend/config/constant";
 import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { IAuthUser } from "../../types";
+import { mapAuthUserToAuthUser } from "../utils/user";
 export default class JwtTokenService {
   private secretKey: string;
   constructor() {
@@ -71,5 +72,20 @@ export default class JwtTokenService {
     } catch (e) {
       return false;
     }
+  }
+  async getUserDetailsFromAccessToken(token: string) {
+    const decodedToken: any = jwt.decode(token);
+    if (!decodedToken) {
+      return null;
+    }
+    let parseUser: IAuthUser;
+    parseUser = mapAuthUserToAuthUser(decodedToken as IAuthUser);
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: "",
+      ...parseUser,
+    };
   }
 }

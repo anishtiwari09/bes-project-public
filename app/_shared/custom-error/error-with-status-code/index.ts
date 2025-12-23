@@ -1,6 +1,13 @@
 import CustomError from "..";
 
 export default class ErrorWithStatusCode {
+  static error400(msg: string, redirect?: boolean, debugMessage?: string) {
+    const newMessage = msg || "Invalid Request";
+    return new CustomError(newMessage, 400, redirect, debugMessage);
+
+    // return new CustomError(newMessage, 401);
+  }
+
   static error401(msg: string, redirect?: boolean, debugMessage?: string) {
     const newMessage = msg || "Unauthorized";
     return new CustomError(newMessage, 401, redirect, debugMessage);
@@ -27,5 +34,9 @@ export default class ErrorWithStatusCode {
   static error429(msg: string) {
     const newMessage = msg || "Too many requests";
     return new CustomError(newMessage, 429);
+  }
+  static error500(msg: string) {
+    const newMessage = msg || "Service is unavailable";
+    return new CustomError(newMessage, 500);
   }
 }

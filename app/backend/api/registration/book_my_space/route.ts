@@ -8,6 +8,9 @@ import { bookMySpaceTemplate } from "@/app/backend/helper/mailHelper/template/bo
 import emailVerification from "@/app/backend/models/email_verification.model";
 import { bookMySpaceTemplateVisitor } from "@/app/backend/helper/mailHelper/template/book_my_space_template_visitor";
 import mongoConnection from "@/app/backend/lib/db/db-config";
+import AllRegistrationTypeServices from "@/app/backend/lib/services/all-registration-type-service";
+import { RegistrationServiceType } from "@/app/backend/lib/db/models/all_registration_services.model";
+import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
 
 mongoConnection.connect();
 
@@ -53,7 +56,13 @@ export async function POST(req: Request) {
       postal_address,
       area_required,
     } = json;
-
+    const registrationService = new AllRegistrationTypeServices();
+    const isServiceRunning =
+      await registrationService.checkIsServiceActiveByName(
+        RegistrationServiceType.MY_SPACE
+      );
+    if (!isServiceRunning)
+      throw ErrorWithStatusCode.error500("Service is not running");
     const existingUser = await BookMySpace.findOne({
       $or: [{ email }, { mobile }],
     });

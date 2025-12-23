@@ -9,12 +9,23 @@ import {
 } from "@/app/backend/constant";
 import uniqueIdGenerator from "@/app/backend/helper/unique-id-generator";
 import mongoConnection from "@/app/backend/lib/db/db-config";
+import AllRegistrationTypeServices from "@/app/backend/lib/services/all-registration-type-service";
+import { RegistrationServiceType } from "@/app/backend/lib/db/models/all_registration_services.model";
+import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
 
 export async function POST(req: any) {
   try {
     await mongoConnection.connect();
     let json = await req.json();
     const { name, organisation, city, mobile, email, area_of_work, otp } = json;
+
+    const registrationService = new AllRegistrationTypeServices();
+    const isServiceRunning =
+      await registrationService.checkIsServiceActiveByName(
+        RegistrationServiceType.VISITOR_REGISTRATIONS
+      );
+    if (!isServiceRunning)
+      throw ErrorWithStatusCode.error500("Service is not running");
     let emailResult = await emailVerification.findOne({ email, otpCode: otp });
     if (
       !emailResult ||

@@ -1,20 +1,25 @@
-import { IVisitorRegistration } from "@/app/backend/models/visitor_registration.model";
-import mongoConnection from "../../db/db-config";
 import VisitorServices from "../visitor-serives";
 import UserAuthService from "../auth-service/user-auth-service";
 import DelegateServices from "../delegate-services";
 import MySpaceServices from "../my-space-srvices";
+import AllRegistrationTypeServices from "../all-registration-type-service";
+import ErrorWithStatusCode from "@/app/_shared/custom-error/error-with-status-code";
+import { RegistrationServiceType } from "../../db/models/all_registration_services.model";
 
 export default class AdminServices {
   private visitor: VisitorServices;
   private auth: UserAuthService;
   private delegate: DelegateServices;
   private mySpaces: MySpaceServices;
-  constructor() {
+  private registrationServices: AllRegistrationTypeServices;
+  private avoidSettingAndResettingCookie: boolean;
+  constructor(avoidSettingAndResettingCookie?: boolean) {
     this.visitor = new VisitorServices();
-    this.auth = new UserAuthService();
+    this.auth = new UserAuthService(!!avoidSettingAndResettingCookie);
     this.delegate = new DelegateServices();
     this.mySpaces = new MySpaceServices();
+    this.registrationServices = new AllRegistrationTypeServices();
+    this.avoidSettingAndResettingCookie = !!avoidSettingAndResettingCookie;
   }
 
   async getAllVisitorDetails() {
@@ -38,5 +43,29 @@ export default class AdminServices {
       return null;
     }
     return await this.delegate.allRegistrations();
+  }
+  async getAllRegistrationServices() {
+    const isAmin = await this.auth.isAdmin();
+
+    if (!isAmin) return [];
+
+    return await this.registrationServices.getAllServices();
+  }
+  async activateOrDeactivateRegistrationService(
+    serviceName: string,
+    status: boolean
+  ) {
+    const isAmin = await this.auth.isAdmin(true);
+    if (!isAmin) {
+      throw ErrorWithStatusCode.error401(
+        "You are not authorized",
+        false,
+        "not ad amin"
+      );
+    }
+    return await this.registrationServices.activateOrDeactivateService(
+      serviceName as RegistrationServiceType,
+      status
+    );
   }
 }
