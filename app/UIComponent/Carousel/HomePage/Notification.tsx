@@ -10,10 +10,9 @@ export default function Notification({
 }: {
   currentRegistrationServiceStatus: Record<IRegistrationServiceType, number>;
 }) {
-  const isInactiveDelegateAndVisitorService = !(
-    currentRegistrationServiceStatus.delegate_registration &&
-    currentRegistrationServiceStatus.visitor_registration
-  );
+  const delagateOrVisitorStatus =
+    !!currentRegistrationServiceStatus.delegate_registration ||
+    !!currentRegistrationServiceStatus.visitor_registration;
   return (
     <div className="flex gap-4 items-center flex-col w-full">
       <React.Fragment>
@@ -77,7 +76,7 @@ export default function Notification({
         </a>
       </div>
 
-      {isInactiveDelegateAndVisitorService && (
+      {delagateOrVisitorStatus && (
         <div className="flex gap-2 justify-center mt-4 registration_btn_container">
           {!!currentRegistrationServiceStatus.visitor_registration && (
             <Link href={"/registrationform/visitor"} target="_self">

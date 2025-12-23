@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { createSpaceTypeSchemeIfNotExist } from "../../app/backend/models/space_type_scheme";
 import mongoConnection from "../..//app/backend/lib/db/db-config";
-import { createOrAllServiceData } from "@/app/backend/lib/db/models/all_registration_services.model";
+import { createOrAllServiceData } from "../../app/backend/lib/db/models/all_registration_services.model";
 
 export async function seed() {
   try {
