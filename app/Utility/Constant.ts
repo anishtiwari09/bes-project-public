@@ -24,13 +24,13 @@ export const OTHERPAGE = {
 
 export const NOTIFICATION_TEXT = {
   contents: [
+    {
+      text: "Invitation for BES Expo 2026",
+      href: "/pdf/others/invitation-for-bes-expo-2026.pdf",
+      target: "_blank",
+    },
     // {
-    //   text: "Invitation for BES Expo 2025",
-    //   href: "/pdf/others/invitation-for-bes-expo-2025.pdf",
-    //   target: "_blank",
-    // },
-    // {
-    //   text: "Registration form for delegate BES Expo 2025",
+    //   text: "Registration form for delegate BES Expo 2026",
     //   href: "/pdf/others/registration-form-for-delegate-bes-expo-2025.pdf",
     //   target: "_blank",
     // },
