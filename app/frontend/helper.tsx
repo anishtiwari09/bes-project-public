@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast";
 import { Alert } from "@mui/material";
 import { CSSProperties } from "react";
-const TOAST_DURATION = 30000;
+const TOAST_DURATION = 10000; // 10 second
 export function showErrorToast(message: string = "Something went wrong") {
   toast(
     <Alert severity="error" variant="filled" sx={{ width: "100%" }}>

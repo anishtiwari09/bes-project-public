@@ -23,8 +23,10 @@ import { UserStatus } from "../../db/models/user-schema";
 
 export default class UserAuthService {
   private user: UserService;
-  constructor() {
+  private avoidSettingAndResettingCookie: boolean;
+  constructor(avoidSettingAndResettingCookie?: boolean) {
     this.user = new UserService();
+    this.avoidSettingAndResettingCookie = !!avoidSettingAndResettingCookie;
   }
   createLoginAccessToken;
   async loginAccessToken(
@@ -195,6 +197,17 @@ export default class UserAuthService {
     );
     return otpCode;
   }
+
+  async validateRefreshToken(refreshToken: string, email: string) {
+    const session = await AuthSessionModel.findOne({
+      token: refreshToken,
+    });
+    const currentDate = new Date();
+    if (session.expiresAt < currentDate || session.status !== "active") {
+      return null;
+    }
+    return session;
+  }
   async regenerateAccessToken(
     refreshToken: string
   ): Promise<IAuthSession | null> {
@@ -231,8 +244,8 @@ export default class UserAuthService {
       if (!token?.refreshToken || !token.accessToken) {
         return null;
       }
-      const accessToken = token.accessToken;
-      const refreshToken = token.refreshToken;
+      let accessToken = token.accessToken;
+      let refreshToken = token.refreshToken;
       const jwtService = new JwtTokenService();
       const tokenValidation = await jwtService.verifyLoginTokenWithExpiry(
         accessToken,
@@ -241,19 +254,23 @@ export default class UserAuthService {
       if (tokenValidation.valid) {
         if (tokenValidation.expired) {
           const session = await this.regenerateAccessToken(token.refreshToken);
-          if (!session) {
+          if (!session && !this.avoidSettingAndResettingCookie) {
             await this.logout();
             return null;
           }
-          await CookiesService.setLoginCookies(
-            session.accessToken,
-            token.refreshToken
-          );
+          if (!this.avoidSettingAndResettingCookie)
+            await CookiesService.setLoginCookies(
+              session.accessToken,
+              token.refreshToken
+            );
+
+          accessToken = session.accessToken;
+          refreshToken = token.refreshToken;
         }
 
-        const userDetails =
-          await CookiesService.getUserDetailsFromAccessToken();
-
+        const userDetails = await jwtService.getUserDetailsFromAccessToken(
+          accessToken
+        );
         return userDetails;
       }
     } catch (e) {
@@ -442,10 +459,22 @@ export default class UserAuthService {
     }
   }
 
-  async isAdmin() {
+  async isAdmin(writable?: boolean) {
     const userDetails = await this.validateAndRegenerateTokenAndSetCookie();
-
-    return userDetails?.role === "admin";
+    const isAdminRole = userDetails?.role === "admin";
+    if (!writable) return isAdminRole;
+    const loginCookie = await CookiesService.getLoginCookies();
+    try {
+      if (!loginCookie.refreshToken) return null;
+      const session = await this.validateRefreshToken(
+        loginCookie.refreshToken,
+        userDetails?.email
+      );
+      if (!session) return null;
+      return true;
+    } catch (e) {
+      console.log("error in isAdmin", e?.message);
+    }
   }
 }
 

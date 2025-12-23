@@ -1,16 +1,43 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+/* =====================================================
+   CONSTANTS
+===================================================== */
+
 const VISITOR_COOKIE = "besSessionCookies";
 const EDGE_GUARD_HEADER = "x-edge-visitor-guard";
-export function middleware(request: NextRequest) {
+const ADMIN_PATH = ["/admin"];
+const PROTECTED_PATHS = ["/user", ...ADMIN_PATH];
+
+const AUTH_VALIDATE_ENDPOINT = "/backend/api/auth/loginCheck/validateToken";
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function isProtectedPath(pathname: string) {
+  return PROTECTED_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+}
+function isAminPath(pathname) {
+  return ADMIN_PATH.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+}
+/* =====================================================
+   MIDDLEWARE
+===================================================== */
+
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   /* =====================================================
      STEP 1: Filter Out Non-Real Users
   ===================================================== */
 
-  // 1a. Skip prefetch requests (Next.js optimization)
+  // 1a. Skip prefetch requests
   if (request.headers.get("purpose") === "prefetch") {
     return response;
   }
@@ -57,16 +84,15 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // 1d. Detect headless browsers (common in scrapers)
+  // 1d. Detect headless browsers
   if (!ua || ua === "mozilla/5.0") {
     return response;
   }
 
   /* =====================================================
-     STEP 2: Check if Already Tracked (ONE TIME ONLY)
+     STEP 2: Skip API & Internal Calls
   ===================================================== */
 
-  const existingCookie = request.cookies.get(VISITOR_COOKIE);
   if (request.headers.get(EDGE_GUARD_HEADER)) {
     return response;
   }
@@ -74,32 +100,74 @@ export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/backend/api")) {
     return response;
   }
-  if (existingCookie) {
-    // User already tracked - do nothing
-    return response;
+
+  /* =====================================================
+     STEP 2.5: AUTH VALIDATION (user/*, admin/*)
+  ===================================================== */
+
+  if (isProtectedPath(request.nextUrl.pathname)) {
+    try {
+      const cookieHeader = request.headers.get("cookie");
+
+      const validateResponse = await fetch(
+        `${request.nextUrl.origin}${AUTH_VALIDATE_ENDPOINT}`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            ...(cookieHeader ? { cookie: cookieHeader } : {}),
+            [EDGE_GUARD_HEADER]: "1",
+          },
+          cache: "no-store",
+        }
+      );
+      let response = await validateResponse.json();
+
+      if (response?.loginStatus) {
+        if (isAminPath(request.nextUrl.pathname)) {
+          if (response?.data?.role === "admin") {
+            console.log("pass this response");
+          } else {
+            const loginUrl = new URL("/", request.url);
+            loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
+            return NextResponse.redirect(loginUrl);
+          }
+        }
+      } else {
+        const loginUrl = new URL("/?action=login", request.url);
+        loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+    } catch (error) {
+      const loginUrl = new URL("/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   /* =====================================================
-     STEP 3: New Real User Detected - Track NOW
+     STEP 3: Visitor Tracking (ONE TIME)
   ===================================================== */
 
-  // Set cookie FIRST (prevents race conditions)
+  const existingCookie = request.cookies.get(VISITOR_COOKIE);
+  if (existingCookie) {
+    return response;
+  }
+
   const timestamp = Date.now();
+
   response.cookies.set(VISITOR_COOKIE, timestamp.toString(), {
-    httpOnly: true, // Cannot be accessed by JavaScript
-    secure: true, // HTTPS only (always true on Vercel)
-    sameSite: "lax", // CSRF protection
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
     maxAge: 60 * 60 * 24 * 365, // 1 year
-    path: "/", // Available site-wide
+    path: "/",
   });
 
   /* =====================================================
-     STEP 4: Fire Tracking Request (Secure)
+     STEP 4: Fire Tracking Request (Non-blocking)
   ===================================================== */
 
   try {
-    // Await the fetch to ensure it completes (Vercel Edge Runtime requirement)
-
     const cookieHeader = request.headers.get("cookie");
 
     fetch(`${request.nextUrl.origin}/backend/api/track-visitor`, {
@@ -110,25 +178,16 @@ export function middleware(request: NextRequest) {
         ...(cookieHeader ? { cookie: cookieHeader } : {}),
         [EDGE_GUARD_HEADER]: "1",
       },
-
       body: JSON.stringify({
-        // Landing page
         path: request.nextUrl.pathname,
-
-        // Traffic source
         referrer: request.headers.get("referer") || "direct",
-
-        // Timestamp
-        timestamp: timestamp,
-
-        // Optional: Add more context
+        timestamp,
         userAgent: request.headers.get("user-agent"),
         country: (request as any)?.geo?.country || "unknown",
-        city: (request as any).geo?.city || "unknown",
+        city: (request as any)?.geo?.city || "unknown",
       }),
     });
   } catch (error) {
-    // Never block user experience on tracking failure
     console.error("Tracking failed:", error);
   }
 
@@ -136,19 +195,11 @@ export function middleware(request: NextRequest) {
 }
 
 /* =====================================================
-   STEP 5: Apply Only to Real Pages
+   MATCHER
 ===================================================== */
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico, robots.txt, etc.
-     * - API routes (backend/api)
-     * - File extensions (images, fonts, etc.)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|backend/api|api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|json)).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|backend/api/auth|backend/api/track-visitor|api|.*\\.(?:pdf|png|jpg|jpeg|gif|svg|webp|ico|css|js|map|woff|woff2|ttf|eot|txt|xml|json)).*)",
   ],
 };

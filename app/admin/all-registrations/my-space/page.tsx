@@ -3,7 +3,7 @@ import React from "react";
 import AllRegistrations from "./ui/all-registrations";
 
 export default async function page() {
-  const adminServices = new AdminServices();
+  const adminServices = new AdminServices(true);
   const db = await adminServices.getMySpaceRegistrations();
 
   return <AllRegistrations db={(db || []) as any} />;

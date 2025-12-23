@@ -1,11 +1,19 @@
 import { Button } from "@mui/material";
 import React from "react";
-import BasicCarousel from "./BasicCarousel";
 import { HOMEPAGE } from "../../../Utility/Constant";
 import Countdown from "./Countdown";
 import Link from "next/link";
+import { IRegistrationServiceType } from "@/app/_shared/types";
 
-export default function Notification() {
+export default function Notification({
+  currentRegistrationServiceStatus,
+}: {
+  currentRegistrationServiceStatus: Record<IRegistrationServiceType, number>;
+}) {
+  const isInactiveDelegateAndVisitorService = !(
+    currentRegistrationServiceStatus.delegate_registration &&
+    currentRegistrationServiceStatus.visitor_registration
+  );
   return (
     <div className="flex gap-4 items-center flex-col w-full">
       <React.Fragment>
@@ -29,17 +37,19 @@ export default function Notification() {
         Theme: Broadcast Intelligence Innovation: Make in India for the World
       </div>
 
-      <a
-        className="flex"
-        href="/event_conference/bes_expo/exibition/participation_fee"
-      >
-        <Button
-          variant="contained"
-          className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+      {!!currentRegistrationServiceStatus?.my_space && (
+        <a
+          className="flex"
+          href="/event_conference/bes_expo/exibition/participation_fee"
         >
-          Book Your Space
-        </Button>
-      </a>
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+            Book Your Space
+          </Button>
+        </a>
+      )}
       <div className="flex gap-2 justify-center">
         <a
           className="flex"
@@ -67,31 +77,40 @@ export default function Notification() {
         </a>
       </div>
 
-      <div className="flex gap-2 justify-center mt-4 registration_btn_container">
-        <Link href={"/registrationform/visitor"} target="_self">
-          <Button
-            className="bg-orange-400 registration_btn"
-            variant="contained"
-            sx={{
-              "&:hover": { background: "orange" },
-            }}
-          >
-            Visitor Registration
-          </Button>
-        </Link>
+      {isInactiveDelegateAndVisitorService && (
+        <div className="flex gap-2 justify-center mt-4 registration_btn_container">
+          {!!currentRegistrationServiceStatus.visitor_registration && (
+            <Link href={"/registrationform/visitor"} target="_self">
+              <Button
+                className="bg-orange-400 registration_btn"
+                variant="contained"
+                sx={{
+                  "&:hover": { background: "orange" },
+                }}
+              >
+                Visitor Registration
+              </Button>
+            </Link>
+          )}
 
-        <Link href={"/registrationform/delegateregistration"} target="_self">
-          <Button
-            variant="contained"
-            className="bg-orange-400 registration_btn"
-            sx={{
-              "&:hover": { background: "orange" },
-            }}
-          >
-            Delegate Registration
-          </Button>
-        </Link>
-      </div>
+          {!!currentRegistrationServiceStatus.delegate_registration && (
+            <Link
+              href={"/registrationform/delegateregistration"}
+              target="_self"
+            >
+              <Button
+                variant="contained"
+                className="bg-orange-400 registration_btn"
+                sx={{
+                  "&:hover": { background: "orange" },
+                }}
+              >
+                Delegate Registration
+              </Button>
+            </Link>
+          )}
+        </div>
+      )}
 
       <Countdown
         from={

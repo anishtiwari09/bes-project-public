@@ -59,6 +59,18 @@ const menuItems: MenuItem[] = [
       //   { id: 23, name: "User Roles", path: "/admin/users/roles" },
     ],
   },
+  {
+    id: 3,
+    name: "All Services",
+    icon: Settings,
+    children: [
+      {
+        id: 31,
+        name: "All Registration Service",
+        path: "/admin/services/all-registration-service",
+      },
+    ],
+  },
   //   {
   //     id: 3,
   //     name: "Content Management",
