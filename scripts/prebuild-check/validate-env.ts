@@ -19,7 +19,6 @@ const requiredEnvs = [
   "SMTP_PORT",
   "ADMIN_RECEIVER_MAIL",
   "enviroment",
-  "enviroment",
   "production_url",
   "local_url",
   "TOKEN_SECRET_KEY",
