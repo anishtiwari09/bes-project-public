@@ -5,12 +5,17 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 import Image from "next/image";
 import OpenImage from "./OpenImage";
 
+/* =====================
+   Constants
+===================== */
 const ROW_GAP = 2;
 const ROW_GAP8 = ROW_GAP * 8;
+const MOBILE_HEIGHT = 300;
+const FALLBACK_HEIGHT = 450; // IMPORTANT: used on first render
 
-/* ===========================
-   Height Balancer (unchanged)
-=========================== */
+/* =====================
+   Height Balancer
+===================== */
 const adjustHeights = (heights: number[], numberOfParts = 4): number[] => {
   const eachPartsLengths: number[] = [];
   let totalLength = heights.length;
@@ -52,6 +57,9 @@ const adjustHeights = (heights: number[], numberOfParts = 4): number[] => {
   return heights;
 };
 
+/* =====================
+   ImageRendering
+===================== */
 interface ImageRenderingProps {
   path: string;
   allImage: string[];
@@ -89,6 +97,9 @@ const ImageRendering: React.FC<ImageRenderingProps> = ({ path, allImage }) => {
   );
 };
 
+/* =====================
+   MasonryGallery
+===================== */
 interface MasonryGalleryProps {
   images: string[];
   path: string;
@@ -105,7 +116,7 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
 
   const [heights, setHeights] = useState<number[]>([]);
 
-  /* Generate heights ONCE per image list */
+  /* Generate deterministic heights AFTER mount */
   useEffect(() => {
     const generated = images.map(() => 350 + Math.floor(Math.random() * 200));
     setHeights(generated);
@@ -123,40 +134,49 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
           columnCount: { xs: 1, sm: 2, md: 4, "2xl": 6 },
         }}
       >
-        {images.map((src, i) => (
-          <Box
-            key={src}
-            sx={{
-              breakInside: "avoid",
-              mb: ROW_GAP,
-              borderRadius: 2,
-              boxShadow: 1,
-              bgcolor: "background.paper",
-              overflow: "hidden",
-              cursor: "pointer",
-              transition: "transform 0.2s ease-in-out",
-              ":hover": { transform: "scale(1.03)" },
-              height: isMobile ? 300 : balancedHeights[i],
-              position: "relative",
-            }}
-            onClick={() => handleOpen(i)}
-          >
-            <Image
-              src={`${path}/${src}`}
-              alt={`Gallery image ${i + 1}`}
-              fill
-              sizes="(max-width: 600px) 100vw,
-                     (max-width: 1200px) 50vw,
-                     33vw"
-              style={{
-                objectFit: "cover",
-                userSelect: "none",
+        {images.map((src, i) => {
+          const itemHeight = isMobile
+            ? MOBILE_HEIGHT
+            : balancedHeights[i] ?? FALLBACK_HEIGHT;
+
+          return (
+            <Box
+              key={src}
+              sx={{
+                breakInside: "avoid",
+                mb: ROW_GAP,
+                borderRadius: 2,
+                boxShadow: 1,
+                bgcolor: "background.paper",
+                overflow: "hidden",
+                cursor: "pointer",
+                transition: "transform 0.2s ease-in-out",
+                ":hover": { transform: "scale(1.03)" },
+                height: itemHeight,
               }}
-              draggable={false}
-              loading="lazy"
-            />
-          </Box>
-        ))}
+              onClick={() => handleOpen(i)}
+            >
+              <Image
+                src={`${path}/${src}`}
+                alt={`Image ${i + 1}`}
+                width={600}
+                height={itemHeight} // ALWAYS defined
+                sizes="(max-width: 600px) 100vw,
+                       (max-width: 1200px) 50vw,
+                       33vw"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  userSelect: "none",
+                }}
+                draggable={false}
+                priority={i < 4}
+              />
+            </Box>
+          );
+        })}
       </Box>
     </Box>
   );
