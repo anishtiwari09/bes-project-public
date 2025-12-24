@@ -1,19 +1,23 @@
 "use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
+import Image from "next/image";
 import OpenImage from "./OpenImage";
 
 const ROW_GAP = 2;
 const ROW_GAP8 = ROW_GAP * 8;
 
-// Adjust heights to ensure balanced column layout
+/* ===========================
+   Height Balancer (unchanged)
+=========================== */
 const adjustHeights = (heights: number[], numberOfParts = 4): number[] => {
   const eachPartsLengths: number[] = [];
   let totalLength = heights.length;
 
-  // Divide the heights into parts
   for (let i = 0; i < numberOfParts && totalLength >= 0; i++) {
-    let partSize = Math.floor(totalLength / (numberOfParts - i)) || totalLength;
+    const partSize =
+      Math.floor(totalLength / (numberOfParts - i)) || totalLength;
     eachPartsLengths[i] = partSize;
     totalLength -= partSize;
   }
@@ -21,7 +25,6 @@ const adjustHeights = (heights: number[], numberOfParts = 4): number[] => {
   const sumOfEachParts: number[] = [];
   let startIdx = 0;
 
-  // Sum up heights for each part
   for (let i = 0; i < numberOfParts; i++) {
     const part = heights.slice(startIdx, startIdx + eachPartsLengths[i]);
     sumOfEachParts[i] =
@@ -30,15 +33,12 @@ const adjustHeights = (heights: number[], numberOfParts = 4): number[] => {
     startIdx += eachPartsLengths[i];
   }
 
-  // Find maximum height across all parts
   const maxHeight = Math.max(...sumOfEachParts);
   startIdx = 0;
 
-  // Distribute difference in height across columns
   for (let i = 0; i < numberOfParts; i++) {
     let diff = maxHeight - sumOfEachParts[i];
     if (diff && eachPartsLengths[i]) {
-      const endIdx = startIdx + eachPartsLengths[i];
       for (let j = 0; j < eachPartsLengths[i] && diff; j++) {
         let avgAdd = Math.floor(diff / (eachPartsLengths[i] - j));
         if (diff <= 30) avgAdd = diff;
@@ -64,26 +64,24 @@ const ImageRendering: React.FC<ImageRenderingProps> = ({ path, allImage }) => {
     null
   );
 
-  const handleOpen = (i: number) => {
-    setSelectedImageIndex(i);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedImageIndex(null);
-  };
-
   return (
     <div className="flex flex-col">
-      <MasonryGallery images={allImage} path={path} handleOpen={handleOpen} />
+      <MasonryGallery
+        images={allImage}
+        path={path}
+        handleOpen={(i) => {
+          setSelectedImageIndex(i);
+          setOpen(true);
+        }}
+      />
+
       {open && selectedImageIndex !== null && (
         <OpenImage
           key={selectedImageIndex}
           imagePath={path}
           startIndex={selectedImageIndex}
           open={open}
-          handleClose={handleClose}
+          handleClose={() => setOpen(false)}
           data={allImage}
         />
       )}
@@ -104,44 +102,19 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const md = useMediaQuery(theme.breakpoints.down("md"));
-  const isBelow2XL = useMediaQuery("(max-width: 1920px)");
-  const mobileHeight = 300;
 
-  // State to track the heights (manual adjustment happens here)
   const [heights, setHeights] = useState<number[]>([]);
 
-  // State to track if component is mounted
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Initialize heights once the component mounts
+  /* Generate heights ONCE per image list */
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    const generated = images.map(() => 350 + Math.floor(Math.random() * 200));
+    setHeights(generated);
+  }, [images]);
 
-  useEffect(() => {
-    if (isMounted) {
-      const initialHeights = images.map(
-        () => 350 + Math.floor(Math.random() * 200)
-      );
-      setHeights(initialHeights);
-    }
-  }, [isMounted, images]);
-
-  // Random heights generation for images
-  const randomHeights = useMemo(
-    () => images.map(() => 350 + Math.floor(Math.random() * 200)),
-    [images.length]
-  );
-
-  // Adjusted heights (only recalculated when required)
   const balancedHeights = useMemo(() => {
-    if (!heights.length) return randomHeights; // Default to random heights if not yet set
-    let columnCount = 4;
-    // if (!md && !isBelow2XL) columnCount = 6;
-
-    return adjustHeights([...heights], columnCount);
-  }, [heights, randomHeights, isMobile, md, isBelow2XL]);
+    if (!heights.length) return [];
+    return adjustHeights([...heights], 4);
+  }, [heights]);
 
   return (
     <Box sx={{ px: 2, py: 4, bgcolor: "#f3f3f3" }}>
@@ -150,9 +123,9 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
           columnCount: { xs: 1, sm: 2, md: 4, "2xl": 6 },
         }}
       >
-        {images.slice(0, 1000).map((src, i) => (
+        {images.map((src, i) => (
           <Box
-            key={i}
+            key={src}
             sx={{
               breakInside: "avoid",
               mb: ROW_GAP,
@@ -162,21 +135,21 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({
               overflow: "hidden",
               cursor: "pointer",
               transition: "transform 0.2s ease-in-out",
-              ":hover": {
-                transform: "scale(1.03)",
-              },
-              height: isMobile ? mobileHeight : balancedHeights[i],
+              ":hover": { transform: "scale(1.03)" },
+              height: isMobile ? 300 : balancedHeights[i],
+              position: "relative",
             }}
             onClick={() => handleOpen(i)}
           >
-            <img
+            <Image
               src={`${path}/${src}`}
-              alt={`Image ${i + 1}`}
+              alt={`Gallery image ${i + 1}`}
+              fill
+              sizes="(max-width: 600px) 100vw,
+                     (max-width: 1200px) 50vw,
+                     33vw"
               style={{
-                width: "100%",
-                height: "100%",
                 objectFit: "cover",
-                display: "block",
                 userSelect: "none",
               }}
               draggable={false}
