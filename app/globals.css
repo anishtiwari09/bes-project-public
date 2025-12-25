@@ -5,6 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 @import "https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900|Orbitron:500,700|Ubuntu:400,500,700&display=swap";
+
 :root {
   --header_height: 90px;
   --footer_height: 128px;
@@ -13,6 +14,7 @@
 * {
   font-family: Poppins, sans-serif;
 }
+
 .ubuntu_font {
   font-family: Ubuntu, sans-serif;
 }
@@ -28,33 +30,39 @@
   padding: 160px 4%;
 }
 
-.youtbue_thumbnail_conainer > div {
+.youtbue_thumbnail_conainer>div {
   position: relative;
   width: calc((100% - 20px) / 2);
   padding-top: 28.125%;
   margin-top: 10px;
 }
-.youtbue_thumbnail_conainer > div:nth-child(2) {
+
+.youtbue_thumbnail_conainer>div:nth-child(2) {
   margin-top: 0px;
 }
-.youtbue_thumbnail_conainer > div:nth-child(1) {
+
+.youtbue_thumbnail_conainer>div:nth-child(1) {
   margin-top: 0px;
 }
-.youtbue_thumbnail_conainer > div > iframe {
+
+.youtbue_thumbnail_conainer>div>iframe {
   position: absolute;
   top: 0;
   width: 100%;
   height: 100%;
   border-radius: 30px;
 }
+
 .partner_container {
   box-sizing: border-box;
 }
-.partner_container > div {
+
+.partner_container>div {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .partner_container a {
   width: 184px;
 
@@ -68,14 +76,15 @@
   background-color: #ffffff;
   border-radius: 8px;
 }
-.partner_container > div img {
+
+.partner_container>div img {
   max-width: 100%;
   max-height: 100%;
 
   object-fit: cover;
 }
 
-.coundown > div > div {
+.coundown>div>div {
   color: white;
   font-size: 20px;
   font-weight: bold;
@@ -83,13 +92,15 @@
   border-radius: 5px;
   padding: 8px;
 }
-.coundown > div > div:nth-child(2n) {
+
+.coundown>div>div:nth-child(2n) {
   background-color: transparent;
   color: rgba(13, 12, 12, 0.68);
   font-size: 40px;
   padding: 0px;
 }
-.coundown > div {
+
+.coundown>div {
   display: flex;
   justify-content: center;
   gap: 15px;
@@ -105,10 +116,12 @@
   margin: auto;
   max-width: 1200px;
 }
+
 a.header2_menu_list {
   position: relative;
   padding: 10px 0;
 }
+
 a.header2_menu_list::before {
   position: absolute;
   left: 0;
@@ -121,6 +134,7 @@ a.header2_menu_list::before {
   background: linear-gradient(to left, #f70068 0%, #441066 100%);
   transition: all 0.3s ease;
 }
+
 a.header2_menu_list_open::before {
   width: 100%;
 }
@@ -134,30 +148,38 @@ a.header2_menu_list_open::before {
   .event_details_text {
     overflow-wrap: anywhere;
   }
-  .coundown > div > div {
+
+  .coundown>div>div {
     font-size: 32px;
   }
+
   .conference_text {
     font-size: 16px;
     margin: 0 auto;
   }
+
   .conference_text2 {
     margin: 0;
     padding: 0;
   }
+
   .mobile_notification_css {
     height: 100%;
   }
+
   .registration_btn {
     margin: 0 !important;
     font-size: 10px !important;
   }
+
   .contdown_container {
     bottom: -108px;
   }
+
   .registration_btn_container {
     margin: 0;
   }
+
   :root {
     --header_height: 37px;
   }
@@ -167,6 +189,7 @@ a.header2_menu_list_open::before {
   max-height: calc(100% - var(--header_height) - 0);
   height: calc(100% - var(--header_height));
 }
+
 .body_page {
   min-height: calc(100% - var(--footer_height));
   display: flex;
@@ -185,12 +208,13 @@ a.header2_menu_list_open::before {
     2px -2px 0 rgba(255, 255, 255, 0.9);
 }
 
-.coundown2 > div > div {
+.coundown2>div>div {
   color: white;
   font-size: 20px;
   font-weight: bold;
 }
-.coundown2 > div {
+
+.coundown2>div {
   display: flex;
   justify-content: center;
   gap: 20px;
@@ -221,6 +245,7 @@ a.header2_menu_list_open::before {
   0% {
     transform: translate(0, 0);
   }
+
   100% {
     transform: translate(-100%, 0);
   }
@@ -230,6 +255,15 @@ a.header2_menu_list_open::before {
   animation-play-state: paused;
 }
 
-.basicPassword > div:nth-child(1) {
+.basicPassword>div:nth-child(1) {
   width: 100%;
+}
+
+
+@media (max-width: 500px) {
+
+
+  .coundown>div>div {
+    font-size: 24px;
+  }
 }
