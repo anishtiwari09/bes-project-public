@@ -16,6 +16,8 @@ import {
   EXPO_URL,
   EXPO_OG_IMAGE,
 } from "./config/expo";
+import Script from "next/script";
+import { getNewRewlicScript } from "./scripts/new-relic-script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -99,6 +101,12 @@ export const metadata = {
 export default async function RootLayout({ children }: any) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        <Script
+          id="new_relic_scipt"
+          dangerouslySetInnerHTML={{ __html: getNewRewlicScript() }}
+        />
+      </head>
       <body className="h-full overflow-hidden">
         <Suspense>
           <ClientWrapper>
