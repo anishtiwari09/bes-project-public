@@ -29,11 +29,11 @@ export const NOTIFICATION_TEXT = {
       href: "/pdf/others/invitation-for-bes-expo-2026.pdf",
       target: "_blank",
     },
-    // {
-    //   text: "Registration form for delegate BES Expo 2026",
-    //   href: "/pdf/others/registration-form-for-delegate-bes-expo-2025.pdf",
-    //   target: "_blank",
-    // },
+    {
+      text: "Delegate Registration form BES Expo-2026",
+      href: "/pdf/others/registration-form-2026.pdf",
+      target: "_blank",
+    },
   ],
   isShow: true,
 };
