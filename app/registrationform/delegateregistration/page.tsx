@@ -6,6 +6,7 @@ import Image from "next/image";
 import AllRegistrationTypeServices from "@/app/backend/lib/services/all-registration-type-service";
 import UnavailableServiceMessage from "@/app/UIComponent/common-ui/unavailable-service/unavailable-service-msg";
 import { RegistrationServiceType } from "@/app/backend/lib/db/models/all_registration_services.model";
+import ProgramBrief from "./program-brief";
 export const revalidate = 3600; // cached for one hour
 export default async function page() {
   const allServices = new AllRegistrationTypeServices();
@@ -43,8 +44,8 @@ export default async function page() {
           </Box>
         </div>
         <div className="flex flex-col gap-5">
+          <ProgramBrief />
           <Typography className="text-green-blue">
-            {" "}
             You can Pay online as well
           </Typography>
           <div>

@@ -20,6 +20,17 @@ export default function SideNavMap({ db, parentPath }: any) {
             >
               {item.name}
             </a>
+          ) : item?.externalLink === "document" ? (
+            <a
+              href={`/${item.path}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${
+                pathname == parentPath + item.path ? styles.selected : ""
+              }`}
+            >
+              {item.name}
+            </a>
           ) : (
             <Link
               href={parentPath + item.path}
