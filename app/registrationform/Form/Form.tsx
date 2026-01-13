@@ -219,6 +219,8 @@ export default function Form({
                     state={visitorDb}
                     dispatcher={setVisitorDb}
                     name={item.key}
+                    showError={item?.showError}
+                    errorMsg={item?.showError ? item?.errorMsg : ""}
                   />
                 ) : (
                   <Box>
@@ -241,6 +243,7 @@ export default function Form({
                         onChange={(e) => handleChange(e, key)}
                         helperText={item?.showError ? item?.errorMsg : ""}
                         name={item.key}
+                        placeholder={item?.placeholder || ""}
                       />
                     )}
                     {item.key === "email" &&
@@ -331,7 +334,15 @@ const useStyles: { autoSizeTextarea: CSSProperties } = {
     outline: "none",
   },
 };
-const AutoSizeTextarea = ({ index, value, dispatcher, state, name }: any) => {
+const AutoSizeTextarea = ({
+  index,
+  value,
+  dispatcher,
+  state,
+  name,
+  showError,
+  errorMsg,
+}) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const handleTextareaChange = (event: any) => {
     state[index].value = event.target.value;
@@ -339,10 +350,12 @@ const AutoSizeTextarea = ({ index, value, dispatcher, state, name }: any) => {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+    if (event.target.value && state?.[index]?.showError)
+      state[index].showError = false;
     dispatcher([...state]);
   };
   return (
-    <React.Fragment>
+    <div style={{ width: "100%" }}>
       <TextareaAutosize
         ref={textareaRef}
         style={useStyles.autoSizeTextarea}
@@ -350,6 +363,17 @@ const AutoSizeTextarea = ({ index, value, dispatcher, state, name }: any) => {
         onChange={handleTextareaChange}
         name={name}
       />
-    </React.Fragment>
+      {showError && (
+        <div
+          style={{
+            color: "#d32f2f",
+            fontSize: "12px",
+            marginTop: "4px",
+          }}
+        >
+          {errorMsg}
+        </div>
+      )}
+    </div>
   );
 };

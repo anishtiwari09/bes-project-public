@@ -28,9 +28,8 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "inactive":true
+    "inactive": true
   },
-  
   {
     "key": "department",
     "name": "Department",
@@ -40,9 +39,8 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "inactive":false
+    "inactive": false
   },
-  
   {
     "key": "mobile",
     "name": "Mobile",
@@ -72,9 +70,9 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "inactive":true
+    "inactive": true
   },
-   {
+  {
     "key": "address",
     "name": "Postal Address",
     "fieldType": "text",
@@ -83,7 +81,7 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "inactive":false
+    "inactive": false
   },
   {
     "key": "category",
@@ -91,7 +89,7 @@
     "fieldType": "select",
     "required": true,
     "type": "select",
-    "inactive":true,
+    "inactive": true,
     "options": [
       {
         "key": "select_category",
@@ -144,8 +142,9 @@
     "fieldType": "select",
     "required": true,
     "type": "select",
-    "inactive":false,
-    "options": [ {
+    "inactive": false,
+    "options": [
+      {
         "key": "select_category",
         "value": " ",
         "label": "Select Fees"
@@ -155,18 +154,16 @@
         "value": "All the sessions @8000",
         "label": "All the sessions @8000 INR"
       },
-       
-       {
+      {
         "key": "Sessions I to VII @4000",
-        "value":  "Sessions I to VII @4000",
-        "label":  "Sessions I to VII @4000 INR"
+        "value": "Sessions I to VII @4000",
+        "label": "Sessions I to VII @4000 INR"
       },
-       {
+      {
         "key": "Sessions VIII to XII @4000",
         "value": "Sessions VIII to XII @4000",
-        "label":  "Sessions VIII to XII @4000 INR"
+        "label": "Sessions VIII to XII @4000 INR"
       }
-    
     ],
     "value": "",
     "showError": false,
@@ -222,7 +219,8 @@
     "type": "text",
     "options": [],
     "showError": false,
-    "errorMsg": "This Field is Required"
+    "errorMsg": "This Field is Required",
+    "placeholder": "If Not available pleae enter NA"
   },
   {
     "key": "transaction_no",
@@ -232,7 +230,8 @@
     "type": "text",
     "options": [],
     "showError": false,
-    "errorMsg": "This Field is Required"
+    "errorMsg": "This Field is Required",
+    "placeholder": "If Not available pleae enter 0"
   },
   {
     "key": "amount",
@@ -252,6 +251,7 @@
     "type": "text",
     "options": [],
     "showError": false,
-    "errorMsg": "This Field is Required"
+    "errorMsg": "This Field is Required",
+    "placeholder": "If Not available pleae enter NA"
   }
 ]
