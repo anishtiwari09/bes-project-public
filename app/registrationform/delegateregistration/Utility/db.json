@@ -155,14 +155,14 @@
         "label": "All the sessions @8000 INR"
       },
       {
-        "key": "Sessions I to VII @4000",
-        "value": "Sessions I to VII @4000",
-        "label": "Sessions I to VII @4000 INR"
+        "key": "Sessions I to VIII @4000",
+        "value": "Sessions I to VIII @4000",
+        "label": "Sessions I to VIII @4000 INR"
       },
       {
-        "key": "Sessions VIII to XII @4000",
-        "value": "Sessions VIII to XII @4000",
-        "label": "Sessions VIII to XII @4000 INR"
+        "key": "Sessions VIII to XIV @4000",
+        "value": "Sessions VIII to XIV @4000",
+        "label": "Sessions VIII to XIV @4000 INR"
       }
     ],
     "value": "",
@@ -220,7 +220,7 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "placeholder": "If Not available pleae enter NA"
+    "placeholder": "If Not available please enter NA"
   },
   {
     "key": "transaction_no",
@@ -231,7 +231,7 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "placeholder": "If Not available pleae enter 0"
+    "placeholder": "If Not available please enter 0"
   },
   {
     "key": "amount",
@@ -252,6 +252,6 @@
     "options": [],
     "showError": false,
     "errorMsg": "This Field is Required",
-    "placeholder": "If Not available pleae enter NA"
+    "placeholder": "If Not available please enter NA"
   }
 ]
