@@ -182,9 +182,9 @@
         "label": "Select Payment Type"
       },
       {
-        "key": "cash",
-        "value": "cash",
-        "label": "Cash"
+        "key": "upi",
+        "value": "upi",
+        "label": "Upi"
       },
       {
         "key": "dd",
