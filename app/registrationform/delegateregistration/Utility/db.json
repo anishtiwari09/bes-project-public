@@ -160,9 +160,29 @@
         "label": "Sessions I to VIII @4000 INR"
       },
       {
-        "key": "Sessions VIII to XIV @4000",
-        "value": "Sessions VIII to XIV @4000",
-        "label": "Sessions VIII to XIV @4000 INR"
+        "key": "Sessions IX to XIV @4000",
+        "value": "Sessions IX to XIV @4000",
+        "label": "Sessions IX to XIV @4000 INR"
+      },
+      {
+        "key": "All the sessions @4000 BES(I)",
+        "value": "All the sessions @4000 BES(I)",
+        "label": "All the sessions @4000 for BES (I) Members"
+      },
+      {
+        "key": "Sessions I to VIII @2000 BES(I)",
+        "value": "Sessions I to VIII @2000 BES(I)",
+        "label": "Sessions I to VIII @2000 INR for BES (I) Members"
+      },
+      {
+        "key": "Sessions IX to XIV @2000 BES(I)",
+        "value": "Sessions IX to XIV @2000 BES(I)",
+        "label": "Sessions IX to XIV @2000 INR for BES (I) Members"
+      },
+      {
+        "key": "All the sessions @2000 BES 60+",
+        "value": "All the sessions @2000 BES 60+",
+        "label": "All the sessions @2000INR for BES Members over the age of 60 years"
       }
     ],
     "value": "",
