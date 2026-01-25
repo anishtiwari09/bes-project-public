@@ -1,9 +1,8 @@
 import React from "react";
 import Content from "./Content";
+import { redirect } from "next/navigation";
 
-export default function page({
-  params: { id }
-}: any) {
+export default function page({ params: { id } }: any) {
   let data = null;
   const pathname = "";
   const fs = require("fs");
@@ -15,12 +14,15 @@ export default function page({
         "app/event_conference/other_events/expos/CouncilDB" +
           "/" +
           id +
-          ".custom.html"
-      )
+          ".custom.html",
+      ),
     );
     data = data.toString();
   } catch (e) {
     console.log(e);
+  }
+  if (!data) {
+    redirect("/not-found");
   }
 
   return (
