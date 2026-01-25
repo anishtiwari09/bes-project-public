@@ -22,7 +22,7 @@ export default function page({ params: { id } }: any) {
     console.log(e);
   }
   if (!data) {
-    redirect("/not-found");
+    return redirect("/not-found");
   }
 
   return (
