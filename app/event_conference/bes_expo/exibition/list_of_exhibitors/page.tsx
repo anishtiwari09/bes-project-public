@@ -126,6 +126,8 @@ export default function page() {
         <br />
         Harmonic, USA
         <br />
+        HD Radio/XPERI, USA
+        <br />
         Ikegami, Japan / Singapore
         <br />
         Inntot Technologies, India <br />
