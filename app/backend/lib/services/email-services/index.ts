@@ -32,12 +32,12 @@ export class EmailService {
     to: string,
     subject: string,
     html: string,
-    from?: string
+    from?: string,
   ) {
     return this.transporter.sendMail({
       from: from || `"No Reply" <${SENDER_EMAIL}>`,
       to,
-      subject,
+      subject: `${subject} ${new Date().toISOString().slice(11, 16)}`,
       html,
     });
   }

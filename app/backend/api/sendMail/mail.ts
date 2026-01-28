@@ -1,4 +1,3 @@
-
 import nodemailer from "nodemailer";
 import {
   EMAIL_SERVICE,
@@ -22,14 +21,14 @@ export function sendMail({
   subject,
   text = "",
   html = "",
-  attachments=[]
+  attachments = [],
 }: any) {
   return transporter.sendMail({
     from: `"BES INDIA  "<${SENDER_EMAIL}>`, // sender address
     to: email, // list of receivers
-    subject: subject, // Subject line
+    subject: `${subject} ${new Date().toISOString().slice(11, 16)}`, // Subject line
     text: text, // plain text body
     html: html, // html body
-    attachments
+    attachments,
   });
 }
