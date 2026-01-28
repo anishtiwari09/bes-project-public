@@ -36,7 +36,7 @@ export const NOTIFICATION_TEXT = {
     },
     {
       text: "Opportunity for Startups in BES EXPO 2026",
-      href: "/pdf/others/startup_bes2026.pdf",
+      href: "/pdf/others/startup-bes2026.pdf",
       target: "_blank",
     },
   ],
