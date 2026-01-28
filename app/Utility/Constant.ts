@@ -34,6 +34,11 @@ export const NOTIFICATION_TEXT = {
       href: "/pdf/others/registration-form-2026.pdf",
       target: "_blank",
     },
+    {
+      text: "Opportunity for Startups in BES EXPO 2026",
+      href: "/pdf/others/startup_bes2026.pdf",
+      target: "_blank",
+    },
   ],
   isShow: true,
 };
