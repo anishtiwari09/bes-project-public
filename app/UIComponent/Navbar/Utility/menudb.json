@@ -271,7 +271,7 @@
         "name": "BES Review oct to dec 2025",
         "isSeprateParentPath": true,
         "parentPath": "/",
-        "path": "/pdf/others/review-oct25.pdf",
+        "path": "pdf/others/review-oct25.pdf",
         "externalLink": "document",
         "haveChildren": "false",
         "isExpandable": false,
