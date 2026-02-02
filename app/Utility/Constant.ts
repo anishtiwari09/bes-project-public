@@ -1,6 +1,6 @@
 export const HOMEPAGE = {
   sliderImageDir: "/Images/ImageGallery/",
-  currentYear: "2025",
+  currentYear: "2026",
   expoStartDate: {
     date: "29",
     month: "January",
