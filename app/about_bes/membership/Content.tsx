@@ -193,11 +193,11 @@ export default function Content() {
                     <TableCell>Rs. 5,000</TableCell>
                     <TableCell>US $500</TableCell>
                   </TableRow>
-                  {/* <TableRow>
+                  <TableRow>
                     <TableCell>Student Member</TableCell>
-                    <TableCell>Rs. 1100</TableCell>
-                    <TableCell>US $210</TableCell>
-                  </TableRow> */}
+                    <TableCell>Rs. 1000</TableCell>
+                    <TableCell>US $200</TableCell>
+                  </TableRow> 
                   <TableRow>
                     <TableCell>Life Corporate Member</TableCell>
                     <TableCell>Rs. 1,00,000</TableCell>
