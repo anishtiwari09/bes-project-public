@@ -3,7 +3,7 @@ export const HOMEPAGE = {
   currentYear: "2026",
   expoStartDate: {
     date: "11",
-    month: "January",
+    month: "February",
     year: 2027,
     displayMonth: "",
 
@@ -12,7 +12,7 @@ export const HOMEPAGE = {
   eventCount: "31th",
   expoEndDate: {
     date: "13",
-    displayMonth: "Janauary",
+    displayMonth: "February",
     year: 2027,
     postFix: "th",
   },
