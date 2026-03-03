@@ -102,17 +102,17 @@ export default async function RootLayout({ children }: any) {
     <html lang="en" className="h-full">
       <head>{ENVIROMENT === "production" && <NewRelicAnalytics />}</head>
       <body className="h-full overflow-hidden">
-        <Suspense>
-          <ClientWrapper>
-            <Navbar />
+        {/* <Suspense> */}
+        <ClientWrapper>
+          <Navbar />
 
-            <div className="overflow-auto inner_page scroll-smooth">
-              <div className="body_page">{children}</div>
-              <DownloadBrochureButton />
-              <Footer />
-            </div>
-          </ClientWrapper>
-        </Suspense>
+          <div className="overflow-auto inner_page scroll-smooth">
+            <div className="body_page">{children}</div>
+            <DownloadBrochureButton />
+            <Footer />
+          </div>
+        </ClientWrapper>
+        {/* </Suspense> */}
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
       </body>
