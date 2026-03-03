@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { Suspense } from "react";
 import Header1 from "./Header1";
 import Header2 from "./Header2";
 import UserProfile from "../UserProfile/UserProfile";
@@ -23,7 +23,9 @@ export default function Navbar() {
       </div>
       {!!userData ? null : (
         <div className="absolute right-1 top-1 text-white">
-          <LoginButton />
+          <Suspense>
+            <LoginButton />
+          </Suspense>
         </div>
       )}
     </div>
