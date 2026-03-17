@@ -9,7 +9,7 @@ export const HOMEPAGE = {
 
     postFix: "th",
   },
-  eventCount: "31th",
+  eventCount: "31st",
   expoEndDate: {
     date: "13",
     displayMonth: "February",
@@ -23,6 +23,8 @@ export const OTHERPAGE = {
 };
 
 export const NOTIFICATION_TEXT = {
-  contents: [],
+  contents: [
+  
+  ],
   isShow: true,
 };
