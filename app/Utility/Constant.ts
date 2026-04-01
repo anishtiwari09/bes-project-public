@@ -24,7 +24,18 @@ export const OTHERPAGE = {
 
 export const NOTIFICATION_TEXT = {
   contents: [
-  
+    {
+      text: "Notification for BES Election 2026-28",
+      href: "/pdf/bes_election/notification_for_bes_election_2026_28.pdf",
+    },
+    {
+      text: "Nomination form for Election 2026-28",
+      href: "/pdf/bes_election/nomination_form_for_election_2026_28.pdf",
+    },
+    {
+      text: "List of Voters for BES Election 2026-28",
+      href: "/pdf/bes_election/list_of_voters_for_bes_election_2026_28.pdf",
+    },
   ],
   isShow: true,
 };
