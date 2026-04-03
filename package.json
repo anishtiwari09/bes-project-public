@@ -13,6 +13,7 @@
     "validate-env": "ts-node scripts/prebuild-check/validate-env.ts"
   },
   "dependencies": {
+    "@contentful/experiences-sdk-react": "^3.8.8",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.9.0",
@@ -27,6 +28,7 @@
     "bcryptjs": "^3.0.2",
     "caniuse-lite": "^1.0.30001715",
     "chrome-aws-lambda": "^10.1.0",
+    "contentful": "^11.12.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.2.0",

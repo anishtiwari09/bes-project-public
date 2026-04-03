@@ -40,6 +40,30 @@ for (const key of requiredEnvs) {
   }
 }
 
+const contentfulEnvs = [
+  "CONTENTFUL_SPACE_ID",
+  "CONTENTFUL_ENVIRONMENT",
+  "CONTENTFUL_DELIVERY_ACCESS_TOKEN",
+  "CONTENTFUL_PREVIEW_ACCESS_TOKEN",
+  "CONTENTFUL_PREVIEW_SECRET",
+] as const;
+
+const hasAnyContentfulEnv = contentfulEnvs.some((key) => !!process.env[key]);
+if (hasAnyContentfulEnv) {
+  for (const key of contentfulEnvs) {
+    if (!process.env[key]) {
+      console.error(
+        `❌ Missing Contentful variable for partial setup: ${key}`
+      );
+      missing = true;
+    }
+  }
+} else {
+  console.warn(
+    "ℹ️ Contentful env not set. CMS integration will stay disabled until configured."
+  );
+}
+
 // Fail the build if any env is missing
 if (missing) {
   throw new Error(
