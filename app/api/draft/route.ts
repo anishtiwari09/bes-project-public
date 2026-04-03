@@ -6,6 +6,7 @@ import {
   normalizePreviewPath,
   validatePreviewSecret,
 } from "@/app/backend/lib/contentful";
+import { redirect } from "next/navigation";
 export async function GET(request: Request) {
   try {
     assertPreviewSecretConfigured();
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
     const draft = await draftMode();
     draft.enable();
     // const newUrl=new URL(slug, request.url)
-    return NextResponse.redirect(safePath);
+    return redirect(safePath);
   } catch (error: any) {
     if (error?.digest?.includes("NEXT_REDIRECT")) {
       throw error;

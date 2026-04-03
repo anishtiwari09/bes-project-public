@@ -24,7 +24,7 @@ export default function NotificationText({ contents }: any) {
                   <span className="inline-block text-center" key={index}>
                     {text}
                   </span>
-                )
+                ),
               )}
             </div>
           </div>

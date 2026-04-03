@@ -80,24 +80,50 @@ http://localhost:3000/api/draft?secret=YOUR_SECRET&slug=/
 3. Migrate one section at a time to `getEntriesForRequest`.
 4. Add content model-specific mappers/types after first page is live.
 
-## 7) Homepage Test Mapping (already wired)
+## 7) Homepage Mapping (Editor-Friendly Naming)
 
-Homepage (`app/page.tsx`) now reads one optional Contentful entry for testing.
+Homepage (`app/page.tsx`) reads one optional Contentful entry using these exact fields:
 
-Supported fields on that entry:
-- `testBannerText` (string) -> shows a small CMS test banner at top
-- `notificationIsShow` (boolean) -> controls ticker visibility
-- `notificationText` (array of objects) -> ticker list
+Root fields:
+- `announcementsEnabled` (boolean)
+- `announcementItems` (array of objects)
+- `homepageBanner` (object)
 
-Ticker object shape:
+`homepageBanner` fields:
+- `title`
+- `subtitle`
+- `venue`
+- `theme`
+- `primaryButtonText`
+- `primaryButtonLink`
+- `countdownStartDateTime`
+- `resourceButtons` (array)
+- `visitorButtonText`
+- `visitorButtonLink`
+- `delegateButtonText`
+- `delegateButtonLink`
+
+Announcement item shape:
 
 ```json
 {
-  "text": "Notification title",
+  "text": "Announcement title",
   "href": "/some-link-or-full-url",
   "target": "_blank"
 }
 ```
 
-Fallback behavior:
-- If Contentful is not configured, or entry is missing/invalid, homepage uses existing static constants.
+Resource button object shape:
+
+```json
+{
+  "label": "Brochure",
+  "url": "https://assets.ctfassets.net/.../brochure.pdf",
+  "target": "_blank"
+}
+```
+
+Render behavior:
+- No hardcoded fallback content is used for homepage notification/ticker.
+- If a field is missing, that section is not rendered.
+- Resource buttons are rendered only for absolute external URLs (`http://` or `https://`).
