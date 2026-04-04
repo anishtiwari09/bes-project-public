@@ -111,6 +111,7 @@ Root fields:
 - `visitorButtonLink`
 - `delegateButtonText`
 - `delegateButtonLink`
+- `brochureDownloadUrl` (optional, used by global fixed brochure button in layout)
 
 `homepageCarousel` item fields:
 - `imageUrl` (required)
@@ -142,6 +143,9 @@ Render behavior:
 - No hardcoded fallback content is used for homepage notification/ticker.
 - If a field is missing, that section is not rendered.
 - Resource buttons are rendered only for absolute external URLs (`http://` or `https://`).
+- Global fixed brochure button (`layout.tsx`) uses:
+  - `homepageBanner.brochureDownloadUrl` if present
+  - otherwise first `resourceButtons` item whose label contains `Brochure`
 - For carousel:
   - `USEAWS=true` and S3 has images -> uses S3 folder images
   - else if `USECONTENTSTACK=true` and CMS has slides -> uses `homepageCarousel`

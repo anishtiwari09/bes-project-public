@@ -3,14 +3,27 @@
 import { Button } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import Link from "next/link";
-import { DYNAMIC_LINK } from "@/app/general/commonPath";
 
-export default function DownloadBrochureButton() {
+type DownloadBrochureButtonProps = {
+  href: string;
+  label: string;
+  target?: string;
+};
+
+export default function DownloadBrochureButton({
+  href,
+  label,
+  target = "_blank",
+}: DownloadBrochureButtonProps) {
+  const brochureUrl = href || "";
+
+  if (!brochureUrl) return null;
+
   return (
     <Link
-      href={DYNAMIC_LINK.brochure}
+      href={href}
       //   download="brochure.pdf"
-      target="_blank"
+      target={target}
       rel="noopener noreferrer"
       className="fixed z-40 right-2 bottom-2"
     >
@@ -23,7 +36,7 @@ export default function DownloadBrochureButton() {
 
         {/* Vertical Text */}
         <span className="mt-1 [writing-mode:vertical-rl] [text-orientation:upright]  my-2">
-          BROCHURE
+          {label}
         </span>
 
         <DownloadIcon fontSize="medium" />

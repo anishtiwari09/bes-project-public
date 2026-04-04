@@ -1,4 +1,5 @@
 import { HOMEPAGE, NOTIFICATION_TEXT } from "@/app/Utility/Constant";
+import { DYNAMIC_LINK } from "@/app/general/commonPath";
 import type { HomePageContent } from "./types";
 
 export function getStaticHomepageContent(): HomePageContent {
@@ -12,6 +13,11 @@ export function getStaticHomepageContent(): HomePageContent {
       href: item.href || "",
       target: "_blank",
     })),
+    broucherButton: {
+      url: DYNAMIC_LINK.brochure,
+      label: "Brochure",
+      target: "_blank",
+    },
     notificationConfig: {
       title: `BES EXPO-2027: ${HOMEPAGE.eventCount} International Conference & Exhibition on Broadcast & Media Technology`,
       subtitle,

@@ -1,4 +1,7 @@
-import type { HomeNotificationCmsConfig } from "@/app/UIComponent/Carousel/HomePage/Notification";
+import type {
+  HomeNotificationCmsConfig,
+  ResourceButton,
+} from "@/app/UIComponent/Carousel/HomePage/Notification";
 
 export type AnnouncementItem = {
   text: string;
@@ -10,6 +13,7 @@ export type HomePageContent = {
   announcementsEnabled: boolean;
   announcementItems: AnnouncementItem[];
   notificationConfig: HomeNotificationCmsConfig | null;
+  broucherButton?: ResourceButton;
 };
 
 export type HomeCarouselSlide = {

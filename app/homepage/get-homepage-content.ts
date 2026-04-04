@@ -21,5 +21,6 @@ export async function getHomepageContent(): Promise<HomePageContent> {
     announcementsEnabled: false,
     announcementItems: [],
     notificationConfig: null,
+    broucherButton: null,
   };
 }

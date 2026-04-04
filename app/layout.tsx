@@ -1,13 +1,14 @@
-import { Inter } from "next/font/google";
+import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./UIComponent/Navbar/Navbar";
 import Footer from "./UIComponent/Footer/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { ENVIROMENT } from "./backend/constant";
-import { Suspense } from "react";
+import type { ReactNode } from "react";
 import ClientWrapper from "./UIComponent/cient-wrapper";
 import DownloadBrochureButton from "./UIComponent/buttons/download-brochure";
+import { getHomepageContent } from "./homepage/get-homepage-content";
 
 // ✅ Global Expo SEO Config
 import {
@@ -18,10 +19,8 @@ import {
 } from "./config/expo";
 import NewRelicAnalytics from "./scripts/new-relic-analytics";
 
-const inter = Inter({ subsets: ["latin"] });
-
 // ✅ GLOBAL SEO (applies to ALL pages — no modification needed anywhere)
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: EXPO_NAME,
     template: `%s | ${EXPO_NAME}`,
@@ -97,7 +96,13 @@ export const metadata = {
   },
 };
 
-export default async function RootLayout({ children }: any) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const homepageContent = await getHomepageContent();
+  const broucherButton = homepageContent?.broucherButton;
   return (
     <html lang="en" className="h-full">
       <head>{ENVIROMENT === "production" && <NewRelicAnalytics />}</head>
@@ -108,7 +113,13 @@ export default async function RootLayout({ children }: any) {
 
           <div className="overflow-auto inner_page scroll-smooth">
             <div className="body_page">{children}</div>
-            <DownloadBrochureButton />
+            {!!broucherButton?.label && (
+              <DownloadBrochureButton
+                href={broucherButton.url || ""}
+                label={broucherButton.label}
+                target={broucherButton.target}
+              />
+            )}
             <Footer />
           </div>
         </ClientWrapper>

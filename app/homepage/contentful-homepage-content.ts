@@ -1,7 +1,6 @@
 import type { ResourceButton } from "@/app/UIComponent/Carousel/HomePage/Notification";
 import type { AnnouncementItem, HomePageContent } from "./types";
 import { getHomepageContentfulEntry } from "./contentful-homepage-entry";
-import { map } from "zod";
 
 function getString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -29,28 +28,50 @@ function mapResourceButtons(raw: unknown): ResourceButton[] {
   const isExternalUrl = (value: string) => /^https?:\/\//i.test(value || "");
 
   return raw
-    .filter((item: any) => getString(item?.fields?.label).length > 0)
-    .map((item: any) => {
-      const fields = item?.fields || {};
+    .map((item: unknown) => mapResourceButtonBase(item))
+    .filter(
+      (item) =>
+        getString(item?.label).length > 0 &&
+        item.url.length > 0 &&
+        isExternalUrl(item.url),
+    );
+}
 
-      const rawTarget = getString(fields?.target);
-      const target: "_blank" | "_self" =
-        rawTarget === "_self" ? "_self" : "_blank";
+function mapResourceButtonBase(item: unknown): ResourceButton {
+  const fields = (item as any)?.fields || item || {};
+  const label = getString(fields?.label);
 
-      // 🔥 FIXED: correct asset path
-      const fileUrl = fields?.file?.fields?.file?.url
-        ? `https:${fields.file.fields.file.url}`
-        : "";
+  const rawTarget = getString(fields?.target);
+  const target: "_blank" | "_self" = rawTarget === "_self" ? "_self" : "_blank";
 
-      const url = fileUrl || getString(fields?.url);
+  const fileUrl = fields?.file?.fields?.file?.url
+    ? `https:${fields.file.fields.file.url}`
+    : fields?.file?.url
+      ? `https:${fields.file.url}`
+      : "";
 
-      return {
-        label: getString(fields?.label),
-        url,
-        target,
-      };
-    })
-    .filter((item) => item.url.length > 0 && isExternalUrl(item.url));
+  const url = fileUrl || getString(fields?.url);
+
+  return {
+    label,
+    url,
+    target,
+  };
+}
+
+function getBrochureUrl(
+  homepageBanner: any,
+  resourceButtons: ResourceButton[],
+) {
+  const fromBanner = getString(
+    homepageBanner?.brochureDownloadUrl || homepageBanner?.brochureLink,
+  );
+  if (fromBanner) return fromBanner;
+
+  const brochureButton = resourceButtons.find((button) =>
+    getString(button?.label).toLowerCase().includes("brochure"),
+  );
+  return brochureButton?.url || "";
 }
 
 export async function getContentfulHomepageContent(): Promise<HomePageContent | null> {
@@ -59,9 +80,14 @@ export async function getContentfulHomepageContent(): Promise<HomePageContent | 
 
   const fields = (entry as any)?.fields || {};
   const homepageBanner = fields?.homepageBanner || {};
+  const resourceButtons = mapResourceButtons(
+    homepageBanner?.resourceButtons || fields?.resourceButtons,
+  );
+  const broucherButton = mapResourceButtonBase(fields.broucher);
   return {
     announcementItems: mapAnnouncementItems(fields?.announcementItems),
     announcementsEnabled: getBoolean(fields?.announcementsEnabled),
+    broucherButton: broucherButton,
     notificationConfig: {
       title: getString(homepageBanner?.title),
       subtitle: getString(homepageBanner?.subtitle),
@@ -69,12 +95,14 @@ export async function getContentfulHomepageContent(): Promise<HomePageContent | 
       theme: getString(homepageBanner?.theme),
       primaryButtonText: getString(homepageBanner?.primaryButtonText),
       primaryButtonLink: getString(homepageBanner?.primaryButtonLink),
-      countdownStartDateTime: getString(fields?.countdownStartDate),
+      countdownStartDateTime: getString(
+        homepageBanner?.countdownStartDateTime || fields?.countdownStartDate,
+      ),
       visitorButtonText: getString(homepageBanner?.visitorButtonText),
       visitorButtonLink: getString(homepageBanner?.visitorButtonLink),
       delegateButtonText: getString(homepageBanner?.delegateButtonText),
       delegateButtonLink: getString(homepageBanner?.delegateButtonLink),
-      resourceButtons: mapResourceButtons(fields?.resourceButtons),
+      resourceButtons,
       notificationText: getString(fields?.latestUpdate),
     },
   };
