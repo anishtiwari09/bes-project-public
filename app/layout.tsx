@@ -9,6 +9,8 @@ import type { ReactNode } from "react";
 import ClientWrapper from "./UIComponent/cient-wrapper";
 import DownloadBrochureButton from "./UIComponent/buttons/download-brochure";
 import { getHomepageContent } from "./homepage/get-homepage-content";
+import { getGlobalBrochureButton } from "./homepage/get-global-brochure-button";
+import { headers } from "next/headers";
 
 // ✅ Global Expo SEO Config
 import {
@@ -101,8 +103,23 @@ export default async function RootLayout({
 }: {
   children: ReactNode;
 }) {
-  const homepageContent = await getHomepageContent();
-  const broucherButton = homepageContent?.broucherButton;
+  const requestHeaders = await headers();
+  const nextUrl = requestHeaders.get("next-url") || requestHeaders.get("x-pathname");
+  let pathname = "";
+  if (nextUrl) {
+    try {
+      pathname = new URL(nextUrl, "http://localhost").pathname;
+    } catch {
+      pathname = nextUrl.startsWith("/") ? nextUrl : "";
+    }
+  }
+  const isHomePage = pathname === "/";
+
+  const homepageContent = isHomePage ? await getHomepageContent() : null;
+  const brochureButton = isHomePage
+    ? homepageContent?.brochureButton
+    : await getGlobalBrochureButton();
+
   return (
     <html lang="en" className="h-full">
       <head>{ENVIROMENT === "production" && <NewRelicAnalytics />}</head>
@@ -113,11 +130,11 @@ export default async function RootLayout({
 
           <div className="overflow-auto inner_page scroll-smooth">
             <div className="body_page">{children}</div>
-            {!!broucherButton?.label && (
+            {!!brochureButton?.label && (
               <DownloadBrochureButton
-                href={broucherButton.url || ""}
-                label={broucherButton.label}
-                target={broucherButton.target}
+                href={brochureButton.url || ""}
+                label={brochureButton.label}
+                target={brochureButton.target}
               />
             )}
             <Footer />

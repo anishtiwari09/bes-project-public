@@ -83,11 +83,13 @@ export async function getContentfulHomepageContent(): Promise<HomePageContent | 
   const resourceButtons = mapResourceButtons(
     homepageBanner?.resourceButtons || fields?.resourceButtons,
   );
-  const broucherButton = mapResourceButtonBase(fields.broucher);
+  const brochureButton = mapResourceButtonBase(
+    fields?.brochure || fields?.broucher,
+  );
   return {
     announcementItems: mapAnnouncementItems(fields?.announcementItems),
     announcementsEnabled: getBoolean(fields?.announcementsEnabled),
-    broucherButton: broucherButton,
+    brochureButton,
     notificationConfig: {
       title: getString(homepageBanner?.title),
       subtitle: getString(homepageBanner?.subtitle),

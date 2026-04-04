@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const secret = req.headers.get("x-internal-secret");
     const { path } = await req.json();
-
+    const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+    const INTERNAL_SECRET = process.env.INTERNAL_SECRET;
     // simple protection
-    if (secret !== process.env.INTERNAL_SECRET) {
+
+    if (
+      (secret !== WEBHOOK_SECRET && secret !== INTERNAL_SECRET) ||
+      !INTERNAL_SECRET ||
+      !WEBHOOK_SECRET
+    ) {
       return NextResponse.json({ message: "Invalid secret" }, { status: 401 });
     }
 
@@ -21,7 +27,7 @@ export async function POST(req: Request) {
   } catch (err) {
     return NextResponse.json(
       { message: "Error revalidating" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

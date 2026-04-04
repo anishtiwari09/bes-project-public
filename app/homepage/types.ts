@@ -13,7 +13,7 @@ export type HomePageContent = {
   announcementsEnabled: boolean;
   announcementItems: AnnouncementItem[];
   notificationConfig: HomeNotificationCmsConfig | null;
-  broucherButton?: ResourceButton;
+  brochureButton?: ResourceButton;
 };
 
 export type HomeCarouselSlide = {

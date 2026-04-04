@@ -13,7 +13,7 @@ export function getStaticHomepageContent(): HomePageContent {
       href: item.href || "",
       target: "_blank",
     })),
-    broucherButton: {
+    brochureButton: {
       url: DYNAMIC_LINK.brochure,
       label: "Brochure",
       target: "_blank",
