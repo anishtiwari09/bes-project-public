@@ -2,18 +2,16 @@ import EventDetails from "./UIComponent/Carousel/HomePage/EventDetails";
 import HomePageCarousel from "./UIComponent/Carousel/HomePage/HomePageCarousel";
 import Notification from "./UIComponent/Carousel/HomePage/Notification";
 import Partener from "./UIComponent/Carousel/HomePage/Partener";
-import { HOMEPAGE } from "./Utility/Constant";
-import { getSliderImages } from "./Utility/lib/file";
 import NotificationText from "./UIComponent/Carousel/HomePage/NotificationText";
 import ExclusiveGallery from "./UIComponent/Carousel/HomePage/ExclusiveGallery";
 import MarginTopSpace from "./UIComponent/Carousel/HomePage/MarginTopSpace";
 import AllRegistrationTypeServices from "./backend/lib/services/all-registration-type-service";
 import { RegistrationServiceType } from "./backend/lib/db/models/all_registration_services.model";
 import { getHomepageContent } from "./homepage/get-homepage-content";
+import { getHomepageCarouselSlides } from "./homepage/get-homepage-carousel";
 
 export default async function Home() {
-  const data =
-    getSliderImages(HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear) || [];
+  const slides = await getHomepageCarouselSlides();
   const homepageContent = await getHomepageContent();
 
   const registrationService = new AllRegistrationTypeServices();
@@ -31,7 +29,6 @@ export default async function Home() {
       ? 1
       : 0;
   });
-
   return (
     <div className="relative">
       <div className="relative">
@@ -45,11 +42,7 @@ export default async function Home() {
             />
           </div>
           <div className="relative flex-1 min-w-[350px]">
-            <HomePageCarousel
-              data={data}
-              url={HOMEPAGE.sliderImageDir + HOMEPAGE.currentYear}
-              path1={""}
-            />
+            <HomePageCarousel slides={slides} />
           </div>
         </div>
 

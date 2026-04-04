@@ -2,26 +2,88 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 import { ReactSVG } from "react-svg";
-export default function HomePageCarousel({ data, url, path1 }: any) {
+import type { HomeCarouselSlide } from "@/app/homepage/types";
+import Image from "next/image";
+import Link from "next/link";
+
+type LegacyProps = {
+  data?: string[];
+  url?: string;
+  path1?: string;
+};
+
+type Props = LegacyProps & {
+  slides?: HomeCarouselSlide[];
+};
+
+export default function HomePageCarousel({
+  data = [],
+  url = "",
+  slides = [],
+}: Props) {
+  const normalizedSlides: HomeCarouselSlide[] =
+    slides.length > 0
+      ? slides
+      : data.map((item) => ({
+          imageUrl: `${url}/${item}`,
+          altText: "BES Homepage Slide",
+          target: "_self",
+        }));
+
+  if (!normalizedSlides.length) return null;
+
+  const isInternalUrl = (value: string) => value.startsWith("/");
+  const isSvg = (value: string) => value.toLowerCase().includes(".svg");
+
+  const renderSlideImage = (slide: HomeCarouselSlide, index: number) => {
+    if (isSvg(slide.imageUrl)) {
+      return <ReactSVG src={slide.imageUrl} />;
+    }
+
+    return (
+      <Image
+        src={slide.imageUrl}
+        width={slide.width || 1600}
+        height={slide.height || 900}
+        className="w-full min-w-full object-contain h-auto"
+        alt={slide.altText || "BES Homepage Slide"}
+        priority={index === 0}
+      />
+    );
+  };
+
   return (
     <div>
       <Carousel
         autoPlay={true}
         animation={"slide"}
         indicators={false}
-        key={data.id}
+        key={normalizedSlides.length}
         stopAutoPlayOnHover={true}
         interval={5000}
       >
-        {data?.map((item: any, key: any) => (
+        {normalizedSlides.map((slide, key) => (
           <div className="w-full cursor-pointer" key={key}>
-            {item?.includes(".svg") ? (
-              <ReactSVG src={`${url}/${item}`} />
+            {slide?.clickUrl ? (
+              isInternalUrl(slide.clickUrl) ? (
+                <Link href={slide.clickUrl} target={slide.target || "_self"}>
+                  {renderSlideImage(slide, key)}
+                </Link>
+              ) : (
+                <a
+                  href={slide.clickUrl}
+                  target={slide.target || "_self"}
+                  rel={
+                    slide.target === "_blank"
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
+                >
+                  {renderSlideImage(slide, key)}
+                </a>
+              )
             ) : (
-              <img
-                src={`${url}/${item}`}
-                className="w-full min-w-full object-contain"
-              />
+              renderSlideImage(slide, key)
             )}
           </div>
         ))}

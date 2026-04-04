@@ -9,6 +9,18 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.ctfassets.net",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.ctfassets.net",
+      },
+    ],
+  },
   webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.js\.map$/,

@@ -12,3 +12,11 @@ export type HomePageContent = {
   notificationConfig: HomeNotificationCmsConfig | null;
 };
 
+export type HomeCarouselSlide = {
+  imageUrl: string;
+  altText?: string;
+  clickUrl?: string;
+  target?: "_blank" | "_self";
+  width?: number;
+  height?: number;
+};

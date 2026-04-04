@@ -93,6 +93,5 @@ export async function getEntryBySlugForRequest<
   slugField?: string;
 }) {
   const preview = await isDraftModeEnabled();
-  console.log({ contentType, slug, slugField });
   return getEntryBySlug<T>({ contentType, slug, slugField, preview });
 }

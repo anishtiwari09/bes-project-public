@@ -14,6 +14,7 @@ CONTENTFUL_PREVIEW_ACCESS_TOKEN="<preview-token>"
 CONTENTFUL_PREVIEW_SECRET="<long-random-secret>"
 CONTENTFUL_HOMEPAGE_ENTRY_ID="<entry-id-for-home-test>"
 USECONTENTSTACK="false"
+USEAWS="false"
 ```
 
 Notes:
@@ -23,6 +24,9 @@ Notes:
 - `USECONTENTSTACK`:
   - `true` -> homepage uses Contentful entry data
   - `false` (or unset) -> homepage uses existing static content
+- `USEAWS`:
+  - `true` -> homepage carousel reads images from AWS S3 folder (server-side)
+  - `false` -> AWS source is skipped
 
 ## 2) What Was Added
 
@@ -92,6 +96,7 @@ Root fields:
 - `announcementsEnabled` (boolean)
 - `announcementItems` (array of objects)
 - `homepageBanner` (object)
+- `homepageCarousel` (array of objects)
 
 `homepageBanner` fields:
 - `title`
@@ -106,6 +111,12 @@ Root fields:
 - `visitorButtonLink`
 - `delegateButtonText`
 - `delegateButtonLink`
+
+`homepageCarousel` item fields:
+- `imageUrl` (required)
+- `altText` (optional)
+- `clickUrl` (optional)
+- `target` (`_self` or `_blank`, optional)
 
 Announcement item shape:
 
@@ -131,3 +142,20 @@ Render behavior:
 - No hardcoded fallback content is used for homepage notification/ticker.
 - If a field is missing, that section is not rendered.
 - Resource buttons are rendered only for absolute external URLs (`http://` or `https://`).
+- For carousel:
+  - `USEAWS=true` and S3 has images -> uses S3 folder images
+  - else if `USECONTENTSTACK=true` and CMS has slides -> uses `homepageCarousel`
+  - else -> uses previous static local slider images
+
+### AWS envs for carousel
+
+```env
+USEAWS="true"
+AWS_REGION="ap-south-1"
+AWS_S3_BUCKET="your-private-bucket-name"
+AWS_S3_CAROUSEL_PREFIX="homepage/carousel"
+AWS_CDN_BASE_URL="https://cdn.besindia.com"
+AWS_ACCESS_KEY_ID="..."
+AWS_SECRET_ACCESS_KEY="..."
+AWS_SESSION_TOKEN="" # optional
+```

@@ -1,4 +1,18 @@
-export default function NotificationText({ contents, notificationText }: any) {
+type NotificationItem = {
+  text: string;
+  href?: string;
+  target?: string;
+};
+
+type NotificationTextProps = {
+  contents: NotificationItem[];
+  notificationText?: string;
+};
+
+export default function NotificationText({
+  contents,
+  notificationText,
+}: NotificationTextProps) {
   return (
     <div className="absolute z-[2] w-full  bottom-[-67px] contdown_container">
       <div className="coundown2 py-[30px] relative">
@@ -12,7 +26,7 @@ export default function NotificationText({ contents, notificationText }: any) {
         <div className="flex gap-1">
           <div className={"marquee w-full pl-[250px] md:pl-[420px]"}>
             <div className={"marqueeInner "}>
-              {contents.map(({ text, href, target }: any, index) =>
+              {contents.map(({ text, href, target }, index) =>
                 href ? (
                   <a
                     target={target ?? "_blank"}

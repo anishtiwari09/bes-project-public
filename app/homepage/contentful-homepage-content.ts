@@ -1,9 +1,6 @@
-import {
-  getEntryByIdForRequest,
-  isContentfulConfigured,
-} from "@/app/backend/lib/contentful";
 import type { ResourceButton } from "@/app/UIComponent/Carousel/HomePage/Notification";
 import type { AnnouncementItem, HomePageContent } from "./types";
+import { getHomepageContentfulEntry } from "./contentful-homepage-entry";
 import { map } from "zod";
 
 function getString(value: unknown): string {
@@ -57,10 +54,7 @@ function mapResourceButtons(raw: unknown): ResourceButton[] {
 }
 
 export async function getContentfulHomepageContent(): Promise<HomePageContent | null> {
-  const entryId = process.env.CONTENTFUL_HOMEPAGE_ENTRY_ID || "";
-  if (entryId.length === 0 || isContentfulConfigured() === false) return null;
-
-  const entry = await getEntryByIdForRequest(entryId);
+  const entry = await getHomepageContentfulEntry();
   if (!entry) return null;
 
   const fields = (entry as any)?.fields || {};
