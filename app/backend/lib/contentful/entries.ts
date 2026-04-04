@@ -66,9 +66,10 @@ export async function getEntryById<
   try {
     return await client.getEntry<T>(entryId);
   } catch (e) {
-    console.log("something went wrong fetching entry by id", {
+    console.error("something went wrong fetching entry by id", {
       entryId,
       error: e,
+      message: e?.message,
     });
     return null;
   }

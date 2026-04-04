@@ -15,7 +15,6 @@ export function assertPreviewSecretConfigured() {
 export function validatePreviewSecret(secret: string | null) {
   const expected = process.env[PREVIEW_SECRET_KEY];
   if (!secret || !expected) return false;
-  console.log({ secret, expected });
   const incomingBuffer = Buffer.from(secret);
   const expectedBuffer = Buffer.from(expected);
   if (incomingBuffer.length !== expectedBuffer.length) return false;
