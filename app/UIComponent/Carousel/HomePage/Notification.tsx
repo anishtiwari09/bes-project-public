@@ -90,12 +90,15 @@ export default function Notification({
       )}
 
       {!!currentRegistrationServiceStatus?.my_space && (
-        <a className="flex" href={cmsConfig.primaryButtonLink}>
+        <a
+          className="flex"
+          href="/event_conference/bes_expo/exibition/participation_fee"
+        >
           <Button
             variant="contained"
             className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
           >
-            {cmsConfig.primaryButtonText}
+            Book Your Space
           </Button>
         </a>
       )}
