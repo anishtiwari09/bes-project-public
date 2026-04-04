@@ -4,6 +4,7 @@ import {
 } from "@/app/backend/lib/contentful";
 import type { ResourceButton } from "@/app/UIComponent/Carousel/HomePage/Notification";
 import type { AnnouncementItem, HomePageContent } from "./types";
+import { map } from "zod";
 
 function getString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -26,18 +27,28 @@ function mapAnnouncementItems(raw: unknown): AnnouncementItem[] {
 }
 
 function mapResourceButtons(raw: unknown): ResourceButton[] {
-  if (Array.isArray(raw) === false) return [];
+  if (!Array.isArray(raw)) return [];
 
   const isExternalUrl = (value: string) => /^https?:\/\//i.test(value || "");
 
   return raw
-    .filter((item: any) => getString(item?.label).length > 0)
+    .filter((item: any) => getString(item?.fields?.label).length > 0)
     .map((item: any) => {
-      const rawTarget = getString(item?.target);
-      const target: "_blank" | "_self" = rawTarget === "_self" ? "_self" : "_blank";
-      const url = getString(item?.url);
+      const fields = item?.fields || {};
+
+      const rawTarget = getString(fields?.target);
+      const target: "_blank" | "_self" =
+        rawTarget === "_self" ? "_self" : "_blank";
+
+      // 🔥 FIXED: correct asset path
+      const fileUrl = fields?.file?.fields?.file?.url
+        ? `https:${fields.file.fields.file.url}`
+        : "";
+
+      const url = fileUrl || getString(fields?.url);
+
       return {
-        label: getString(item?.label),
+        label: getString(fields?.label),
         url,
         target,
       };
@@ -54,7 +65,6 @@ export async function getContentfulHomepageContent(): Promise<HomePageContent | 
 
   const fields = (entry as any)?.fields || {};
   const homepageBanner = fields?.homepageBanner || {};
-
   return {
     announcementItems: mapAnnouncementItems(fields?.announcementItems),
     announcementsEnabled: getBoolean(fields?.announcementsEnabled),
@@ -65,13 +75,13 @@ export async function getContentfulHomepageContent(): Promise<HomePageContent | 
       theme: getString(homepageBanner?.theme),
       primaryButtonText: getString(homepageBanner?.primaryButtonText),
       primaryButtonLink: getString(homepageBanner?.primaryButtonLink),
-      countdownStartDateTime: getString(homepageBanner?.countdownStartDateTime),
+      countdownStartDateTime: getString(fields?.countdownStartDate),
       visitorButtonText: getString(homepageBanner?.visitorButtonText),
       visitorButtonLink: getString(homepageBanner?.visitorButtonLink),
       delegateButtonText: getString(homepageBanner?.delegateButtonText),
       delegateButtonLink: getString(homepageBanner?.delegateButtonLink),
-      resourceButtons: mapResourceButtons(homepageBanner?.resourceButtons),
+      resourceButtons: mapResourceButtons(fields?.resourceButtons),
+      notificationText: getString(fields?.latestUpdate),
     },
   };
 }
-

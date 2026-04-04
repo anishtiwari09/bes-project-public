@@ -13,12 +13,16 @@ CONTENTFUL_DELIVERY_ACCESS_TOKEN="<delivery-token>"
 CONTENTFUL_PREVIEW_ACCESS_TOKEN="<preview-token>"
 CONTENTFUL_PREVIEW_SECRET="<long-random-secret>"
 CONTENTFUL_HOMEPAGE_ENTRY_ID="<entry-id-for-home-test>"
+USECONTENTSTACK="false"
 ```
 
 Notes:
 - `CONTENTFUL_DELIVERY_ACCESS_TOKEN` is for published content.
 - `CONTENTFUL_PREVIEW_ACCESS_TOKEN` is for draft/preview content.
 - `CONTENTFUL_PREVIEW_SECRET` protects preview activation URL.
+- `USECONTENTSTACK`:
+  - `true` -> homepage uses Contentful entry data
+  - `false` (or unset) -> homepage uses existing static content
 
 ## 2) What Was Added
 
@@ -82,7 +86,7 @@ http://localhost:3000/api/draft?secret=YOUR_SECRET&slug=/
 
 ## 7) Homepage Mapping (Editor-Friendly Naming)
 
-Homepage (`app/page.tsx`) reads one optional Contentful entry using these exact fields:
+Homepage (`app/page.tsx`) reads one optional Contentful entry using these exact fields when `USECONTENTSTACK=true`:
 
 Root fields:
 - `announcementsEnabled` (boolean)

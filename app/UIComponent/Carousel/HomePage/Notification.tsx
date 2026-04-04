@@ -23,6 +23,7 @@ export type HomeNotificationCmsConfig = {
   visitorButtonLink?: string;
   delegateButtonText?: string;
   delegateButtonLink?: string;
+  notificationText?: string;
 };
 
 export default function Notification({
