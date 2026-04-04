@@ -7,11 +7,11 @@ import AllRegistrationTypeServices from "@/app/backend/lib/services/all-registra
 import UnavailableServiceMessage from "@/app/UIComponent/common-ui/unavailable-service/unavailable-service-msg";
 import { RegistrationServiceType } from "@/app/backend/lib/db/models/all_registration_services.model";
 import ProgramBrief from "./program-brief";
-export const revalidate = 3600; // cached for one hour
+export const revalidate = 14400; // cached for four hour
 export default async function page() {
   const allServices = new AllRegistrationTypeServices();
   const isActive = await allServices.checkIsServiceActiveByName(
-    RegistrationServiceType.VISITOR_REGISTRATIONS
+    RegistrationServiceType.VISITOR_REGISTRATIONS,
   );
   if (!isActive) return <UnavailableServiceMessage />;
   return (
