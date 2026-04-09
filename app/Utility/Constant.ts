@@ -33,7 +33,7 @@ export const NOTIFICATION_TEXT = {
       href: "/pdf/bes_election/nomination_form_for_election_2026_28.pdf",
     },
     {
-      text: "List of Voters for BES Election 2026-28",
+      text: "List of Voters for BES Election 2026-28||",
       href: "/pdf/bes_election/list_of_voters_for_bes_election_2026_28.pdf",
     },
     {
