@@ -121,14 +121,7 @@ export default function Notification({
           " 10:00:00 GMT+0530"
         }
       />
-    </div>
-    
-
-    
-  );
-
-}
-<div className="flex gap-2 justify-center">
+      <div className="flex mt-5 justify-center">
         <a
           className="flex"
           href="pdf/bes_election/NOTICE For AGM 2026.pdf"
@@ -154,3 +147,11 @@ export default function Notification({
           </Button>
         </a>*/} 
       </div>
+    </div>
+    
+
+    
+  );
+
+}
+
