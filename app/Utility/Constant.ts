@@ -36,6 +36,10 @@ export const NOTIFICATION_TEXT = {
       text: "List of Voters for BES Election 2026-28",
       href: "/pdf/bes_election/list_of_voters_for_bes_election_2026_28.pdf",
     },
+    {
+      text: "Notice for Annual General Meeting 2026",
+      href: "/pdf/bes_election/NOTICE For AGM 2026.pdf",
+    },
   ],
   isShow: true,
 };
