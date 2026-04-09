@@ -49,20 +49,20 @@ export default function Notification({
           </Button>
         </a>
       )}
-      {/* <div className="flex gap-2 justify-center">
+     <div className="flex gap-2 justify-center">
         <a
           className="flex"
-          href="/pdf/others/sponsorship_opportunity.pdf"
+          href="https://www.besindia.com/pdf/bes_election/NOTICE%20For%20AGM%202026.pdf"
           target="_blank"
         >
           <Button
             variant="contained"
             className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
           >
-            Sponsorship Opportunities
+            Notice for AGM-2026
           </Button>
         </a>
-        <a
+       {/* <a
           className="flex"
           href="/document/besexpo/brochure2026.pdf"
           target="_blank"
@@ -73,8 +73,8 @@ export default function Notification({
           >
             Brochure
           </Button>
-        </a>
-      </div> */}
+        </a> */}
+      </div> 
 
       {delagateOrVisitorStatus && (
         <div className="flex gap-2 justify-center mt-4 registration_btn_container">
