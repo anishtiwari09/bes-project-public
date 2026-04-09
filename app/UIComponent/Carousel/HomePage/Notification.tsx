@@ -127,10 +127,11 @@ export default function Notification({
     
   );
 
-  <div className="flex gap-2 justify-center">
+}
+<div className="flex gap-2 justify-center">
         <a
           className="flex"
-          href="https://www.besindia.com/pdf/bes_election/NOTICE%20For%20AGM%202026.pdf"
+          href="pdf/bes_election/NOTICE For AGM 2026.pdf"
           target="_blank"
         >
           <Button
@@ -140,7 +141,7 @@ export default function Notification({
             Notice for AGM-2026
           </Button>
         </a>
-        <a
+        {/*<a
           className="flex"
           href="/document/besexpo/brochure2026.pdf"
           target="_blank"
@@ -151,7 +152,5 @@ export default function Notification({
           >
             Brochure
           </Button>
-        </a> 
+        </a>*/} 
       </div>
-      
-}
