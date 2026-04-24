@@ -32,6 +32,16 @@ const nextConfig = {
   // 👇 Custom caching headers
   async headers() {
     return [
+      // Allow Contentful Live Preview iframe embedding
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'self' https://app.contentful.com",
+          },
+        ],
+      },
       // Do NOT cache PDFs inside /images
       {
         source: "/images/:all*.pdf",
