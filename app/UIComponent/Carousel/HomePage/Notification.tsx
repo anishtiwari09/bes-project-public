@@ -121,32 +121,7 @@ export default function Notification({
           " 10:00:00 GMT+0530"
         }
       />
-      <div className="flex mt-5 justify-center">
-        <a
-          className="flex"
-          href="pdf/bes_election/NOTICE For AGM 2026.pdf"
-          target="_blank"
-        >
-          <Button
-            variant="contained"
-            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
-          >
-            Notice for AGM-2026
-          </Button>
-        </a>
-        {/*<a
-          className="flex"
-          href="/document/besexpo/brochure2026.pdf"
-          target="_blank"
-        >
-          <Button
-            variant="contained"
-            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
-          >
-            Brochure
-          </Button>
-        </a>*/} 
-      </div>
+
     </div>
     
 
