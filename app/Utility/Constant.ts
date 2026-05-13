@@ -34,7 +34,7 @@ export const NOTIFICATION_TEXT = {
     },
     {
       text: "Final list of valid nominations  for Election to BES (I) Executive Council 2026-28",
-      href: "/pdf/bes_election/Final List of Valid Nominations for Election to BES(I) Executive Council 2026-28",
+      href: "/pdf/bes_election/final_list_of_valid_nominations.pdf",
     },
   ],
   isShow: true,
