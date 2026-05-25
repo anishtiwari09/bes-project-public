@@ -25,8 +25,6 @@ export default function DatadogProvider() {
       trackResources: true,
       trackUserInteractions: true,
       trackLongTasks: true,
-
-      plugins: [reactPlugin({ router: true })],
     });
 
     datadogRum.startSessionReplayRecording();
