@@ -536,6 +536,34 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@datadog/browser-core@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-7.1.0.tgz#d4a54fdc4b754c47eaa55ecaa7d9885af2a21151"
+  integrity sha512-loR/1/ZpqczABeGHFW6Az4hgGYmWwUaA2ame8gwOa3W16BtXnk+67suzo+pbaiG5gNjMpwDIFpUAYQjGYcoxUg==
+
+"@datadog/browser-rum-core@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-7.1.0.tgz#7ff233e360229cfeedb75ff04f7b4e522a834dc9"
+  integrity sha512-VHg8tpHAiWmuwUW7icBjeLcek/uM7EbTCoBc017Vp2RNzkLfqIiXfpmdm+vilWO1mYbW2adVR2AF2CTHQhVcgQ==
+  dependencies:
+    "@datadog/browser-core" "7.1.0"
+
+"@datadog/browser-rum-react@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-react/-/browser-rum-react-7.1.0.tgz#3c6b006c8fe62db131200a7cec9c89cd4d90c6a5"
+  integrity sha512-9Xy2BvwGmFibY/VWZyteNmsVBBBE5jmcFEOqIF/mYFLezh4SHvO8DN5hBsAY3p3CGXQss1gjeEhgXulHFpXvgQ==
+  dependencies:
+    "@datadog/browser-core" "7.1.0"
+    "@datadog/browser-rum-core" "7.1.0"
+
+"@datadog/browser-rum@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-7.1.0.tgz#bca730a1c3d84a2f317e279a878e69890e5d89ad"
+  integrity sha512-JCtA7NWgH1XUvwBSKdsgU7qIeKFR68QtQVqPBoaNhyTx8Q5Ftec5Mz7cAKIYI/wvF0fSpwcqjp0JI1g1morWkw==
+  dependencies:
+    "@datadog/browser-core" "7.1.0"
+    "@datadog/browser-rum-core" "7.1.0"
+
 "@discoveryjs/json-ext@0.5.7":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
