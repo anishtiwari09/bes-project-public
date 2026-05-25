@@ -17,6 +17,7 @@ import {
   EXPO_OG_IMAGE,
 } from "./config/expo";
 import NewRelicAnalytics from "./scripts/new-relic-analytics";
+import DatadogProvider from "./providers/datadog-providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -115,6 +116,7 @@ export default async function RootLayout({ children }: any) {
         {/* </Suspense> */}
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
+        {ENVIROMENT === "production" && <DatadogProvider />}
       </body>
     </html>
   );
