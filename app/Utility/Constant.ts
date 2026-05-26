@@ -33,8 +33,12 @@ export const NOTIFICATION_TEXT = {
       href: "/pdf/bes_election/list_of_voters_for_bes_election_2026_28.pdf",
     },
     {
-      text: "Final list of valid nominations  for Election to BES (I) Executive Council 2026-28",
+      text: "Final list of valid nominations  for Election to BES (I) Executive Council 2026-28||",
       href: "/pdf/bes_election/final_list_of_valid_nominations.pdf",
+    },
+    {
+      text: "Bio-data of Contestant for Election to BES (I) Executive Council 2026-28",
+      href: "/pdf/bes_election/bio_data.pdf",
     },
   ],
   isShow: true,

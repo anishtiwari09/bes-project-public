@@ -74,7 +74,7 @@ export default function Notification({
             Brochure
           </Button>
         </a> 
-      </div> */}
+      </div>  */}
 
       {delagateOrVisitorStatus && (
         <div className="flex gap-2 justify-center mt-4 registration_btn_container">
@@ -121,7 +121,29 @@ export default function Notification({
           " 10:00:00 GMT+0530"
         }
       />
-
+       <br/>
+      
+      
+      
+    
+    
+<div className="flex gap-2 justify-center">
+      
+     
+      <a
+          className="flex"
+          href="/pdf/bes_election/bio_data.pdf"
+          target="_blank"
+        >
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+           Bio-Data of contestants
+          </Button>
+        </a>
+       
+      </div>
     </div>
     
 
