@@ -127,7 +127,7 @@ export default function Notification({
       
     
     
-<div className="flex gap-2 justify-center">
+{/* <div className="flex gap-2 justify-center">
       
      
       <a
@@ -143,7 +143,7 @@ export default function Notification({
           </Button>
         </a>
        
-      </div>
+      </div> */}
     </div>
     
 
