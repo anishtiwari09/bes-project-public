@@ -25,21 +25,10 @@ export const OTHERPAGE = {
 export const NOTIFICATION_TEXT = {
   contents: [
     {
-      text: "Notification for BES Election 2026-28 ||",
-      href: "/pdf/bes_election/notification_for_bes_election_2026_28.pdf",
+      text: "BES Election Result (Executive Council -2026-28)",
+      href: "/pdf/bes_election/Election_result.pdf",
     },
-    {
-      text: "List of Voters for BES Election 2026-28||",
-      href: "/pdf/bes_election/list_of_voters_for_bes_election_2026_28.pdf",
-    },
-    {
-      text: "Final list of valid nominations  for Election to BES (I) Executive Council 2026-28||",
-      href: "/pdf/bes_election/final_list_of_valid_nominations.pdf",
-    },
-    {
-      text: "Bio-data of Contestant for Election to BES (I) Executive Council 2026-28",
-      href: "/pdf/bes_election/bio_data.pdf",
-    },
+   
   ],
   isShow: true,
 };
