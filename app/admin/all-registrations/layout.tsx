@@ -17,10 +17,10 @@ export default function layout({ children }: any) {
         {children}
       </div>
       <div className="hidden md:block"></div>
-      
+
       <MobileBottomNavWrapper title="Registrations">
         <div className="rounded-xl overflow-hidden shadow-sm border border-orange-100">
-           <SideNav />
+          <SideNav />
         </div>
       </MobileBottomNavWrapper>
     </div>
