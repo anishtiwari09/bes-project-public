@@ -26,31 +26,29 @@ export default function MobileBottomNav() {
 
   return (
     <>
-      {/* Sticky Bottom Button */}
-      <div className="absolute inset-0 pointer-events-none z-50 md:hidden flex flex-col justify-end pb-8">
-        <div className="sticky bottom-6 flex justify-center w-full">
-          <button
-            onClick={toggleDrawer(true)}
-            className="pointer-events-auto bg-[#faac1d] text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center hover:bg-[#e0991a] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#faac1d]"
-            aria-label="Open Navigation"
+      {/* Fixed Left Center Button */}
+      <div className="fixed top-1/2 left-0 -translate-y-1/2 z-50 md:hidden">
+        <button
+          onClick={toggleDrawer(true)}
+          className="bg-[#faac1d] text-white w-10 h-16 rounded-r-xl shadow-xl flex items-center justify-center hover:bg-[#e0991a] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#faac1d]"
+          aria-label="Open Navigation"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="animate-pulse"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="animate-bounce mt-1"
-            >
-              <polyline points="17 11 12 6 7 11" />
-              <polyline points="17 18 12 13 7 18" />
-            </svg>
-          </button>
-        </div>
+            <polyline points="13 17 18 12 13 7" />
+            <polyline points="6 17 11 12 6 7" />
+          </svg>
+        </button>
       </div>
 
       {/* Bottom Sheet */}
