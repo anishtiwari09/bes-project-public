@@ -3,6 +3,7 @@ import React from "react";
 import Countdown from "./Countdown";
 import Link from "next/link";
 import { IRegistrationServiceType } from "@/app/_shared/types";
+import { HOMEPAGE } from "@/app/Utility/Constant";
 
 export type ResourceButton = {
   label: string;
@@ -122,6 +123,32 @@ export default function Notification({
           ))}
         </div>
       )}
+      {/* <div className="flex gap-2 justify-center">
+        <a
+          className="flex"
+          href="https://www.besindia.com/pdf/bes_election/NOTICE%20For%20AGM%202026.pdf"
+          target="_blank"
+        >
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+            Notice for AGM-2026
+          </Button>
+        </a>
+        <a
+          className="flex"
+          href="/document/besexpo/brochure2026.pdf"
+          target="_blank"
+        >
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+            Brochure
+          </Button>
+        </a> 
+      </div>  */}
 
       {delagateOrVisitorStatus && (
         <div className="flex gap-2 justify-center mt-4 registration_btn_container">
@@ -161,6 +188,35 @@ export default function Notification({
       {!!cmsConfig.countdownStartDateTime && (
         <Countdown from={cmsConfig.countdownStartDateTime} />
       )}
+      <Countdown
+        from={
+          HOMEPAGE.expoStartDate.month +
+          " " +
+          HOMEPAGE.expoStartDate.date +
+          " , " +
+          HOMEPAGE.expoStartDate.year +
+          " 10:00:00 GMT+0530"
+        }
+      />
+      <br />
+
+      {/* <div className="flex gap-2 justify-center">
+      
+     
+      <a
+          className="flex"
+          href="/pdf/bes_election/bio_data.pdf"
+          target="_blank"
+        >
+          <Button
+            variant="contained"
+            className="flex w-fit m-auto mt-4 bg-[#222fda] text-[16px] font-[500] hover:bg-[#ffffff] hover:text-[#000]"
+          >
+           Bio-Data of contestants
+          </Button>
+        </a>
+       
+      </div> */}
     </div>
   );
 }

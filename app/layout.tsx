@@ -20,6 +20,7 @@ import {
   EXPO_OG_IMAGE,
 } from "./config/expo";
 import NewRelicAnalytics from "./scripts/new-relic-analytics";
+import DatadogProvider from "./providers/datadog-providers";
 
 // ✅ GLOBAL SEO (applies to ALL pages — no modification needed anywhere)
 export const metadata: Metadata = {
@@ -143,6 +144,7 @@ export default async function RootLayout({
         {/* </Suspense> */}
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
+        {ENVIROMENT === "production" && <DatadogProvider />}
       </body>
     </html>
   );
