@@ -21,23 +21,22 @@ export function getStaticHomepageContent(): HomePageContent {
     notificationConfig: {
       title: `BES EXPO-2027: ${HOMEPAGE.eventCount} International Conference & Exhibition on Broadcast & Media Technology`,
       subtitle,
-      venue: "Hall No. 12A Pragati Maidan, New Delhi",
-      theme:
-        "Theme: Broadcast Intelligence Innovation: Make in India for the World",
+      venue: "", // Hall No. 12A Pragati Maidan, New Delhi
+      theme: "", //Theme: Broadcast Intelligence Innovation: Make in India for the World
       primaryButtonLink:
         "/event_conference/bes_expo/exibition/participation_fee",
       countdownStartDateTime,
       resourceButtons: [
-        {
-          label: "Sponsorship Opportunities",
-          url: "/pdf/others/sponsorship_opportunity.pdf",
-          target: "_blank",
-        },
-        {
-          label: "Brochure",
-          url: "/document/besexpo/brochure2026.pdf",
-          target: "_blank",
-        },
+        // {
+        //   label: "Sponsorship Opportunities",
+        //   url: "/pdf/others/sponsorship_opportunity.pdf",
+        //   target: "_blank",
+        // },
+        // {
+        //   label: "Brochure",
+        //   url: "/document/besexpo/brochure2026.pdf",
+        //   target: "_blank",
+        // },
       ],
       visitorButtonText: "Visitor Registration",
       visitorButtonLink: "/registrationform/visitor",
