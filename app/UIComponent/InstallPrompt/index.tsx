@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button, Box, Typography } from "@mui/material";
-import { ENVIROMENT } from "../../backend/constant";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -16,10 +15,7 @@ export default function InstallPrompt() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    if (
-      typeof window === "undefined" ||
-      ENVIROMENT !== "production"
-    )
+    if (typeof window === "undefined" || process.env.NODE_ENV !== "production")
       return;
 
     const handler = (e: Event) => {
@@ -30,7 +26,10 @@ export default function InstallPrompt() {
     window.addEventListener("beforeinstallprompt", handler);
 
     const checkInstalled = () => {
-      if ((navigator as any).standalone || window.matchMedia("(display-mode: standalone)").matches) {
+      if (
+        (navigator as any).standalone ||
+        window.matchMedia("(display-mode: standalone)").matches
+      ) {
         setIsInstalled(true);
       }
     };
@@ -55,7 +54,12 @@ export default function InstallPrompt() {
     }
   }, [deferredPrompt]);
 
-  if (isInstalled || !deferredPrompt || dismissed || ENVIROMENT !== "production") {
+  if (
+    isInstalled ||
+    !deferredPrompt ||
+    dismissed ||
+    process.env.NODE_ENV !== "production"
+  ) {
     return null;
   }
 
@@ -76,7 +80,12 @@ export default function InstallPrompt() {
       <Typography variant="body2" fontWeight={600} mb={0.5}>
         Install BES Expo App
       </Typography>
-      <Typography variant="caption" color="text.secondary" display="block" mb={1.5}>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        display="block"
+        mb={1.5}
+      >
         Install for offline access and a better experience
       </Typography>
       <Box display="flex" gap={1}>
@@ -88,11 +97,7 @@ export default function InstallPrompt() {
         >
           Install
         </Button>
-        <Button
-          size="small"
-          variant="text"
-          onClick={() => setDismissed(true)}
-        >
+        <Button size="small" variant="text" onClick={() => setDismissed(true)}>
           Not now
         </Button>
       </Box>
