@@ -1,7 +1,6 @@
 "use client";
 
 import { SerwistProvider } from "@serwist/next/react";
-import { ENVIROMENT } from "../../backend/constant";
 
 export default function PwaRegister({
   children,
@@ -11,7 +10,7 @@ export default function PwaRegister({
   return (
     <SerwistProvider
       swUrl="/sw.js"
-      disable={ENVIROMENT !== "production"}
+      disable={process.env.NODE_ENV !== "production"}
       register={true}
       cacheOnNavigation={true}
       reloadOnOnline={true}
