@@ -1,11 +1,20 @@
 /** @type {import('next').NextConfig} */
 import bundleAnalyzer from "@next/bundle-analyzer";
+import withSerwistInit from "@serwist/next";
+
+const isProduction = process.env.NODE_ENV === "production";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
-const nextConfig = {
+const withSerwist = withSerwistInit({
+  swSrc: "sw.ts",
+  swDest: "public/sw.js",
+  disable: !isProduction,
+});
+
+const nextConfig = withSerwist({
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -29,10 +38,8 @@ const nextConfig = {
     return config;
   },
 
-  // 👇 Custom caching headers
   async headers() {
     return [
-      // Allow Contentful Live Preview iframe embedding
       {
         source: "/:path*",
         headers: [
@@ -42,7 +49,6 @@ const nextConfig = {
           },
         ],
       },
-      // Do NOT cache PDFs inside /images
       {
         source: "/images/:all*.pdf",
         headers: [
@@ -52,7 +58,6 @@ const nextConfig = {
           },
         ],
       },
-      // Cache images aggressively (1 year, immutable)
       {
         source: "/images/:all*(jpg|jpeg|png|gif|webp|svg|ico)",
         headers: [
@@ -65,10 +70,9 @@ const nextConfig = {
     ];
   },
 
-  // 👇 Ensure new buildId on every deployment
   generateBuildId: async () => {
-    return String(Date.now()); // Or use commit SHA if on CI/CD
+    return String(Date.now());
   },
-};
+});
 
 export default withBundleAnalyzer(nextConfig);

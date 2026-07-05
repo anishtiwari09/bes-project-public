@@ -21,9 +21,13 @@ import {
 } from "./config/expo";
 import NewRelicAnalytics from "./scripts/new-relic-analytics";
 import DatadogProvider from "./providers/datadog-providers";
+import PwaRegister from "./UIComponent/PwaRegister";
+import InstallPrompt from "./UIComponent/InstallPrompt";
+import NetworkStatus from "./UIComponent/NetworkStatus";
 
 // ✅ GLOBAL SEO (applies to ALL pages — no modification needed anywhere)
 export const metadata: Metadata = {
+  manifest: "/manifest.webmanifest",
   title: {
     default: EXPO_NAME,
     template: `%s | ${EXPO_NAME}`,
@@ -126,25 +130,31 @@ export default async function RootLayout({
       <head>{ENVIROMENT === "production" && <NewRelicAnalytics />}</head>
       <body className="h-full overflow-hidden">
         {/* <Suspense> */}
-        <ClientWrapper>
-          <Navbar />
+        <PwaRegister>
+          <ClientWrapper>
+            <Navbar />
 
-          <div className="overflow-auto inner_page scroll-smooth">
-            <div className="body_page">{children}</div>
-            {!!brochureButton?.label && (
-              <DownloadBrochureButton
-                href={brochureButton.url || ""}
-                label={brochureButton.label}
-                target={brochureButton.target}
-              />
-            )}
-            <Footer />
-          </div>
-        </ClientWrapper>
+            <div className="overflow-auto inner_page scroll-smooth">
+              <div className="body_page">
+                <NetworkStatus />
+                {children}
+              </div>
+              {!!brochureButton?.label && (
+                <DownloadBrochureButton
+                  href={brochureButton.url || ""}
+                  label={brochureButton.label}
+                  target={brochureButton.target}
+                />
+              )}
+              <Footer />
+            </div>
+          </ClientWrapper>
+        </PwaRegister>
         {/* </Suspense> */}
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
         {ENVIROMENT === "production" && <DatadogProvider />}
+        <InstallPrompt />
       </body>
     </html>
   );
