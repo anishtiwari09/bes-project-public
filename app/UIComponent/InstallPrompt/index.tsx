@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Button, Box, Typography } from "@mui/material";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Button, Snackbar, Alert, Typography } from "@mui/material";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -13,35 +13,46 @@ export default function InstallPrompt() {
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [isIos, setIsIos] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
+  const hasPrompt = useRef(false);
 
   useEffect(() => {
-    if (typeof window === "undefined" || process.env.NODE_ENV !== "production")
-      return;
+    if (typeof window === "undefined") return;
+    if (process.env.NODE_ENV !== "production") return;
+
+    const isIosDevice =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    setIsIos(isIosDevice);
+
+    const isStandalone =
+      (navigator as any).standalone ||
+      window.matchMedia("(display-mode: standalone)").matches;
+    setIsInstalled(isStandalone);
+    if (isStandalone) return;
+    if (isIosDevice) return;
 
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
+      hasPrompt.current = true;
+      setShowFallback(false);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-
-    const checkInstalled = () => {
-      if (
-        (navigator as any).standalone ||
-        window.matchMedia("(display-mode: standalone)").matches
-      ) {
-        setIsInstalled(true);
-      }
-    };
-    checkInstalled();
-
     window.addEventListener("appinstalled", () => {
       setIsInstalled(true);
       setDeferredPrompt(null);
     });
 
+    const timer = setTimeout(() => {
+      if (!hasPrompt.current) setShowFallback(true);
+    }, 10000);
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
+      clearTimeout(timer);
     };
   }, []);
 
@@ -54,53 +65,129 @@ export default function InstallPrompt() {
     }
   }, [deferredPrompt]);
 
-  if (
-    isInstalled ||
-    !deferredPrompt ||
-    dismissed ||
-    process.env.NODE_ENV !== "production"
-  ) {
-    return null;
+  if (process.env.NODE_ENV !== "production") return null;
+  if (isInstalled) return null;
+  if (dismissed) return null;
+
+  if (isIos) {
+    return (
+      <Snackbar
+        open
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{ mt: 7 }}
+      >
+        <Alert
+          severity="info"
+          variant="filled"
+          sx={{ width: "100%", alignItems: "center" }}
+          action={
+            <Button
+              size="small"
+              variant="text"
+              sx={{ color: "white", textTransform: "none" }}
+              onClick={() => setDismissed(true)}
+            >
+              Dismiss
+            </Button>
+          }
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Install BES Expo App
+          </Typography>
+          <Typography variant="caption">
+            Tap Share &nbsp;⎋&nbsp; then &quot;Add to Home Screen&quot;
+          </Typography>
+        </Alert>
+      </Snackbar>
+    );
   }
 
-  return (
-    <Box
-      sx={{
-        position: "fixed",
-        bottom: 16,
-        left: 16,
-        zIndex: 9999,
-        bgcolor: "white",
-        borderRadius: 2,
-        boxShadow: 6,
-        p: 2,
-        maxWidth: 320,
-      }}
-    >
-      <Typography variant="body2" fontWeight={600} mb={0.5}>
-        Install BES Expo App
-      </Typography>
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        display="block"
-        mb={1.5}
+  if (deferredPrompt) {
+    return (
+      <Snackbar
+        open
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{ mt: 7 }}
       >
-        Install for offline access and a better experience
-      </Typography>
-      <Box display="flex" gap={1}>
-        <Button
-          size="small"
-          variant="contained"
-          onClick={handleInstall}
-          sx={{ bgcolor: "#75c24c", "&:hover": { bgcolor: "#5fa83a" } }}
+        <Alert
+          severity="success"
+          variant="filled"
+          sx={{
+            width: "100%",
+            alignItems: "center",
+            bgcolor: "#75c24c",
+            "& .MuiAlert-icon": { color: "white" },
+          }}
+          action={
+            <>
+              <Button
+                size="small"
+                variant="contained"
+                sx={{
+                  bgcolor: "white",
+                  color: "#75c24c",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  "&:hover": { bgcolor: "#f0f0f0" },
+                }}
+                onClick={handleInstall}
+              >
+                Install
+              </Button>
+              <Button
+                size="small"
+                variant="text"
+                sx={{ color: "white", textTransform: "none", ml: 1 }}
+                onClick={() => setDismissed(true)}
+              >
+                Not now
+              </Button>
+            </>
+          }
         >
-          Install
-        </Button>
-        <Button size="small" variant="text" onClick={() => setDismissed(true)}>
-          Not now
-        </Button>
-      </Box>
-    </Box>
-  );
+          <Typography variant="body2" fontWeight={600}>
+            Install BES Expo App
+          </Typography>
+          <Typography variant="caption">
+            Install for offline access and a better experience
+          </Typography>
+        </Alert>
+      </Snackbar>
+    );
+  }
+
+  if (showFallback) {
+    return (
+      <Snackbar
+        open
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{ mt: 7 }}
+      >
+        <Alert
+          severity="info"
+          variant="filled"
+          sx={{ width: "100%", alignItems: "center" }}
+          action={
+            <Button
+              size="small"
+              variant="text"
+              sx={{ color: "white", textTransform: "none" }}
+              onClick={() => setDismissed(true)}
+            >
+              Dismiss
+            </Button>
+          }
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Install BES Expo App
+          </Typography>
+          <Typography variant="caption">
+            Open browser menu and tap &quot;Add to Home Screen&quot;
+          </Typography>
+        </Alert>
+      </Snackbar>
+    );
+  }
+
+  return null;
 }
