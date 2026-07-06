@@ -59,10 +59,7 @@ jobs:
       - name: Create a commit from Account A
         if: env.SKIP_COMMIT == 'false'
         run: |
-          {
-            echo "deploy--"
-            echo "$COMMIT_MSG"
-          } > commit_message.txt
+          echo "deploy -- $COMMIT_MSG" > commit_message.txt
 
           git commit --allow-empty -F commit_message.txt
 
