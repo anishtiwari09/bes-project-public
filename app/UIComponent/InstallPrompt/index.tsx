@@ -157,28 +157,24 @@ export default function InstallPrompt() {
     return (
       <Slide direction="down" in mountOnEnter unmountOnExit>
         <div style={slideContainer}>
-        <div style={{ ...pill, pointerEvents: "auto" }}>
-          <div style={iconCircle}>
-            <IosShare sx={{ color: "#fff", fontSize: 18 }} />
+          <div style={{ ...pill, pointerEvents: "auto" }}>
+            <div style={iconCircle}>
+              <IosShare sx={{ color: "#fff", fontSize: 18 }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={title}>Install BesIndia App</p>
+              <p style={subtitle}>
+                Tap{" "}
+                <strong style={{ color: "rgba(255,255,255,0.75)" }}>
+                  Share ⎋
+                </strong>{" "}
+                → &quot;Add to Home Screen&quot;
+              </p>
+            </div>
+            <IconButton size="small" onClick={handleDismiss} sx={closeBtn}>
+              <Close sx={{ fontSize: 16 }} />
+            </IconButton>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={title}>Install BES Expo App</p>
-            <p style={subtitle}>
-              Tap{" "}
-              <strong style={{ color: "rgba(255,255,255,0.75)" }}>
-                Share ⎋
-              </strong>{" "}
-              → &quot;Add to Home Screen&quot;
-            </p>
-          </div>
-          <IconButton
-            size="small"
-            onClick={handleDismiss}
-            sx={closeBtn}
-          >
-            <Close sx={{ fontSize: 16 }} />
-          </IconButton>
-        </div>
         </div>
       </Slide>
     );
@@ -188,25 +184,21 @@ export default function InstallPrompt() {
     return (
       <Slide direction="down" in mountOnEnter unmountOnExit>
         <div style={slideContainer}>
-        <div style={{ ...pill, pointerEvents: "auto" }}>
-          <div style={iconCircle}>
-            <Download sx={{ color: "#fff", fontSize: 18 }} />
+          <div style={{ ...pill, pointerEvents: "auto" }}>
+            <div style={iconCircle}>
+              <Download sx={{ color: "#fff", fontSize: 18 }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={title}>Install BesIndia App</p>
+              <p style={subtitle}>Offline access &amp; better experience</p>
+            </div>
+            <button onClick={handleInstall} style={installBtn}>
+              Install
+            </button>
+            <IconButton size="small" onClick={handleDismiss} sx={closeBtn}>
+              <Close sx={{ fontSize: 16 }} />
+            </IconButton>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={title}>Install BES Expo App</p>
-            <p style={subtitle}>Offline access &amp; better experience</p>
-          </div>
-          <button onClick={handleInstall} style={installBtn}>
-            Install
-          </button>
-          <IconButton
-            size="small"
-            onClick={handleDismiss}
-            sx={closeBtn}
-          >
-            <Close sx={{ fontSize: 16 }} />
-          </IconButton>
-        </div>
         </div>
       </Slide>
     );
@@ -216,24 +208,20 @@ export default function InstallPrompt() {
     return (
       <Slide direction="down" in mountOnEnter unmountOnExit>
         <div style={slideContainer}>
-        <div style={{ ...pill, pointerEvents: "auto" }}>
-          <div style={iconCircle}>
-            <Download sx={{ color: "#fff", fontSize: 18 }} />
+          <div style={{ ...pill, pointerEvents: "auto" }}>
+            <div style={iconCircle}>
+              <Download sx={{ color: "#fff", fontSize: 18 }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={title}>Install BesIndia App</p>
+              <p style={subtitle}>
+                Open browser menu → &quot;Add to Home Screen&quot;
+              </p>
+            </div>
+            <IconButton size="small" onClick={handleDismiss} sx={closeBtn}>
+              <Close sx={{ fontSize: 16 }} />
+            </IconButton>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={title}>Install BES Expo App</p>
-            <p style={subtitle}>
-              Open browser menu → &quot;Add to Home Screen&quot;
-            </p>
-          </div>
-          <IconButton
-            size="small"
-            onClick={handleDismiss}
-            sx={closeBtn}
-          >
-            <Close sx={{ fontSize: 16 }} />
-          </IconButton>
-        </div>
         </div>
       </Slide>
     );
