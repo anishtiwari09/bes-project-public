@@ -107,7 +107,7 @@ export default function PullToRefresh({
           </span>
         ) : null}
       </div>
-      <div>{children}</div>
+      <div className="flex flex-col h-full">{children}</div>
     </div>
   );
 }

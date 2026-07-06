@@ -8,7 +8,6 @@
 
 :root {
   --header_height: 90px;
-  --footer_height: 128px;
 }
 
 * {
@@ -191,7 +190,7 @@ a.header2_menu_list_open::before {
 }
 
 .body_page {
-  min-height: calc(100% - var(--footer_height));
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
