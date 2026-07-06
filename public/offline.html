@@ -64,5 +64,9 @@
     <a href="/" class="btn">Try Again</a>
     <p class="hint">Once you're back online, the page will reload automatically</p>
   </div>
+  <script>
+    window.addEventListener("online", () => location.reload());
+    if (navigator.onLine) location.reload();
+  </script>
 </body>
 </html>
