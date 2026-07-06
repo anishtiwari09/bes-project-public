@@ -1,6 +1,18 @@
 import { defaultCache } from "@serwist/next/worker";
-import type { PrecacheEntry } from "serwist";
-import { Serwist } from "serwist";
+import type { PrecacheEntry, FetchDidFailCallbackParam } from "serwist";
+import { Serwist, BackgroundSyncQueue, NetworkOnly } from "serwist";
+
+const mutationQueue = new BackgroundSyncQueue("api-mutations", {
+  maxRetentionTime: 60 * 24,
+  onSync: async ({ queue }) => {
+    await queue.replayRequests();
+    const sw = self as any;
+    const clients = await sw.clients.matchAll();
+    for (const client of clients) {
+      client.postMessage({ type: "SYNC_COMPLETE" });
+    }
+  },
+});
 
 const serwist = new Serwist({
   precacheEntries: (self as unknown as { __SW_MANIFEST: PrecacheEntry[] })
@@ -8,7 +20,22 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    {
+      matcher: ({ request, url }) =>
+        url.pathname.startsWith("/backend/api/") &&
+        !["GET", "HEAD"].includes(request.method),
+      handler: new NetworkOnly({
+        plugins: [
+          {
+            fetchDidFail: ({ request }: FetchDidFailCallbackParam) =>
+              mutationQueue.pushRequest({ request }),
+          },
+        ],
+      }),
+    },
+    ...defaultCache,
+  ],
   fallbacks: {
     entries: [
       {
@@ -49,5 +76,30 @@ sw.addEventListener("activate", (event: any) => {
       );
     })(),
   );
+});
+
+sw.addEventListener("message", (event: any) => {
+  if (event.data?.type === "GET_PENDING_COUNT") {
+    mutationQueue.getAll().then((entries) => {
+      if (event.ports?.[0]) {
+        event.ports[0].postMessage({ pendingCount: entries.length });
+      }
+    });
+    return;
+  }
+
+  if (event.data?.type === "SYNC_NOW") {
+    const sw = self as any;
+    event.waitUntil(
+      mutationQueue.replayRequests().then(() =>
+        sw.clients.matchAll().then((clients: any[]) => {
+          for (const client of clients) {
+            client.postMessage({ type: "SYNC_COMPLETE" });
+          }
+        })
+      )
+    );
+    return;
+  }
 });
 /* eslint-enable */

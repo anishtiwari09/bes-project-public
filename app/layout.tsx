@@ -24,6 +24,7 @@ import DatadogProvider from "./providers/datadog-providers";
 import PwaRegister from "./UIComponent/PwaRegister";
 import InstallPrompt from "./UIComponent/InstallPrompt";
 import NetworkStatus from "./UIComponent/NetworkStatus";
+import PullToRefresh from "./UIComponent/PullToRefresh";
 
 // ✅ GLOBAL SEO (applies to ALL pages — no modification needed anywhere)
 export const metadata: Metadata = {
@@ -134,7 +135,7 @@ export default async function RootLayout({
           <ClientWrapper>
             <Navbar />
 
-            <div className="overflow-auto inner_page scroll-smooth">
+            <PullToRefresh className="overflow-auto inner_page scroll-smooth">
               <div className="body_page">
                 <NetworkStatus />
                 {children}
@@ -147,7 +148,7 @@ export default async function RootLayout({
                 />
               )}
               <Footer />
-            </div>
+            </PullToRefresh>
           </ClientWrapper>
         </PwaRegister>
         {/* </Suspense> */}
