@@ -1,6 +1,6 @@
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, FetchDidFailCallbackParam } from "serwist";
-import { Serwist, BackgroundSyncQueue, NetworkOnly } from "serwist";
+import { Serwist, BackgroundSyncQueue, NetworkOnly, NetworkFirst } from "serwist";
 
 const mutationQueue = new BackgroundSyncQueue("api-mutations", {
   maxRetentionTime: 60 * 24,
@@ -21,6 +21,12 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
+    {
+      matcher: ({ request }) => request.mode === "navigate",
+      handler: new NetworkFirst({
+        networkTimeoutSeconds: 5,
+      }),
+    },
     {
       matcher: ({ request, url }) =>
         url.pathname.startsWith("/backend/api/") &&
