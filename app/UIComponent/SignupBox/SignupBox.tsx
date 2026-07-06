@@ -67,7 +67,7 @@ export default function SignupBox() {
     }
   }, [state?.status, isPending]);
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4">
       <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
         <Card className="shadow-xl rounded-2xl p-8 border border-gray-200">
           <Stack gap={3}>
