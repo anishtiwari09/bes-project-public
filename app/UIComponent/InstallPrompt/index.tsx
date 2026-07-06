@@ -12,7 +12,10 @@ export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("install-prompt-dismissed") === "1";
+  });
   const [isIos, setIsIos] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
   const hasPrompt = useRef(false);
@@ -54,6 +57,11 @@ export default function InstallPrompt() {
       clearTimeout(timer);
     };
   }, []);
+
+  const handleDismiss = () => {
+    sessionStorage.setItem("install-prompt-dismissed", "1");
+    setDismissed(true);
+  };
 
   const handleInstall = useCallback(async () => {
     if (!deferredPrompt) return;
@@ -165,7 +173,7 @@ export default function InstallPrompt() {
           </div>
           <IconButton
             size="small"
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             sx={closeBtn}
           >
             <Close sx={{ fontSize: 16 }} />
@@ -193,7 +201,7 @@ export default function InstallPrompt() {
           </button>
           <IconButton
             size="small"
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             sx={closeBtn}
           >
             <Close sx={{ fontSize: 16 }} />
@@ -220,7 +228,7 @@ export default function InstallPrompt() {
           </div>
           <IconButton
             size="small"
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             sx={closeBtn}
           >
             <Close sx={{ fontSize: 16 }} />
