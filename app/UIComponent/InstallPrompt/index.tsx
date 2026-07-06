@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Button, Snackbar, Alert, Typography } from "@mui/material";
+import { Slide, IconButton } from "@mui/material";
+import { Download, Close, IosShare } from "@mui/icons-material";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -18,7 +19,6 @@ export default function InstallPrompt() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (process.env.NODE_ENV !== "production") return;
 
     const isIosDevice =
       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -59,132 +59,163 @@ export default function InstallPrompt() {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      setDeferredPrompt(null);
-    }
+    if (outcome === "accepted") setDeferredPrompt(null);
   }, [deferredPrompt]);
 
-  if (process.env.NODE_ENV !== "production") return null;
   if (isInstalled) return null;
   if (dismissed) return null;
 
+  const pill: React.CSSProperties = {
+    position: "fixed",
+    top: "calc(var(--header_height, 90px) + 12px)",
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 1400,
+    width: "min(460px, calc(100vw - 24px))",
+    borderRadius: "999px",
+    background: "rgba(16, 17, 48, 0.88)",
+    backdropFilter: "blur(20px)",
+    WebkitBackdropFilter: "blur(20px)",
+    boxShadow:
+      "0 0 0 1px rgba(247,0,104,0.3), 0 12px 40px rgba(0,0,0,0.6), 0 0 28px rgba(247,0,104,0.1)",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: "9px 9px 9px 14px",
+    fontFamily: "Poppins, sans-serif",
+  };
+
+  const iconCircle: React.CSSProperties = {
+    flexShrink: 0,
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    background: "linear-gradient(135deg, #f70068 0%, #441066 100%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 0 14px rgba(247,0,104,0.55)",
+  };
+
+  const installBtn: React.CSSProperties = {
+    flexShrink: 0,
+    padding: "7px 18px",
+    borderRadius: "999px",
+    border: "none",
+    background: "linear-gradient(135deg, #f70068 0%, #441066 100%)",
+    color: "#fff",
+    fontFamily: "Poppins, sans-serif",
+    fontWeight: 600,
+    fontSize: 12,
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+    boxShadow: "0 0 16px rgba(247,0,104,0.5)",
+    letterSpacing: "0.3px",
+  };
+
+  const closeBtn = {
+    color: "rgba(255,255,255,0.3)",
+    "&:hover": { color: "#fff", background: "rgba(255,255,255,0.07)" },
+  };
+
+  const title: React.CSSProperties = {
+    margin: 0,
+    color: "#fff",
+    fontWeight: 600,
+    fontSize: 13,
+    lineHeight: 1.3,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
+  const subtitle: React.CSSProperties = {
+    margin: 0,
+    marginTop: 2,
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 11,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
   if (isIos) {
     return (
-      <Snackbar
-        open
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        sx={{ mt: 7 }}
-      >
-        <Alert
-          severity="info"
-          variant="filled"
-          sx={{ width: "100%", alignItems: "center" }}
-          action={
-            <Button
-              size="small"
-              variant="text"
-              sx={{ color: "white", textTransform: "none" }}
-              onClick={() => setDismissed(true)}
-            >
-              Dismiss
-            </Button>
-          }
-        >
-          <Typography variant="body2" fontWeight={600}>
-            Install BES Expo App
-          </Typography>
-          <Typography variant="caption">
-            Tap Share &nbsp;⎋&nbsp; then &quot;Add to Home Screen&quot;
-          </Typography>
-        </Alert>
-      </Snackbar>
+      <Slide direction="down" in mountOnEnter unmountOnExit>
+        <div style={pill}>
+          <div style={iconCircle}>
+            <IosShare sx={{ color: "#fff", fontSize: 18 }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={title}>Install BES Expo App</p>
+            <p style={subtitle}>
+              Tap{" "}
+              <strong style={{ color: "rgba(255,255,255,0.75)" }}>
+                Share ⎋
+              </strong>{" "}
+              → &quot;Add to Home Screen&quot;
+            </p>
+          </div>
+          <IconButton
+            size="small"
+            onClick={() => setDismissed(true)}
+            sx={closeBtn}
+          >
+            <Close sx={{ fontSize: 16 }} />
+          </IconButton>
+        </div>
+      </Slide>
     );
   }
 
   if (deferredPrompt) {
     return (
-      <Snackbar
-        open
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        sx={{ mt: 7 }}
-      >
-        <Alert
-          severity="success"
-          variant="filled"
-          sx={{
-            width: "100%",
-            alignItems: "center",
-            bgcolor: "#75c24c",
-            "& .MuiAlert-icon": { color: "white" },
-          }}
-          action={
-            <>
-              <Button
-                size="small"
-                variant="contained"
-                sx={{
-                  bgcolor: "white",
-                  color: "#75c24c",
-                  textTransform: "none",
-                  fontWeight: 600,
-                  "&:hover": { bgcolor: "#f0f0f0" },
-                }}
-                onClick={handleInstall}
-              >
-                Install
-              </Button>
-              <Button
-                size="small"
-                variant="text"
-                sx={{ color: "white", textTransform: "none", ml: 1 }}
-                onClick={() => setDismissed(true)}
-              >
-                Not now
-              </Button>
-            </>
-          }
-        >
-          <Typography variant="body2" fontWeight={600}>
-            Install BES Expo App
-          </Typography>
-          <Typography variant="caption">
-            Install for offline access and a better experience
-          </Typography>
-        </Alert>
-      </Snackbar>
+      <Slide direction="down" in mountOnEnter unmountOnExit>
+        <div style={pill}>
+          <div style={iconCircle}>
+            <Download sx={{ color: "#fff", fontSize: 18 }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={title}>Install BES Expo App</p>
+            <p style={subtitle}>Offline access &amp; better experience</p>
+          </div>
+          <button onClick={handleInstall} style={installBtn}>
+            Install
+          </button>
+          <IconButton
+            size="small"
+            onClick={() => setDismissed(true)}
+            sx={closeBtn}
+          >
+            <Close sx={{ fontSize: 16 }} />
+          </IconButton>
+        </div>
+      </Slide>
     );
   }
 
   if (showFallback) {
     return (
-      <Snackbar
-        open
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        sx={{ mt: 7 }}
-      >
-        <Alert
-          severity="info"
-          variant="filled"
-          sx={{ width: "100%", alignItems: "center" }}
-          action={
-            <Button
-              size="small"
-              variant="text"
-              sx={{ color: "white", textTransform: "none" }}
-              onClick={() => setDismissed(true)}
-            >
-              Dismiss
-            </Button>
-          }
-        >
-          <Typography variant="body2" fontWeight={600}>
-            Install BES Expo App
-          </Typography>
-          <Typography variant="caption">
-            Open browser menu and tap &quot;Add to Home Screen&quot;
-          </Typography>
-        </Alert>
-      </Snackbar>
+      <Slide direction="down" in mountOnEnter unmountOnExit>
+        <div style={pill}>
+          <div style={iconCircle}>
+            <Download sx={{ color: "#fff", fontSize: 18 }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={title}>Install BES Expo App</p>
+            <p style={subtitle}>
+              Open browser menu → &quot;Add to Home Screen&quot;
+            </p>
+          </div>
+          <IconButton
+            size="small"
+            onClick={() => setDismissed(true)}
+            sx={closeBtn}
+          >
+            <Close sx={{ fontSize: 16 }} />
+          </IconButton>
+        </div>
+      </Slide>
     );
   }
 
