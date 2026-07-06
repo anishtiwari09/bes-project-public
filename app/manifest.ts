@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "BES Expo",
-    short_name: "BES Expo",
+    name: "BesIndia",
+    short_name: "BesIndia",
     description:
       "Broadcast Engineering Society (BES) Expo - India's premier broadcast and media technology exhibition",
     start_url: "/",

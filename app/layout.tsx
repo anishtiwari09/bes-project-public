@@ -39,6 +39,8 @@ export const metadata: Metadata = {
     // English Keywords
     "BES Expo",
     "BES Expo 2025",
+    "besindia",
+    "bes india",
     "Broadcast Engineering Society Expo",
     "Broadcast Engineering Society",
     "Broadcast Technology",
