@@ -66,11 +66,6 @@ export default function InstallPrompt() {
   if (dismissed) return null;
 
   const pill: React.CSSProperties = {
-    position: "fixed",
-    top: "calc(var(--header_height, 90px) + 12px)",
-    left: "50%",
-    transform: "translateX(-50%)",
-    zIndex: 1400,
     width: "min(460px, calc(100vw - 24px))",
     borderRadius: "999px",
     background: "rgba(16, 17, 48, 0.88)",
@@ -139,10 +134,22 @@ export default function InstallPrompt() {
     textOverflow: "ellipsis",
   };
 
+  const slideContainer = {
+    position: "fixed" as const,
+    top: 12,
+    left: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "center",
+    zIndex: 1400,
+    pointerEvents: "none" as const,
+  };
+
   if (isIos) {
     return (
       <Slide direction="down" in mountOnEnter unmountOnExit>
-        <div style={pill}>
+        <div style={slideContainer}>
+        <div style={{ ...pill, pointerEvents: "auto" }}>
           <div style={iconCircle}>
             <IosShare sx={{ color: "#fff", fontSize: 18 }} />
           </div>
@@ -164,6 +171,7 @@ export default function InstallPrompt() {
             <Close sx={{ fontSize: 16 }} />
           </IconButton>
         </div>
+        </div>
       </Slide>
     );
   }
@@ -171,7 +179,8 @@ export default function InstallPrompt() {
   if (deferredPrompt) {
     return (
       <Slide direction="down" in mountOnEnter unmountOnExit>
-        <div style={pill}>
+        <div style={slideContainer}>
+        <div style={{ ...pill, pointerEvents: "auto" }}>
           <div style={iconCircle}>
             <Download sx={{ color: "#fff", fontSize: 18 }} />
           </div>
@@ -190,6 +199,7 @@ export default function InstallPrompt() {
             <Close sx={{ fontSize: 16 }} />
           </IconButton>
         </div>
+        </div>
       </Slide>
     );
   }
@@ -197,7 +207,8 @@ export default function InstallPrompt() {
   if (showFallback) {
     return (
       <Slide direction="down" in mountOnEnter unmountOnExit>
-        <div style={pill}>
+        <div style={slideContainer}>
+        <div style={{ ...pill, pointerEvents: "auto" }}>
           <div style={iconCircle}>
             <Download sx={{ color: "#fff", fontSize: 18 }} />
           </div>
@@ -214,6 +225,7 @@ export default function InstallPrompt() {
           >
             <Close sx={{ fontSize: 16 }} />
           </IconButton>
+        </div>
         </div>
       </Slide>
     );
