@@ -9,10 +9,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useActionState, useEffect, useState } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import { useFormStatus } from "react-dom";
 import {
   userLoginAction,
   userOtpLoginAction,
@@ -21,6 +20,7 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "../context-provider/auth-provider";
 import { resendOtpAction } from "@/app/frontend/actions/login";
 import { handleApiRequestWithToast } from "@/app/frontend/helper";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const initialState = {
   message: "",
@@ -33,10 +33,23 @@ const initialState = {
 const OTPTIMER = 300;
 const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [state, formAction] = useActionState(userOtpLoginAction, initialState);
+  const [state, formAction, isPending] = useActionState(
+    userOtpLoginAction,
+    initialState
+  );
   const [resendTimer, setResendTimer] = useState(OTPTIMER); // 5 minutes in seconds
   const [canResend, setCanResend] = useState(false);
-  const { pending } = useFormStatus();
+  const isSubmitting = useRef(false);
+
+  const handleFormAction = async (formData: FormData) => {
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+    try {
+      await formAction(formData);
+    } finally {
+      isSubmitting.current = false;
+    }
+  };
 
   // Timer countdown
   useEffect(() => {
@@ -171,7 +184,7 @@ const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
         )}
         Enter the 4-digit OTP sent to your email (you can paste the OTP)
       </Typography>
-      <form action={formAction}>
+      <form action={handleFormAction}>
         <Box display="flex" gap={1}>
           {otp.map((digit, index) => (
             <TextField
@@ -206,10 +219,14 @@ const OtpVerification = ({ email, payload, onClose, onBack }: any) => {
         <Stack direction="row" gap={1} mt={2}>
           <Button
             variant="contained"
-            disabled={pending || otp.some((digit) => !digit)}
+            disabled={isPending || otp.some((digit) => !digit)}
             type="submit"
           >
-            Verify
+            {isPending ? (
+              <CircularProgress size={22} sx={{ color: "white" }} />
+            ) : (
+              "Verify"
+            )}
           </Button>
 
           <Button
@@ -231,8 +248,22 @@ export default function LoginForm({ onClose }: any) {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [showOtpVerification, setShowOtpVerification] = useState(false);
   const [userEmail, setUserEmail] = useState("");
-  const [state, formAction] = useActionState(userLoginAction, initialState);
+  const [state, formAction, isPending] = useActionState(
+    userLoginAction,
+    initialState
+  );
   const { setUserData } = useAuthContext();
+  const isSubmitting = useRef(false);
+
+  const handleFormAction = async (formData: FormData) => {
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+    try {
+      await formAction(formData);
+    } finally {
+      isSubmitting.current = false;
+    }
+  };
 
   useEffect(() => {
     if (state?.isLogin && state?.userData) setUserData(state?.userData || null);
@@ -303,7 +334,7 @@ export default function LoginForm({ onClose }: any) {
           ) : isForgotPassword ? (
             <ForgotPasswordForm onClose={onClose} />
           ) : (
-            <form action={formAction}>
+            <form action={handleFormAction}>
               <Stack gap={1} justifyContent={"center"} margin={"auto"}>
                 <Box>
                   <Typography variant="h5">Member Login</Typography>
@@ -333,7 +364,7 @@ export default function LoginForm({ onClose }: any) {
                   type="password"
                   required={true}
                 />
-                <SubmitButton />
+                <SubmitButton pending={isPending} />
                 <Button
                   sx={{ border: "1px solid blue" }}
                   onClick={() => setIsForgotPassword(true)}
@@ -358,27 +389,24 @@ export default function LoginForm({ onClose }: any) {
   );
 }
 
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-
+const SubmitButton = ({ pending }: { pending: boolean }) => {
   return (
-    <>
-      <Button
-        variant="contained"
-        style={
-          pending
-            ? { color: "white" }
-            : {
-                background: "blue",
-                width: "fit-content",
-                margin: "auto",
-              }
-        }
-        type="submit"
-        disabled={pending}
-      >
-        {pending ? "Please wait..." : "Login"}
-      </Button>
-    </>
+    <Button
+      variant="contained"
+      type="submit"
+      disabled={pending}
+      sx={{
+        background: "blue",
+        width: "fit-content",
+        margin: "auto",
+        opacity: pending ? 0.6 : 1,
+      }}
+    >
+      {pending ? (
+        <CircularProgress size={22} sx={{ color: "white" }} />
+      ) : (
+        "Login"
+      )}
+    </Button>
   );
 };
