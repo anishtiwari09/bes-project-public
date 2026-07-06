@@ -1,6 +1,6 @@
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, FetchDidFailCallbackParam } from "serwist";
-import { Serwist, BackgroundSyncQueue, NetworkOnly, NetworkFirst } from "serwist";
+import { Serwist, BackgroundSyncQueue, NetworkOnly, NetworkFirst, ExpirationPlugin } from "serwist";
 
 const mutationQueue = new BackgroundSyncQueue("api-mutations", {
   maxRetentionTime: 60 * 24,
@@ -22,9 +22,32 @@ const serwist = new Serwist({
   navigationPreload: true,
   runtimeCaching: [
     {
-      matcher: ({ request }) => request.mode === "navigate",
+      matcher: ({ request, sameOrigin, url: { pathname } }) =>
+        sameOrigin &&
+        !pathname.startsWith("/api/") &&
+        request.mode === "navigate",
       handler: new NetworkFirst({
-        networkTimeoutSeconds: 5,
+        cacheName: "pages",
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 32,
+            maxAgeSeconds: 24 * 60 * 60,
+          }),
+          {
+            cacheDidUpdate: async ({ request }) => {
+              try {
+                const rscCache = await caches.open("pages-rsc");
+                const rscReq = new Request(request.url, {
+                  headers: { RSC: "1" },
+                });
+                const rscRes = await fetch(rscReq);
+                if (rscRes.ok) rscCache.put(request.url, rscRes);
+              } catch {
+                /* empty */
+              }
+            },
+          },
+        ],
       }),
     },
     {
