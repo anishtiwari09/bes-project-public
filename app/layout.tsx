@@ -110,7 +110,8 @@ export default async function RootLayout({
   children: ReactNode;
 }) {
   const requestHeaders = await headers();
-  const nextUrl = requestHeaders.get("next-url") || requestHeaders.get("x-pathname");
+  const nextUrl =
+    requestHeaders.get("next-url") || requestHeaders.get("x-pathname");
   let pathname = "";
   if (nextUrl) {
     try {
@@ -155,7 +156,7 @@ export default async function RootLayout({
         {ENVIROMENT === "production" && <Analytics />}
         {ENVIROMENT === "production" && <SpeedInsights />}
         {ENVIROMENT === "production" && <DatadogProvider />}
-        <InstallPrompt />
+        {process.env.NODE_ENV === "production" && <InstallPrompt />}
       </body>
     </html>
   );
