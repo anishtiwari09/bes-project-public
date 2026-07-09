@@ -11,7 +11,8 @@ import DownloadBrochureButton from "./UIComponent/buttons/download-brochure";
 import { getHomepageContent } from "./homepage/get-homepage-content";
 import { getGlobalBrochureButton } from "./homepage/get-global-brochure-button";
 import { headers } from "next/headers";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
+import AppOpenTracker from "./UIComponent/Analytics/AppOpenTracker";
 // ✅ Global Expo SEO Config
 import {
   EXPO_NAME,
@@ -136,6 +137,7 @@ export default async function RootLayout({
         {/* <Suspense> */}
         <PwaRegister>
           <ClientWrapper>
+            <AppOpenTracker />
             <Navbar />
 
             <PullToRefresh className="overflow-auto inner_page scroll-smooth">
@@ -160,6 +162,9 @@ export default async function RootLayout({
         {ENVIROMENT === "production" && <DatadogProvider />}
         {process.env.NODE_ENV === "production" && <InstallPrompt />}
       </body>
+      {ENVIROMENT === "production" && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      )}
     </html>
   );
 }

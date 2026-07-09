@@ -3,7 +3,8 @@
 import { Button } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import Link from "next/link";
-
+import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvents } from "@/lib/analytics/events";
 type DownloadBrochureButtonProps = {
   href: string;
   label: string;
@@ -16,7 +17,12 @@ export default function DownloadBrochureButton({
   target = "_blank",
 }: DownloadBrochureButtonProps) {
   const brochureUrl = href || "";
-
+  const handleBrochureDownload = () => {
+    trackEvent(AnalyticsEvents.BROCHURE_DOWNLOAD, {
+      brochure_name: label?.trim(),
+      page: window.location.pathname,
+    });
+  };
   if (!brochureUrl) return null;
 
   return (
@@ -25,6 +31,7 @@ export default function DownloadBrochureButton({
       //   download="brochure.pdf"
       target={target}
       rel="noopener noreferrer"
+      onClick={handleBrochureDownload}
       className="fixed z-40 right-2 bottom-2"
     >
       <Button

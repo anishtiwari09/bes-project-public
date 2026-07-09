@@ -2,7 +2,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Slide, IconButton } from "@mui/material";
 import { Download, Close, IosShare } from "@mui/icons-material";
-
+import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvents } from "@/lib/analytics/events";
+import { getPlatform } from "@/lib/analytics/platform";
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
@@ -22,7 +24,14 @@ export default function InstallPrompt() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const handleAppInstalled = () => {
+      trackEvent(AnalyticsEvents.PWA_INSTALLED, {
+        platform: getPlatform(),
+      });
 
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    };
     const isIosDevice =
       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -40,13 +49,13 @@ export default function InstallPrompt() {
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       hasPrompt.current = true;
       setShowFallback(false);
+      trackEvent(AnalyticsEvents.INSTALL_PROMPT_SHOWN, {
+        platform: getPlatform(),
+      });
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-    window.addEventListener("appinstalled", () => {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-    });
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     const timer = setTimeout(() => {
       if (!hasPrompt.current) setShowFallback(true);
@@ -54,22 +63,46 @@ export default function InstallPrompt() {
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("appinstalled", handleAppInstalled);
       clearTimeout(timer);
     };
   }, []);
 
   const handleDismiss = () => {
+    trackEvent(AnalyticsEvents.INSTALL_PROMPT_DISMISSED, {
+      platform: getPlatform(),
+      source: "custom_banner",
+    });
     sessionStorage.setItem("install-prompt-dismissed", "1");
     setDismissed(true);
   };
 
   const handleInstall = useCallback(async () => {
     if (!deferredPrompt) return;
+    trackEvent(AnalyticsEvents.INSTALL_BUTTON_CLICKED, {
+      platform: getPlatform(),
+    });
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") setDeferredPrompt(null);
+    if (outcome === "accepted") {
+      trackEvent(AnalyticsEvents.INSTALL_PROMPT_ACCEPTED, {
+        platform: getPlatform(),
+      });
+      setDeferredPrompt(null);
+    } else {
+      trackEvent(AnalyticsEvents.INSTALL_PROMPT_DISMISSED, {
+        platform: getPlatform(),
+        source: "native_prompt",
+      });
+    }
   }, [deferredPrompt]);
-
+  useEffect(() => {
+    if (!isInstalled && isIos && !dismissed) {
+      trackEvent(AnalyticsEvents.INSTALL_PROMPT_SHOWN, {
+        platform: "ios",
+      });
+    }
+  }, [dismissed, isInstalled, isIos]);
   if (isInstalled) return null;
   if (dismissed) return null;
 
