@@ -14,7 +14,7 @@ export default function layout({ children }: any) {
       <div className="min-w-[230px] hidden md:block">
         <SideNav />
       </div>
-      <div className="w-full max-w-full overflow-hidden md:overflow-visible md:flex-1">
+      <div>
         {children}
         <br />
         <br />
