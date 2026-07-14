@@ -25,8 +25,8 @@ export const OTHERPAGE = {
 export const NOTIFICATION_TEXT = {
   contents: [
     {
-      text: "BES Election Result (Executive Council -2026-28)",
-      href: "/pdf/bes_election/Election_result.pdf",
+      text: "Minutes of AGM 2026 held on 09-05-2026",
+      href: "/pdf/bes_election/Minutes_of_AGM.pdf",
     },
    
   ],

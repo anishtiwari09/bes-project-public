@@ -42,7 +42,7 @@ export function getStaticHomepageContent(): HomePageContent {
       visitorButtonLink: "/registrationform/visitor",
       delegateButtonText: "Delegate Registration",
       delegateButtonLink: "/registrationform/delegateregistration",
-      notificationText: "BES ELECTION 2026-28",
+      
     },
   };
 }
