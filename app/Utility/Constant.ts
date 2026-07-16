@@ -19,7 +19,7 @@ export const HOMEPAGE = {
 };
 
 export const OTHERPAGE = {
-  currentCouncil: "2024-26",
+  currentCouncil: "2026-28",
 };
 
 export const NOTIFICATION_TEXT = {
